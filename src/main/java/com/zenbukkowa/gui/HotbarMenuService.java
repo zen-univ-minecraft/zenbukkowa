@@ -1,0 +1,50 @@
+package com.zenbukkowa.gui;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class HotbarMenuService {
+    private final JavaPlugin plugin;
+    private final MenuService menuService;
+    private static final int SLOT = 8;
+    private static final ItemStack TOKEN = createToken();
+
+    public HotbarMenuService(JavaPlugin plugin, MenuService menuService) {
+        this.plugin = plugin;
+        this.menuService = menuService;
+    }
+
+    public void install(Player player) {
+        player.getInventory().setItem(SLOT, TOKEN.clone());
+    }
+
+    public boolean isToken(ItemStack item) {
+        if (item == null || item.getType() != Material.NETHER_STAR) {
+            return false;
+        }
+        ItemMeta meta = item.getItemMeta();
+        return meta != null && (ChatColor.RESET + "Menu").equals(meta.getDisplayName());
+    }
+
+    public boolean isSlotLocked(int slot) {
+        return slot == SLOT;
+    }
+
+    public void openMenu(Player player) {
+        RootMenu.open(player, menuService);
+    }
+
+    private static ItemStack createToken() {
+        ItemStack item = new ItemStack(Material.NETHER_STAR);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(ChatColor.RESET + "Menu");
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+}
