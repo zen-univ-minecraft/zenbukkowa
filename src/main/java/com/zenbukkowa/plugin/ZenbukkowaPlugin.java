@@ -55,6 +55,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             SchedulerBridge scheduler = new PaperSchedulerBridge();
             EventService eventService = new EventService(pointService, this);
             ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
+            pointService.setScoreboardService(scoreboardService);
             MenuService menuService = new MenuService();
             HotbarMenuService hotbarMenuService = new HotbarMenuService(this, menuService);
             StructureService structureService = new StructureService(structureDao, pointService);

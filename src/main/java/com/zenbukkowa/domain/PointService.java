@@ -1,6 +1,7 @@
 package com.zenbukkowa.domain;
 
 import com.zenbukkowa.persistence.PlayerDao;
+import com.zenbukkowa.scoreboard.ScoreboardService;
 
 import java.sql.SQLException;
 import java.util.Comparator;
@@ -13,9 +14,14 @@ import java.util.stream.Collectors;
 public class PointService {
     private final PlayerDao playerDao;
     private final Map<UUID, PlayerProgress> cache = new ConcurrentHashMap<>();
+    private ScoreboardService scoreboardService;
 
     public PointService(PlayerDao playerDao) {
         this.playerDao = playerDao;
+    }
+
+    public void setScoreboardService(ScoreboardService scoreboardService) {
+        this.scoreboardService = scoreboardService;
     }
 
     public PlayerProgress getProgress(UUID uuid) {
@@ -39,6 +45,12 @@ public class PointService {
                 throw new RuntimeException(e);
             }
         }
+        if (scoreboardService != null) {
+            org.bukkit.entity.Player player = org.bukkit.Bukkit.getPlayer(uuid);
+            if (player != null) {
+                scoreboardService.updatePlayer(player);
+            }
+        }
     }
 
     public void spendPoints(UUID uuid, PointCategory category, long amount) {
@@ -52,6 +64,12 @@ public class PointService {
                 playerDao.saveProgress(progress);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            }
+        }
+        if (scoreboardService != null) {
+            org.bukkit.entity.Player player = org.bukkit.Bukkit.getPlayer(uuid);
+            if (player != null) {
+                scoreboardService.updatePlayer(player);
             }
         }
     }
