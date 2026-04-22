@@ -2,25 +2,28 @@
 
 ## Goal
 
-Control the event duration.
+Track elapsed time since event start on the scoreboard.
 
-## Default Duration
+## Behavior
 
-- `2 hours` (7200 seconds).
-- Configurable in `config.yml` as `event.duration-minutes`.
+- Before `/zenbukkowa start`: scoreboard shows `Time: Waiting`.
+- After `/zenbukkowa start`: scoreboard shows elapsed time counting up from `00:00:00`.
+- After `/zenbukkowa end`: scoreboard freezes at final elapsed time and shows `Time: Finished`.
 
-## Start
+## Commands
 
-- Command: `/zenbukkowa start` (requires op).
-- Broadcast: `Event started! Duration: 2:00:00`.
-- Timer begins counting down on scoreboard.
+- `/zenbukkowa start` (requires op): records start timestamp, begins elapsed timer, broadcasts `Event started!`.
+- `/zenbukkowa end` (requires op): records end, broadcasts winner, freezes timer.
+- `/zenbukkowa status`: returns `Waiting`, `Running`, or `Finished`.
 
-## Stop
+## Clock Rules
 
-- Command: `/zenbukkowa end` (requires op).
-- Auto-stop when timer reaches zero.
-- Broadcast: `Event finished!`.
+1. Timer resolution: 1 second.
+2. Timer updates on the scoreboard every second via scheduled task.
+3. No automatic stop; event runs until `/zenbukkowa end` is issued.
+4. Elapsed time is derived from `System.currentTimeMillis()` delta from start timestamp.
 
-## Pause
+## Scoreboard Integration
 
-- Not supported. Event runs until completion or op command.
+- `ScoreboardService` computes elapsed time from `EventService.startTimestamp`.
+- `EventService` does not manage its own display task; it only stores start/end state.

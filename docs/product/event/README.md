@@ -6,5 +6,5 @@ Define event timer and winner determination.
 
 ## Child Index
 
-- [timer.md](timer.md): start, duration, and stop rules
+- [timer.md](timer.md): elapsed time tracking
 - [winner.md](winner.md): ranking and reward broadcast

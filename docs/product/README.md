@@ -20,3 +20,4 @@ Define player-facing behavior for point categories, skills, block breaking, menu
 - [menu/README.md](menu/README.md): inventory menus and interaction policy
 - [scoreboard/README.md](scoreboard/README.md): sidebar layout and lifecycle
 - [event/README.md](event/README.md): timer and winner determination
+- [effects/README.md](effects/README.md): potion effect contracts
