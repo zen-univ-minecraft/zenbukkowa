@@ -93,8 +93,7 @@ public class BreakService {
                     && block.getY() == centerBlock.getY()
                     && block.getZ() == centerBlock.getZ();
             if (!isCenter) {
-                BlockBreakEvent testEvent = new BlockBreakEvent(block, player);
-                if (testEvent.isCancelled()) {
+                if (!callBreakEvent(block, player)) {
                     continue;
                 }
                 if (!player.getGameMode().equals(GameMode.CREATIVE)) {
@@ -129,8 +128,7 @@ public class BreakService {
                     pointService.addPoints(player.getUniqueId(), cat, points, 1);
                 }
             }
-            BlockBreakEvent testEvent = new BlockBreakEvent(below, player);
-            if (testEvent.isCancelled()) {
+            if (!callBreakEvent(below, player)) {
                 y--;
                 continue;
             }
@@ -166,6 +164,22 @@ public class BreakService {
             value = (int) (value * (1 + voidBonus));
         }
         return value;
+    }
+
+    private static final ThreadLocal<Boolean> IN_BREAK = ThreadLocal.withInitial(() -> false);
+
+    private boolean callBreakEvent(Block block, Player player) {
+        if (IN_BREAK.get()) {
+            return true;
+        }
+        BlockBreakEvent event = new BlockBreakEvent(block, player);
+        IN_BREAK.set(true);
+        try {
+            org.bukkit.Bukkit.getPluginManager().callEvent(event);
+        } finally {
+            IN_BREAK.set(false);
+        }
+        return !event.isCancelled();
     }
 
     private boolean isVoidWorld(World world) {
