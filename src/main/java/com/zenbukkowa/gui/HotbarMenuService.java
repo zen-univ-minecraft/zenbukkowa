@@ -1,5 +1,6 @@
 package com.zenbukkowa.gui;
 
+import com.zenbukkowa.domain.LocaleService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,12 +12,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class HotbarMenuService {
     private final JavaPlugin plugin;
     private final MenuService menuService;
+    private final LocaleService localeService;
     private static final int SLOT = 8;
     private static final ItemStack TOKEN = createToken();
 
-    public HotbarMenuService(JavaPlugin plugin, MenuService menuService) {
+    public HotbarMenuService(JavaPlugin plugin, MenuService menuService, LocaleService localeService) {
         this.plugin = plugin;
         this.menuService = menuService;
+        this.localeService = localeService;
         startPeriodicEnforcement();
     }
 
@@ -25,9 +28,7 @@ public class HotbarMenuService {
     }
 
     public void installIfMissing(Player player) {
-        if (!isToken(player.getInventory().getItem(SLOT))) {
-            install(player);
-        }
+        if (!isToken(player.getInventory().getItem(SLOT))) install(player);
     }
 
     public void installDelayed(Player player) {
@@ -35,9 +36,7 @@ public class HotbarMenuService {
     }
 
     public boolean isToken(ItemStack item) {
-        if (item == null || item.getType() != Material.NETHER_STAR) {
-            return false;
-        }
+        if (item == null || item.getType() != Material.NETHER_STAR) return false;
         ItemMeta meta = item.getItemMeta();
         return meta != null && (ChatColor.RESET + "Menu").equals(meta.getDisplayName());
     }
@@ -47,14 +46,12 @@ public class HotbarMenuService {
     }
 
     public void openMenu(Player player) {
-        RootMenu.open(player, menuService);
+        RootMenu.open(player, menuService, localeService);
     }
 
     private void startPeriodicEnforcement() {
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                installIfMissing(player);
-            }
+            for (Player player : Bukkit.getOnlinePlayers()) installIfMissing(player);
         }, 100, 100);
     }
 
