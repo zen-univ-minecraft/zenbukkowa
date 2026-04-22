@@ -14,7 +14,7 @@
 ## Dependency Rules
 
 1. `domain` does not depend on Bukkit APIs.
-2. `command`, `gui`, `break`, `scoreboard`, `structure` depend on `domain` interfaces.
+2. `command`, `gui`, `breaker`, `scoreboard`, `structure` depend on `domain` interfaces.
 3. `persistence` implements repository interfaces owned by `domain`.
 4. `plugin` performs composition root responsibilities only.
 
