@@ -44,6 +44,11 @@ public class EventService {
         return endTimestamp != null;
     }
 
+    public void reset() {
+        startTimestamp = null;
+        endTimestamp = null;
+    }
+
     public int elapsedSeconds() {
         if (startTimestamp == null) {
             return 0;

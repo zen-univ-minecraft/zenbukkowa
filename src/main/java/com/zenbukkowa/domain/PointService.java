@@ -84,6 +84,33 @@ public class PointService {
                 .collect(Collectors.toList());
     }
 
+    public void resetPlayer(UUID uuid) {
+        try {
+            playerDao.deleteProgress(uuid);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        cache.remove(uuid);
+        if (scoreboardService != null) {
+            org.bukkit.entity.Player player = org.bukkit.Bukkit.getPlayer(uuid);
+            if (player != null) {
+                scoreboardService.updatePlayer(player);
+            }
+        }
+    }
+
+    public void resetAll() {
+        try {
+            playerDao.deleteAllProgress();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        cache.clear();
+        if (scoreboardService != null) {
+            scoreboardService.updateAll();
+        }
+    }
+
     public void unload(UUID uuid) {
         cache.remove(uuid);
     }

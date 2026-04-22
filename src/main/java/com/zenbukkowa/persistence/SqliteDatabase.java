@@ -64,6 +64,12 @@ public class SqliteDatabase {
                     timestamp INTEGER NOT NULL
                 )
                 """);
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS player_settings (
+                    uuid TEXT PRIMARY KEY,
+                    locale TEXT NOT NULL DEFAULT 'en'
+                )
+                """);
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_break_log_uuid ON break_log(uuid)");
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_break_log_timestamp ON break_log(timestamp)");
         }
@@ -75,10 +81,7 @@ public class SqliteDatabase {
 
     public void close() {
         try {
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (SQLException ignored) {
-        }
+            if (connection != null) connection.close();
+        } catch (SQLException ignored) {}
     }
 }

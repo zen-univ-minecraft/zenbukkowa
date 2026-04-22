@@ -12,24 +12,58 @@ public class EffectService {
     }
 
     public void applyAll(Player player) {
-        applyHaste(player);
+        int haste = Math.max(skillService.haste(player.getUniqueId()), skillService.efficiency(player.getUniqueId()));
+        applyOrRemove(player, PotionEffectType.HASTE, haste);
         applyTideBreaker(player);
-    }
-
-    public void applyHaste(Player player) {
-        int haste = skillService.haste(player.getUniqueId());
-        if (haste > 0) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 400, haste - 1, true, false, true));
-        } else {
-            player.removePotionEffect(PotionEffectType.HASTE);
-        }
+        applyNightVision(player);
+        applyFireResistance(player);
+        applyFrostWalker(player);
+        applyConduitAura(player);
+        applyVoidWalk(player);
     }
 
     public void applyTideBreaker(Player player) {
-        boolean hasTide = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.TIDE_BREAKER);
-        if (hasTide && player.isInWater()) {
+        boolean has = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.TIDE_BREAKER);
+        if (has && player.isInWater()) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 400, 0, true, false, true));
             player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 400, 0, true, false, true));
+        }
+    }
+
+    public void applyNightVision(Player player) {
+        boolean has = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.NIGHT_VISION);
+        applyOrRemove(player, PotionEffectType.NIGHT_VISION, has ? 1 : 0);
+    }
+
+    public void applyFireResistance(Player player) {
+        boolean has = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.FIRE_RESISTANCE);
+        applyOrRemove(player, PotionEffectType.FIRE_RESISTANCE, has ? 1 : 0);
+    }
+
+    public void applyFrostWalker(Player player) {
+        boolean has = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.FROST_WALKER);
+        applyOrRemove(player, PotionEffectType.SLOW_FALLING, has ? 1 : 0);
+    }
+
+    public void applyConduitAura(Player player) {
+        int tier = skillService.getSkills(player.getUniqueId()).tier(SkillType.CONDUIT_AURA);
+        if (tier > 0 && player.isInWater()) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 400, tier - 1, true, false, true));
+        }
+    }
+
+    public void applyVoidWalk(Player player) {
+        int tier = skillService.getSkills(player.getUniqueId()).tier(SkillType.VOID_WALK);
+        if (tier > 0) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 400, Math.min(tier - 1, 2), true, false, true));
+        }
+    }
+
+    private void applyOrRemove(Player player, PotionEffectType type, int level) {
+        if (level > 0) {
+            player.addPotionEffect(new PotionEffect(type, 400, level - 1, true, false, true));
+        } else {
+            player.removePotionEffect(type);
         }
     }
 }

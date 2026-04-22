@@ -90,4 +90,32 @@ public class PlayerDao {
             ps.executeUpdate();
         }
     }
+
+    public void deleteProgress(UUID uuid) throws SQLException {
+        String sql = "DELETE FROM player_progress WHERE uuid = ?";
+        try (PreparedStatement ps = db.connection().prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        }
+    }
+
+    public void deleteSkills(UUID uuid) throws SQLException {
+        String sql = "DELETE FROM player_skills WHERE uuid = ?";
+        try (PreparedStatement ps = db.connection().prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        }
+    }
+
+    public void deleteAllProgress() throws SQLException {
+        try (Statement stmt = db.connection().createStatement()) {
+            stmt.execute("DELETE FROM player_progress");
+        }
+    }
+
+    public void deleteAllSkills() throws SQLException {
+        try (Statement stmt = db.connection().createStatement()) {
+            stmt.execute("DELETE FROM player_skills");
+        }
+    }
 }
