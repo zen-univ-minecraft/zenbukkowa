@@ -99,6 +99,7 @@ public class MenuListener implements Listener {
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             player.sendMessage(ChatColor.GREEN + "Purchased " + skill.name() + " tier " + (current + 1));
             effectService.applyAll(player);
+            scoreboardService.updateAll();
             SkillsMenu.open(player, menuService, skillService, pointService);
         } catch (IllegalStateException e) {
             player.sendMessage(ChatColor.RED + e.getMessage());
