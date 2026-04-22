@@ -1,0 +1,160 @@
+menu:
+  root_title: "zenbukkowa"
+  skills_title: "スキル"
+  stats_title: "統計"
+  leaderboard_title: "ランキング"
+  settings_title: "設定"
+  help_title: "ヘルプ"
+  close: "閉じる"
+  back: "戻る"
+  next_page: "次へ"
+  prev_page: "前へ"
+  scoreboard_on: "スコアボード: ON"
+  scoreboard_off: "スコアボード: OFF"
+  language: "言語"
+  current_language: "現在: 日本語"
+  event_start: "イベント開始"
+  event_end: "イベント終了"
+  event_controls: "イベント操作"
+  operator_only: "管理者専用"
+  skills_button: "スキル"
+  stats_button: "統計"
+  leaderboard_button: "ランキング"
+  settings_button: "設定"
+  help_button: "ヘルプ"
+  help_rules: "ルール"
+  help_points: "ポイント"
+  help_skills: "スキル"
+  help_breaking: "破壊"
+  help_structures: "構造物"
+  help_commands: "コマンド"
+  scroll_up: "上にスクロール"
+  scroll_down: "下にスクロール"
+  reset_all: "全データリセット"
+  reset_done: "全プレイヤーデータをリセットしました。"
+  purchase_success: "{skill} ティア {tier} を購入"
+  purchase_maxed: "最大ティアです"
+  purchase_fail: "{skill} を購入できません"
+  insufficient_points: "{category} ポイントが不足"
+  missing_prerequisite: "前提スキルが未解除"
+  event_started: "イベント開始！"
+  event_ended: "イベント終了！"
+
+help:
+  rules:
+    - "&6=== ルール ==="
+    - "&e1. ブロックを壊して5種類のポイントを獲得"
+    - "&e2. ポイントを消費してスキルを解放"
+    - "&e3. 最初のティアは50ポイント"
+    - "&e4. 構造物を破壊して大量ボーナス"
+    - "&e5. 合計スコアが最も高い人が勝利"
+    - "&e6. スキル購入は返金不可"
+    - "&e7. 容器類は保護対象"
+  points:
+    - "&6=== ポイントシステム ==="
+    - "&eブロックを壊してカテゴリポイントを獲得"
+    - "&eTERRA: 石、土、砂、砂利"
+    - "&eMINERAL: 鉱石、古代の残骸"
+    - "&eORGANIC: 原木、葉、作物"
+    - "&eAQUATIC: プリズマリン、サンゴ、スポンジ"
+    - "&eVOID: 黒曜石、ネザーラック、エンドストーン"
+    - "&e基本ブロック=1pt、鉱石=5pt、古代の残骸=20pt"
+  skills:
+    - "&6=== スキル ==="
+    - "&eカテゴリポイントを消費してスキルを解放"
+    - "&eスキルにはティアと前提条件がある"
+    - "&eパスを構築: TERRA面 -> MINERAL加速 -> etc."
+    - "&eスキルメニューですべての解放条件を確認"
+    - "&e上下にスクロールしてツリーを探索"
+  breaking:
+    - "&6=== 範囲破壊 ==="
+    - "&e1ブロックを壊すと範囲が破壊される"
+    - "&e半径=水平広がり、深度=垂直層"
+    - "&e最大範囲=ティア5で9x9x9"
+    - "&e容器類と岩盤は保護される"
+  structures:
+    - "&6=== 構造物 ==="
+    - "&e海底神殿または森の洋館の80%を破壊"
+    - "&e+5000ポイントとサーバー通知を獲得"
+    - "&e各構造物のボーナスは初回のみ"
+  tips:
+    - "&6=== ヒント ==="
+    - "&e1. カテゴリをバランスよく掘ると解放が早い"
+    - "&e2. 深く掘るとVOIDシフォンのボーナス"
+    - "&e3. タイドブレイカーで海底神殿を破壊"
+    - "&e4. ヘイストオーラは序盤に買うと良い"
+    - "&e5. スコアボードで進捗を確認"
+  commands:
+    - "&6=== コマンド ==="
+    - "&e/zenbukkowa start - イベント開始(管理者)"
+    - "&e/zenbukkowa end - イベント終了(管理者)"
+    - "&e/zenbukkowa status - イベント状態確認"
+    - "&e/zenbukkowa reset <player> - プレイヤーリセット(管理者)"
+    - "&e/zenbukkowa resetall - 全プレイヤーリセット(管理者)"
+    - "&eホットバー8番のネザースターをクリック"
+
+skill:
+  area_radius:
+    description: "水平破壊範囲を拡大"
+  area_depth:
+    description: "垂直破壊深度を拡大"
+  pillar_break:
+    description: "対象の上のブロックも破壊"
+  efficiency:
+    description: "採掘速度上昇（採掘加速）"
+  gravity_well:
+    description: "砂/砂利が即落下"
+  terra_blessing:
+    description: "TERRAポイントボーナス"
+  haste_aura:
+    description: "常時採掘加速"
+  fortune_touch:
+    description: "ポイント2倍チャンス"
+  vein_miner:
+    description: "鉱石から追加ポイント"
+  magnet:
+    description: "近くのドロップを自動回収"
+  crystal_vision:
+    description: "近くの鉱石を強調表示"
+  leaf_consume:
+    description: "葉を範囲破壊に含める"
+  root_raze:
+    description: "下の原木も破壊"
+  sapling_replant:
+    description: "伐採後に苗木を自動植林"
+  bonemeal_aura:
+    description: "作物に自動骨粉"
+  nature_touch:
+    description: "ORGANICポイントボーナス"
+  salvage:
+    description: "耐久値消費を軽減"
+  tide_breaker:
+    description: "水中で水中呼吸"
+  frost_walker:
+    description: "水面を歩く"
+  conduit_aura:
+    description: "水中でコンジットパワー"
+  deep_dive:
+    description: "水中でAQUATICポイントボーナス"
+  void_siphon:
+    description: "次元でポイントボーナス"
+  structure_sense:
+    description: "構造物ブロックを強調"
+  night_vision:
+    description: "常時暗視"
+  fire_resistance:
+    description: "常時火炎耐性"
+  void_walk:
+    description: "落下無効、跳躍力上昇"
+
+category:
+  terra:
+    description: "土と石"
+  mineral:
+    description: "鉱石と結晶"
+  organic:
+    description: "植物と木材"
+  aquatic:
+    description: "海と水"
+  void:
+    description: "ネザー、エンド、深層"

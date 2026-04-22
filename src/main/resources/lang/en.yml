@@ -1,0 +1,160 @@
+menu:
+  root_title: "zenbukkowa"
+  skills_title: "Skills"
+  stats_title: "Your Stats"
+  leaderboard_title: "Leaderboard"
+  settings_title: "Settings"
+  help_title: "Help"
+  close: "Close"
+  back: "Back"
+  next_page: "Next Page"
+  prev_page: "Previous Page"
+  scoreboard_on: "Scoreboard: ON"
+  scoreboard_off: "Scoreboard: OFF"
+  language: "Language"
+  current_language: "Current: English"
+  event_start: "Start Event"
+  event_end: "End Event"
+  event_controls: "Event Controls"
+  operator_only: "Operator only"
+  skills_button: "Skills"
+  stats_button: "Stats"
+  leaderboard_button: "Leaderboard"
+  settings_button: "Settings"
+  help_button: "Help"
+  help_rules: "Rules"
+  help_points: "Points"
+  help_skills: "Skills"
+  help_breaking: "Breaking"
+  help_structures: "Structures"
+  help_commands: "Commands"
+  scroll_up: "Scroll Up"
+  scroll_down: "Scroll Down"
+  reset_all: "Reset All Data"
+  reset_done: "All player data reset."
+  purchase_success: "Purchased {skill} tier {tier}"
+  purchase_maxed: "Already maxed"
+  purchase_fail: "Cannot purchase {skill}"
+  insufficient_points: "Insufficient {category} Points"
+  missing_prerequisite: "Missing prerequisite"
+  event_started: "Event started!"
+  event_ended: "Event ended!"
+
+help:
+  rules:
+    - "&6=== Rules ==="
+    - "&e1. Break blocks to earn points in 5 categories."
+    - "&e2. Spend points to unlock skills."
+    - "&e3. First tier costs 50 points."
+    - "&e4. Destroy structures for huge bonuses."
+    - "&e5. Highest total score wins."
+    - "&e6. No refunds on skill purchases."
+    - "&e7. Containers are protected."
+  points:
+    - "&6=== Points System ==="
+    - "&eBreak blocks to earn category points."
+    - "&eTERRA: stone, dirt, sand, gravel"
+    - "&eMINERAL: ores, ancient debris"
+    - "&eORGANIC: logs, leaves, crops"
+    - "&eAQUATIC: prismarine, coral, sponge"
+    - "&eVOID: obsidian, netherrack, end stone"
+    - "&eBase blocks = 1 pt, ores = 5 pts, ancient debris = 20 pts"
+  skills:
+    - "&6=== Skills ==="
+    - "&eSpend category points to unlock skills."
+    - "&eSkills have tiers and prerequisites."
+    - "&eBuild a path: TERRA area -> MINERAL haste -> etc."
+    - "&eOpen Skills menu to see all unlocks."
+    - "&eScroll up and down to explore the tree."
+  breaking:
+    - "&6=== Area Breaking ==="
+    - "&eBreaking one block breaks an area."
+    - "&eRadius = horizontal spread. Depth = vertical layers."
+    - "&eMax area = 9x9x9 at tier 5."
+    - "&eContainers and bedrock are protected."
+  structures:
+    - "&6=== Structures ==="
+    - "&eDestroy 80% of an Ocean Monument or Woodland Mansion."
+    - "&eEarn +5000 points and a server broadcast."
+    - "&eOnly the first player to destroy each gets the bonus."
+  tips:
+    - "&6=== Tips ==="
+    - "&e1. Balance your categories for faster skill unlocks."
+    - "&e2. Mine deep for VOID bonus with Void Siphon."
+    - "&e3. Use Tide Breaker to clear Ocean Monuments."
+    - "&e4. Buy Haste Aura early for faster mining."
+    - "&e5. Check the scoreboard to track progress."
+  commands:
+    - "&6=== Commands ==="
+    - "&e/zenbukkowa start - start event (op)"
+    - "&e/zenbukkowa end - end event (op)"
+    - "&e/zenbukkowa status - check event status"
+    - "&e/zenbukkowa reset <player> - reset player (op)"
+    - "&e/zenbukkowa resetall - reset all players (op)"
+    - "&eClick the Nether Star in hotbar slot 8 for menus."
+
+skill:
+  area_radius:
+    description: "Expands horizontal break area"
+  area_depth:
+    description: "Expands vertical break depth"
+  pillar_break:
+    description: "Breaks blocks above target"
+  efficiency:
+    description: "Mining speed bonus (Haste)"
+  gravity_well:
+    description: "Sand/gravel falls instantly"
+  terra_blessing:
+    description: "Bonus TERRA points"
+  haste_aura:
+    description: "Permanent Haste effect"
+  fortune_touch:
+    description: "Chance to double points"
+  vein_miner:
+    description: "Extra points from ores"
+  magnet:
+    description: "Auto-collect nearby drops"
+  crystal_vision:
+    description: "Highlights nearby ores"
+  leaf_consume:
+    description: "Leaves included in breaks"
+  root_raze:
+    description: "Breaks logs below target"
+  sapling_replant:
+    description: "Auto-replant after tree break"
+  bonemeal_aura:
+    description: "Auto-bonemeal crops"
+  nature_touch:
+    description: "Bonus ORGANIC points"
+  salvage:
+    description: "Chance to save durability"
+  tide_breaker:
+    description: "Water breathing under water"
+  frost_walker:
+    description: "Walk on water"
+  conduit_aura:
+    description: "Conduit Power in water"
+  deep_dive:
+    description: "Bonus AQUATIC points underwater"
+  void_siphon:
+    description: "Bonus points in dimensions"
+  structure_sense:
+    description: "Highlights structure blocks"
+  night_vision:
+    description: "Permanent Night Vision"
+  fire_resistance:
+    description: "Permanent Fire Resistance"
+  void_walk:
+    description: "No fall damage, jump boost"
+
+category:
+  terra:
+    description: "Earth and stone"
+  mineral:
+    description: "Ores and crystals"
+  organic:
+    description: "Flora and wood"
+  aquatic:
+    description: "Ocean and water"
+  void:
+    description: "Nether, End, and deep dark"

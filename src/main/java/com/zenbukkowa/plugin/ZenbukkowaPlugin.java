@@ -3,23 +3,19 @@ package com.zenbukkowa.plugin;
 import com.zenbukkowa.breaker.AreaBreakListener;
 import com.zenbukkowa.breaker.AreaCalculator;
 import com.zenbukkowa.command.ZenbukkowaCommand;
-import com.zenbukkowa.domain.BreakService;
-import com.zenbukkowa.domain.EventService;
-import com.zenbukkowa.domain.PointService;
-import com.zenbukkowa.domain.SkillService;
+import com.zenbukkowa.domain.*;
 import com.zenbukkowa.gui.HotbarMenuListener;
 import com.zenbukkowa.gui.HotbarMenuService;
 import com.zenbukkowa.gui.MenuListener;
 import com.zenbukkowa.gui.MenuService;
 import com.zenbukkowa.persistence.PlayerDao;
+import com.zenbukkowa.persistence.SettingsDao;
 import com.zenbukkowa.persistence.SqliteDatabase;
 import com.zenbukkowa.persistence.StructureDao;
 import com.zenbukkowa.scoreboard.ScoreboardListener;
 import com.zenbukkowa.scoreboard.ScoreboardService;
 import com.zenbukkowa.structure.StructureBonusListener;
 import com.zenbukkowa.structure.StructureService;
-import com.zenbukkowa.domain.EffectService;
-import com.zenbukkowa.domain.EffectListener;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,6 +40,9 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
 
             PlayerDao playerDao = new PlayerDao(database);
             StructureDao structureDao = new StructureDao(database);
+            SettingsDao settingsDao = new SettingsDao(database);
+            settingsDao.initialize();
+
             PointService pointService = new PointService(playerDao);
             SkillService skillService = new SkillService(playerDao);
             AreaCalculator areaCalculator = new AreaCalculator();
@@ -56,8 +55,9 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             EventService eventService = new EventService(pointService, this);
             ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
             pointService.setScoreboardService(scoreboardService);
+            LocaleService localeService = new LocaleService(this, settingsDao, config.getString("locale.default", "en"));
             MenuService menuService = new MenuService();
-            HotbarMenuService hotbarMenuService = new HotbarMenuService(this, menuService);
+            HotbarMenuService hotbarMenuService = new HotbarMenuService(this, menuService, localeService);
             StructureService structureService = new StructureService(structureDao, pointService);
 
             AreaBreakListener areaBreakListener = new AreaBreakListener(breakService);
@@ -65,21 +65,26 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             StructureBonusListener structureBonusListener = new StructureBonusListener(structureService);
             EffectService effectService = new EffectService(skillService);
             EffectListener effectListener = new EffectListener(effectService, scheduler, this);
-            MenuListener menuListener = new MenuListener(menuService, skillService, pointService, scoreboardService, effectService);
+            MenuListener menuListener = new MenuListener(menuService, skillService, pointService,
+                    scoreboardService, effectService, eventService, localeService);
             HotbarMenuListener hotbarMenuListener = new HotbarMenuListener(hotbarMenuService);
 
             services = new Services(
                     pointService, skillService, breakService, eventService,
                     scoreboardService, menuService, hotbarMenuService, structureService,
+                    localeService, settingsDao,
                     areaBreakListener, scoreboardListener, structureBonusListener,
                     playerDao, structureDao, database, scheduler);
 
-            registerListeners(areaBreakListener, scoreboardListener, structureBonusListener, menuListener, hotbarMenuListener, effectListener);
-            registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService));
+            VoidWalkListener voidWalkListener = new VoidWalkListener(skillService);
+            registerListeners(areaBreakListener, scoreboardListener, structureBonusListener,
+                    menuListener, hotbarMenuListener, effectListener, voidWalkListener);
+            registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService, skillService));
 
             for (var online : getServer().getOnlinePlayers()) {
                 hotbarMenuService.install(online);
                 scoreboardService.addPlayer(online);
+                effectService.applyAll(online);
             }
 
             getLogger().info("zenbukkowa enabled");

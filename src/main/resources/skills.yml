@@ -1,4 +1,5 @@
 skills:
+  # TERRA
   AREA_RADIUS:
     category: TERRA
     max-tier: 5
@@ -7,6 +8,23 @@ skills:
     category: TERRA
     max-tier: 5
     tiers: [1, 3, 5, 7, 9]
+  PILLAR_BREAK:
+    category: TERRA
+    max-tier: 3
+    tiers: [1, 2, 3]
+  EFFICIENCY:
+    category: TERRA
+    max-tier: 5
+    tiers: [1, 2, 3, 4, 5]
+  GRAVITY_WELL:
+    category: TERRA
+    max-tier: 1
+    tiers: [1]
+  TERRA_BLESSING:
+    category: TERRA
+    max-tier: 3
+    tiers: [1, 2, 3]
+  # MINERAL
   HASTE_AURA:
     category: MINERAL
     max-tier: 5
@@ -15,6 +33,19 @@ skills:
     category: MINERAL
     max-tier: 3
     tiers: [1, 2, 3]
+  VEIN_MINER:
+    category: MINERAL
+    max-tier: 3
+    tiers: [1, 2, 3]
+  MAGNET:
+    category: MINERAL
+    max-tier: 1
+    tiers: [1]
+  CRYSTAL_VISION:
+    category: MINERAL
+    max-tier: 3
+    tiers: [1, 2, 3]
+  # ORGANIC
   LEAF_CONSUME:
     category: ORGANIC
     max-tier: 1
@@ -23,6 +54,19 @@ skills:
     category: ORGANIC
     max-tier: 1
     tiers: [1]
+  SAPLING_REPLANT:
+    category: ORGANIC
+    max-tier: 1
+    tiers: [1]
+  BONEMEAL_AURA:
+    category: ORGANIC
+    max-tier: 3
+    tiers: [1, 2, 3]
+  NATURE_TOUCH:
+    category: ORGANIC
+    max-tier: 3
+    tiers: [1, 2, 3]
+  # AQUATIC
   SALVAGE:
     category: AQUATIC
     max-tier: 3
@@ -31,6 +75,19 @@ skills:
     category: AQUATIC
     max-tier: 1
     tiers: [1]
+  FROST_WALKER:
+    category: AQUATIC
+    max-tier: 1
+    tiers: [1]
+  CONDUIT_AURA:
+    category: AQUATIC
+    max-tier: 3
+    tiers: [1, 2, 3]
+  DEEP_DIVE:
+    category: AQUATIC
+    max-tier: 3
+    tiers: [1, 2, 3]
+  # VOID
   VOID_SIPHON:
     category: VOID
     max-tier: 3
@@ -39,3 +96,15 @@ skills:
     category: VOID
     max-tier: 1
     tiers: [1]
+  NIGHT_VISION:
+    category: VOID
+    max-tier: 1
+    tiers: [1]
+  FIRE_RESISTANCE:
+    category: VOID
+    max-tier: 1
+    tiers: [1]
+  VOID_WALK:
+    category: VOID
+    max-tier: 3
+    tiers: [1, 2, 3]
