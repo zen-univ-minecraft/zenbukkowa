@@ -6,22 +6,26 @@ Display personal stats and server leaderboard.
 
 ## Personal Stats Page
 
-- 27 slots (3 rows).
-- Slot 10: `Total Points` (nether star) with lore showing total.
-- Slot 12: `TERRA` (stone) with lore showing TERRA points.
-- Slot 13: `MINERAL` (iron ore) with lore showing MINERAL points.
-- Slot 14: `ORGANIC` (oak log) with lore showing ORGANIC points.
-- Slot 15: `AQUATIC` (prismarine) with lore showing AQUATIC points.
-- Slot 16: `VOID` (obsidian) with lore showing VOID points.
-- Slot 22: `Blocks Broken` (diamond pickaxe) with lore showing count.
+- 54 slots (6 rows).
+- Row 2:
+  - Slot 10: `Total Points` (nether star)
+  - Slot 12: `TERRA` (stone)
+  - Slot 13: `MINERAL` (iron ore)
+  - Slot 14: `ORGANIC` (oak log)
+  - Slot 15: `AQUATIC` (prismarine)
+  - Slot 16: `VOID` (obsidian)
+- Row 3:
+  - Slot 22: `Blocks Broken` (diamond pickaxe)
+- Row 6:
+  - Slot 49: `Back` (arrow) -> Root menu
 
 ## Leaderboard Page
 
-- 27 slots (3 rows).
-- Top 9 players shown as heads or player icons.
-- Slot shows rank, name, and total points.
-- Slot 22: `Back to Personal` (arrow).
+- 54 slots (6 rows).
+- Top 27 players shown as player heads in rows 1-3 (slots 0-26).
+- Row 6:
+  - Slot 49: `Back` (arrow) -> Stats menu
 
 ## Navigation
 
-- Slot 18: `Back` (arrow) -> Root menu.
+- Back returns to Root (stats) or Stats (leaderboard).
