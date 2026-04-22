@@ -53,9 +53,8 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     config.getInt("points.ore-multiplier", 5),
                     config.getInt("points.ancient-debris-multiplier", 20));
             SchedulerBridge scheduler = new PaperSchedulerBridge();
-            EventService eventService = new EventService(pointService, scheduler, this,
-                    config.getInt("event.duration-minutes", 120));
-            ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, scheduler, this);
+            EventService eventService = new EventService(pointService, this);
+            ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
             MenuService menuService = new MenuService();
             HotbarMenuService hotbarMenuService = new HotbarMenuService(this, menuService);
             StructureService structureService = new StructureService(structureDao, pointService);
@@ -75,7 +74,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     playerDao, structureDao, database, scheduler);
 
             registerListeners(areaBreakListener, scoreboardListener, structureBonusListener, menuListener, hotbarMenuListener, effectListener);
-            registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService, scoreboardService));
+            registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService));
 
             for (var online : getServer().getOnlinePlayers()) {
                 hotbarMenuService.install(online);

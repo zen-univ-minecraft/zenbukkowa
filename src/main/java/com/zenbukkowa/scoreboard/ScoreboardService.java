@@ -1,5 +1,6 @@
 package com.zenbukkowa.scoreboard;
 
+import com.zenbukkowa.domain.EventService;
 import com.zenbukkowa.domain.PointCategory;
 import com.zenbukkowa.domain.PointService;
 import com.zenbukkowa.domain.SkillService;
@@ -15,34 +16,20 @@ import java.util.*;
 public class ScoreboardService {
     private final PointService pointService;
     private final SkillService skillService;
+    private final EventService eventService;
     private final SchedulerBridge scheduler;
     private final JavaPlugin plugin;
     private final Map<UUID, Scoreboard> boards = new HashMap<>();
     private final Map<UUID, Boolean> enabled = new HashMap<>();
-    private int remainingSeconds = -1;
 
     public ScoreboardService(PointService pointService, SkillService skillService,
-                             SchedulerBridge scheduler, JavaPlugin plugin) {
+                             EventService eventService, SchedulerBridge scheduler, JavaPlugin plugin) {
         this.pointService = pointService;
         this.skillService = skillService;
+        this.eventService = eventService;
         this.scheduler = scheduler;
         this.plugin = plugin;
-    }
-
-    private boolean timerRunning = false;
-
-    public void startTimer(int durationSeconds) {
-        if (timerRunning) {
-            return;
-        }
-        timerRunning = true;
-        this.remainingSeconds = durationSeconds;
         scheduler.runTimer(plugin, this::tick, 0, 20);
-    }
-
-    public void stopTimer() {
-        this.remainingSeconds = -1;
-        updateAll();
     }
 
     public void setEnabled(UUID uuid, boolean value) {
@@ -67,9 +54,6 @@ public class ScoreboardService {
     }
 
     public void tick() {
-        if (remainingSeconds > 0) {
-            remainingSeconds--;
-        }
         updateAll();
     }
 
@@ -79,7 +63,7 @@ public class ScoreboardService {
         }
     }
 
-    private void updatePlayer(Player player) {
+    public void updatePlayer(Player player) {
         if (!isEnabled(player.getUniqueId())) {
             return;
         }
@@ -132,15 +116,16 @@ public class ScoreboardService {
     }
 
     private String formatTime() {
-        if (remainingSeconds < 0) {
+        if (!eventService.isRunning() && !eventService.isFinished()) {
             return "Waiting";
         }
-        if (remainingSeconds == 0) {
+        int seconds = eventService.elapsedSeconds();
+        if (eventService.isFinished()) {
             return "Finished";
         }
-        int h = remainingSeconds / 3600;
-        int m = (remainingSeconds % 3600) / 60;
-        int s = remainingSeconds % 60;
+        int h = seconds / 3600;
+        int m = (seconds % 3600) / 60;
+        int s = seconds % 60;
         return String.format("%02d:%02d:%02d", h, m, s);
     }
 

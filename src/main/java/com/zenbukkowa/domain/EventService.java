@@ -1,6 +1,5 @@
 package com.zenbukkowa.domain;
 
-import com.zenbukkowa.plugin.SchedulerBridge;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,52 +11,45 @@ import java.util.UUID;
 
 public class EventService {
     private final PointService pointService;
-    private final SchedulerBridge scheduler;
     private final JavaPlugin plugin;
-    private final int durationSeconds;
-    private boolean running = false;
-    private boolean finished = false;
+    private Long startTimestamp = null;
+    private Long endTimestamp = null;
 
-    public EventService(PointService pointService, SchedulerBridge scheduler,
-                        JavaPlugin plugin, int durationMinutes) {
+    public EventService(PointService pointService, JavaPlugin plugin) {
         this.pointService = pointService;
-        this.scheduler = scheduler;
         this.plugin = plugin;
-        this.durationSeconds = durationMinutes * 60;
     }
 
     public void start() {
-        if (running || finished) {
+        if (startTimestamp != null) {
             return;
         }
-        running = true;
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Event started! Duration: " + formatTime(durationSeconds));
-        scheduler.runTimer(plugin, this::tick, 0, 20);
-        scheduler.runLater(plugin, this::end, durationSeconds * 20L);
+        startTimestamp = System.currentTimeMillis();
+        Bukkit.broadcastMessage(ChatColor.GREEN + "Event started!");
     }
 
     public void end() {
-        if (!running) {
+        if (startTimestamp == null || endTimestamp != null) {
             return;
         }
-        running = false;
-        finished = true;
+        endTimestamp = System.currentTimeMillis();
         announceWinner();
     }
 
-    private void tick() {
-    }
-
     public boolean isRunning() {
-        return running;
+        return startTimestamp != null && endTimestamp == null;
     }
 
     public boolean isFinished() {
-        return finished;
+        return endTimestamp != null;
     }
 
-    public int remainingSeconds() {
-        return running ? durationSeconds : 0;
+    public int elapsedSeconds() {
+        if (startTimestamp == null) {
+            return 0;
+        }
+        long end = endTimestamp != null ? endTimestamp : System.currentTimeMillis();
+        return (int) ((end - startTimestamp) / 1000);
     }
 
     private void announceWinner() {
@@ -84,13 +76,6 @@ public class EventService {
             winnerPlayer.sendTitle(ChatColor.GOLD + "Winner: " + winnerName,
                     ChatColor.YELLOW + format(winner.getValue()) + " Points", 10, 100, 20);
         }
-    }
-
-    private String formatTime(int seconds) {
-        int h = seconds / 3600;
-        int m = (seconds % 3600) / 60;
-        int s = seconds % 60;
-        return String.format("%02d:%02d:%02d", h, m, s);
     }
 
     private String format(long n) {
