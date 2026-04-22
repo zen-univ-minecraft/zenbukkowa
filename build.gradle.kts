@@ -19,9 +19,11 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     implementation("org.xerial:sqlite-jdbc:3.49.1.0")
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.mockito:mockito-core:5.14.2")
 }
 
 tasks.test {

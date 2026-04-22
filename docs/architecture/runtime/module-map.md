@@ -6,7 +6,7 @@
 - `com.zenbukkowa.domain`: pure gameplay services, models, and policies
 - `com.zenbukkowa.persistence`: SQLite repositories
 - `com.zenbukkowa.gui`: inventory menu orchestration
-- `com.zenbukkowa.break`: block break handling and area destruction
+- `com.zenbukkowa.breaker`: block break handling and area destruction
 - `com.zenbukkowa.scoreboard`: sidebar scoreboard management
 - `com.zenbukkowa.structure`: structure detection and bonuses
 - `com.zenbukkowa.command`: command handlers

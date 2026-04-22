@@ -6,7 +6,7 @@
 - `com.zenbukkowa.domain`
 - `com.zenbukkowa.persistence`
 - `com.zenbukkowa.gui`
-- `com.zenbukkowa.break`
+- `com.zenbukkowa.breaker`
 - `com.zenbukkowa.scoreboard`
 - `com.zenbukkowa.structure`
 - `com.zenbukkowa.command`
