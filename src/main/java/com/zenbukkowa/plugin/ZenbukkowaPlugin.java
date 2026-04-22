@@ -18,6 +18,8 @@ import com.zenbukkowa.scoreboard.ScoreboardListener;
 import com.zenbukkowa.scoreboard.ScoreboardService;
 import com.zenbukkowa.structure.StructureBonusListener;
 import com.zenbukkowa.structure.StructureService;
+import com.zenbukkowa.domain.EffectService;
+import com.zenbukkowa.domain.EffectListener;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,7 +63,9 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             AreaBreakListener areaBreakListener = new AreaBreakListener(breakService);
             ScoreboardListener scoreboardListener = new ScoreboardListener(scoreboardService);
             StructureBonusListener structureBonusListener = new StructureBonusListener(structureService);
-            MenuListener menuListener = new MenuListener(menuService, skillService, pointService, scoreboardService);
+            EffectService effectService = new EffectService(skillService);
+            EffectListener effectListener = new EffectListener(effectService, scheduler, this);
+            MenuListener menuListener = new MenuListener(menuService, skillService, pointService, scoreboardService, effectService);
             HotbarMenuListener hotbarMenuListener = new HotbarMenuListener(hotbarMenuService);
 
             services = new Services(
@@ -70,7 +74,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     areaBreakListener, scoreboardListener, structureBonusListener,
                     playerDao, structureDao, database, scheduler);
 
-            registerListeners(areaBreakListener, scoreboardListener, structureBonusListener, menuListener, hotbarMenuListener);
+            registerListeners(areaBreakListener, scoreboardListener, structureBonusListener, menuListener, hotbarMenuListener, effectListener);
             registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService));
 
             for (var online : getServer().getOnlinePlayers()) {

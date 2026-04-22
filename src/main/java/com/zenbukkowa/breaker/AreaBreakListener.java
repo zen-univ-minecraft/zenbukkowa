@@ -18,7 +18,6 @@ public class AreaBreakListener implements Listener {
         if (event.getPlayer().getInventory().getHeldItemSlot() == 8) {
             return;
         }
-        event.setCancelled(true);
         breakService.onPlayerBreak(event.getPlayer(), event.getBlock());
     }
 }

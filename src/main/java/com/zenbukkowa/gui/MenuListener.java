@@ -1,5 +1,6 @@
 package com.zenbukkowa.gui;
 
+import com.zenbukkowa.domain.EffectService;
 import com.zenbukkowa.domain.PointCategory;
 import com.zenbukkowa.domain.PointService;
 import com.zenbukkowa.domain.SkillService;
@@ -19,13 +20,16 @@ public class MenuListener implements Listener {
     private final SkillService skillService;
     private final PointService pointService;
     private final ScoreboardService scoreboardService;
+    private final EffectService effectService;
 
     public MenuListener(MenuService menuService, SkillService skillService,
-                        PointService pointService, ScoreboardService scoreboardService) {
+                        PointService pointService, ScoreboardService scoreboardService,
+                        EffectService effectService) {
         this.menuService = menuService;
         this.skillService = skillService;
         this.pointService = pointService;
         this.scoreboardService = scoreboardService;
+        this.effectService = effectService;
     }
 
     @EventHandler
@@ -94,6 +98,7 @@ public class MenuListener implements Listener {
             skillService.purchase(player.getUniqueId(), skill, current + 1);
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             player.sendMessage(ChatColor.GREEN + "Purchased " + skill.name() + " tier " + (current + 1));
+            effectService.applyAll(player);
             SkillsMenu.open(player, menuService, skillService, pointService);
         } catch (IllegalStateException e) {
             player.sendMessage(ChatColor.RED + e.getMessage());

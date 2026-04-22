@@ -4,13 +4,13 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 echo "=== compile ==="
-gradle compileJava
+./gradlew compileJava
 
 echo "=== test ==="
-gradle test
+./gradlew test
 
 echo "=== shadowJar ==="
-gradle shadowJar
+./gradlew shadowJar
 
 echo "=== line limits ==="
 python3 scripts/check_lines.py
