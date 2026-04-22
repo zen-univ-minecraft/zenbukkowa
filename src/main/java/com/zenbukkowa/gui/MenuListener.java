@@ -1,7 +1,6 @@
 package com.zenbukkowa.gui;
 
 import com.zenbukkowa.domain.EffectService;
-import com.zenbukkowa.domain.PointCategory;
 import com.zenbukkowa.domain.PointService;
 import com.zenbukkowa.domain.SkillService;
 import com.zenbukkowa.domain.SkillType;
@@ -42,16 +41,20 @@ public class MenuListener implements Listener {
             return;
         }
         event.setCancelled(true);
+        if (event.getClickedInventory() != event.getInventory()) {
+            return;
+        }
         ItemStack clicked = event.getCurrentItem();
         if (clicked == null || clicked.getType() == Material.GRAY_STAINED_GLASS_PANE) {
             return;
         }
+        int slot = event.getSlot();
 
         switch (open) {
-            case "root" -> handleRoot(player, clicked);
-            case "skills" -> handleSkills(player, clicked);
-            case "stats" -> handleStats(player, clicked);
-            case "leaderboard" -> handleLeaderboard(player, clicked);
+            case "root" -> handleRoot(player, slot);
+            case "skills" -> handleSkills(player, slot);
+            case "stats" -> handleStats(player, slot);
+            case "leaderboard" -> handleLeaderboard(player, slot);
         }
     }
 
@@ -62,12 +65,12 @@ public class MenuListener implements Listener {
         }
     }
 
-    private void handleRoot(Player player, ItemStack clicked) {
-        switch (clicked.getType()) {
-            case DIAMOND_PICKAXE -> SkillsMenu.open(player, menuService, skillService, pointService);
-            case BOOK -> StatsMenu.openPersonal(player, menuService, pointService);
-            case GOLD_INGOT -> StatsMenu.openLeaderboard(player, menuService, pointService);
-            case REDSTONE -> {
+    private void handleRoot(Player player, int slot) {
+        switch (slot) {
+            case 10 -> SkillsMenu.open(player, menuService, skillService, pointService);
+            case 12 -> StatsMenu.openPersonal(player, menuService, pointService);
+            case 14 -> StatsMenu.openLeaderboard(player, menuService, pointService);
+            case 16 -> {
                 boolean next = !scoreboardService.isEnabled(player.getUniqueId());
                 scoreboardService.setEnabled(player.getUniqueId(), next);
                 player.sendMessage(ChatColor.YELLOW + "Scoreboard " + (next ? "enabled" : "disabled"));
@@ -76,13 +79,12 @@ public class MenuListener implements Listener {
         }
     }
 
-    private void handleSkills(Player player, ItemStack clicked) {
-        if (clicked.getType() == Material.ARROW) {
+    private void handleSkills(Player player, int slot) {
+        if (slot == 49) {
             RootMenu.open(player, menuService);
             return;
         }
         SkillType[] skills = SkillType.values();
-        int slot = eventToSlot(player, clicked);
         if (slot < 0 || slot >= skills.length) {
             return;
         }
@@ -106,25 +108,15 @@ public class MenuListener implements Listener {
         }
     }
 
-    private void handleStats(Player player, ItemStack clicked) {
-        if (clicked.getType() == Material.ARROW) {
+    private void handleStats(Player player, int slot) {
+        if (slot == 18) {
             RootMenu.open(player, menuService);
         }
     }
 
-    private void handleLeaderboard(Player player, ItemStack clicked) {
-        if (clicked.getType() == Material.ARROW) {
+    private void handleLeaderboard(Player player, int slot) {
+        if (slot == 18) {
             StatsMenu.openPersonal(player, menuService, pointService);
         }
-    }
-
-    private int eventToSlot(Player player, ItemStack clicked) {
-        var inv = player.getOpenInventory().getTopInventory();
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (clicked.equals(inv.getItem(i))) {
-                return i;
-            }
-        }
-        return -1;
     }
 }
