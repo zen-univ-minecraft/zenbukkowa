@@ -69,4 +69,18 @@ class SkillServiceTest {
         service.purchase(uuid, SkillType.STRUCTURE_SENSE, 1);
         assertTrue(service.canPurchase(uuid, SkillType.VOID_SIPHON, 2));
     }
+
+    @Test
+    void tierOneCostsFifty() {
+        assertEquals(50, SkillType.AREA_RADIUS.cost(1));
+        assertEquals(50, SkillType.HASTE_AURA.cost(1));
+    }
+
+    @Test
+    void costFollowsQuadraticCurve() {
+        assertEquals(200, SkillType.AREA_RADIUS.cost(2));
+        assertEquals(450, SkillType.AREA_RADIUS.cost(3));
+        assertEquals(800, SkillType.AREA_RADIUS.cost(4));
+        assertEquals(1250, SkillType.AREA_RADIUS.cost(5));
+    }
 }
