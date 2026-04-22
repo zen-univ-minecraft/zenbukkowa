@@ -1,0 +1,14 @@
+name: zenbukkowa
+version: ${version}
+main: com.zenbukkowa.plugin.ZenbukkowaPlugin
+api-version: "1.21"
+authors: [zenbukkowa contributors]
+
+commands:
+  zenbukkowa:
+    usage: /zenbukkowa <start|end|status|points>
+    permission: zenbukkowa.use
+
+permissions:
+  zenbukkowa.use:
+    default: true

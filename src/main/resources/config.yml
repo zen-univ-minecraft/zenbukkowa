@@ -1,0 +1,11 @@
+database:
+  file: plugins/zenbukkowa/zenbukkowa.db
+event:
+  duration-minutes: 120
+points:
+  base-per-block: 1
+  ore-multiplier: 5
+  ancient-debris-multiplier: 20
+area:
+  max-radius: 4
+  max-depth: 4
