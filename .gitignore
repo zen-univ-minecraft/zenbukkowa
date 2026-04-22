@@ -1,0 +1,6 @@
+.gradle/
+build/
+tmp/mc-data/
+*.db
+*.class
+/tmp/
