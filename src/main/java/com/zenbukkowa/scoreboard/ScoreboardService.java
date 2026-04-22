@@ -17,9 +17,8 @@ public class ScoreboardService {
     private final SkillService skillService;
     private final SchedulerBridge scheduler;
     private final JavaPlugin plugin;
+    private final Map<UUID, Scoreboard> boards = new HashMap<>();
     private final Map<UUID, Boolean> enabled = new HashMap<>();
-    private final Scoreboard board;
-    private final Objective objective;
     private int remainingSeconds = -1;
 
     public ScoreboardService(PointService pointService, SkillService skillService,
@@ -28,9 +27,6 @@ public class ScoreboardService {
         this.skillService = skillService;
         this.scheduler = scheduler;
         this.plugin = plugin;
-        this.board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-        this.objective = board.registerNewObjective("zenbukkowa", Criteria.DUMMY, ChatColor.GOLD + "zenbukkowa");
-        this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
     public void startTimer(int durationSeconds) {
@@ -61,6 +57,7 @@ public class ScoreboardService {
 
     public void removePlayer(Player player) {
         player.setScoreboard(Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard());
+        boards.remove(player.getUniqueId());
     }
 
     public void tick() {
@@ -80,26 +77,33 @@ public class ScoreboardService {
         if (!isEnabled(player.getUniqueId())) {
             return;
         }
+        Scoreboard board = boards.computeIfAbsent(player.getUniqueId(), u -> createBoard());
         var progress = pointService.getProgress(player.getUniqueId());
-        var skills = skillService.getSkills(player.getUniqueId());
 
-        setLine(12, ChatColor.GRAY + "-------------");
-        setLine(11, ChatColor.YELLOW + "Time: " + formatTime());
-        setLine(10, ChatColor.WHITE + "Total: " + format(progress.totalPoints()));
-        setLine(9, ChatColor.GREEN + "TERRA: " + format(progress.points(PointCategory.TERRA)));
-        setLine(8, ChatColor.AQUA + "MINERAL: " + format(progress.points(PointCategory.MINERAL)));
-        setLine(7, ChatColor.DARK_GREEN + "ORGANIC: " + format(progress.points(PointCategory.ORGANIC)));
-        setLine(6, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC)));
-        setLine(5, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID)));
-        setLine(4, ChatColor.GRAY + "-------------");
+        setLine(board, 12, ChatColor.GRAY + "-------------");
+        setLine(board, 11, ChatColor.YELLOW + "Time: " + formatTime());
+        setLine(board, 10, ChatColor.WHITE + "Total: " + format(progress.totalPoints()));
+        setLine(board, 9, ChatColor.GREEN + "TERRA: " + format(progress.points(PointCategory.TERRA)));
+        setLine(board, 8, ChatColor.AQUA + "MINERAL: " + format(progress.points(PointCategory.MINERAL)));
+        setLine(board, 7, ChatColor.DARK_GREEN + "ORGANIC: " + format(progress.points(PointCategory.ORGANIC)));
+        setLine(board, 6, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC)));
+        setLine(board, 5, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID)));
+        setLine(board, 4, ChatColor.GRAY + "-------------");
         int r = skillService.radius(player.getUniqueId());
         int d = skillService.depth(player.getUniqueId());
-        setLine(3, ChatColor.YELLOW + "Area: " + r + "x" + r + "x" + d);
+        setLine(board, 3, ChatColor.YELLOW + "Area: " + r + "x" + r + "x" + d);
         int h = skillService.haste(player.getUniqueId());
-        setLine(2, ChatColor.YELLOW + "Haste: " + roman(h));
-        setLine(1, ChatColor.GRAY + "-------------");
+        setLine(board, 2, ChatColor.YELLOW + "Haste: " + roman(h));
+        setLine(board, 1, ChatColor.GRAY + "-------------");
 
         player.setScoreboard(board);
+    }
+
+    private Scoreboard createBoard() {
+        Scoreboard board = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
+        Objective obj = board.registerNewObjective("zenbukkowa", Criteria.DUMMY, ChatColor.GOLD + "zenbukkowa");
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        return board;
     }
 
     private void apply(Player player) {
@@ -110,13 +114,13 @@ public class ScoreboardService {
         }
     }
 
-    private void setLine(int score, String text) {
+    private void setLine(Scoreboard board, int score, String text) {
         Team team = board.getTeam("line_" + score);
         if (team == null) {
             team = board.registerNewTeam("line_" + score);
             String entry = ChatColor.values()[score % 16].toString();
             team.addEntry(entry);
-            objective.getScore(entry).setScore(score);
+            board.getObjective("zenbukkowa").getScore(entry).setScore(score);
         }
         team.setPrefix(text);
     }
