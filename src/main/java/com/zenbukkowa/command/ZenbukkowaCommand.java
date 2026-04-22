@@ -2,6 +2,7 @@ package com.zenbukkowa.command;
 
 import com.zenbukkowa.domain.EventService;
 import com.zenbukkowa.domain.PointService;
+import com.zenbukkowa.scoreboard.ScoreboardService;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,10 +12,12 @@ import org.bukkit.entity.Player;
 public class ZenbukkowaCommand implements CommandExecutor {
     private final EventService eventService;
     private final PointService pointService;
+    private final ScoreboardService scoreboardService;
 
-    public ZenbukkowaCommand(EventService eventService, PointService pointService) {
+    public ZenbukkowaCommand(EventService eventService, PointService pointService, ScoreboardService scoreboardService) {
         this.eventService = eventService;
         this.pointService = pointService;
+        this.scoreboardService = scoreboardService;
     }
 
     @Override
@@ -30,6 +33,7 @@ public class ZenbukkowaCommand implements CommandExecutor {
                     return true;
                 }
                 eventService.start();
+                scoreboardService.startTimer(eventService.remainingSeconds());
             }
             case "end" -> {
                 if (!sender.isOp()) {
@@ -37,6 +41,7 @@ public class ZenbukkowaCommand implements CommandExecutor {
                     return true;
                 }
                 eventService.end();
+                scoreboardService.stopTimer();
             }
             case "status" -> {
                 String state = eventService.isRunning() ? "Running" : (eventService.isFinished() ? "Finished" : "Waiting");

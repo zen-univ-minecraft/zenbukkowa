@@ -75,7 +75,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     playerDao, structureDao, database, scheduler);
 
             registerListeners(areaBreakListener, scoreboardListener, structureBonusListener, menuListener, hotbarMenuListener, effectListener);
-            registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService));
+            registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService, scoreboardService));
 
             for (var online : getServer().getOnlinePlayers()) {
                 hotbarMenuService.install(online);

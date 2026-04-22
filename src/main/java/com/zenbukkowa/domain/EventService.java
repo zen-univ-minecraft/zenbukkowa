@@ -56,6 +56,10 @@ public class EventService {
         return finished;
     }
 
+    public int remainingSeconds() {
+        return running ? durationSeconds : 0;
+    }
+
     private void announceWinner() {
         List<Map.Entry<UUID, Long>> board = pointService.getLeaderboard(3);
         if (board.isEmpty()) {
