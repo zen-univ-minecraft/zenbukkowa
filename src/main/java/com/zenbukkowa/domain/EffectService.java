@@ -1,6 +1,9 @@
 package com.zenbukkowa.domain;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -42,7 +45,16 @@ public class EffectService {
 
     public void applyFrostWalker(Player player) {
         boolean has = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.FROST_WALKER);
-        applyOrRemove(player, PotionEffectType.SLOW_FALLING, has ? 1 : 0);
+        ItemStack boots = player.getInventory().getBoots();
+        if (boots == null || boots.getType().isAir()) return;
+        ItemMeta meta = boots.getItemMeta();
+        if (meta == null) return;
+        if (has) {
+            meta.addEnchant(Enchantment.FROST_WALKER, 1, true);
+        } else {
+            meta.removeEnchant(Enchantment.FROST_WALKER);
+        }
+        boots.setItemMeta(meta);
     }
 
     public void applyConduitAura(Player player) {

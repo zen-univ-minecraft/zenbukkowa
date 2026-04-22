@@ -22,7 +22,7 @@ public class SkillTreeLayout {
             new Node(SkillType.PILLAR_BREAK, 10, 0),
             new Node(SkillType.GRAVITY_WELL, 7, 0),
             new Node(SkillType.TERRA_BLESSING, 4, 0),
-            new Node(SkillType.EFFICIENCY, 7, 1),
+            new Node(SkillType.EFFICIENCY, 8, 1),
             // MINERAL (col 2)
             new Node(SkillType.HASTE_AURA, 16, 2),
             new Node(SkillType.FORTUNE_TOUCH, 13, 2),
@@ -93,7 +93,6 @@ public class SkillTreeLayout {
 
     private static void addLShape(List<Connection> list, Node parent, Node child) {
         if (parent == null || child == null) return;
-        // vertical up to child's row, then horizontal to child's col
         for (int r = child.row + 1; r < parent.row; r++) {
             list.add(new Connection(r, parent.col));
         }
@@ -101,6 +100,9 @@ public class SkillTreeLayout {
         int maxC = Math.max(parent.col, child.col);
         for (int c = minC + 1; c < maxC; c++) {
             list.add(new Connection(child.row, c));
+        }
+        if (parent.col != child.col) {
+            list.add(new Connection(child.row, parent.col));
         }
     }
 }
