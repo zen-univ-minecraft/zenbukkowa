@@ -29,7 +29,13 @@ public class ScoreboardService {
         this.plugin = plugin;
     }
 
+    private boolean timerRunning = false;
+
     public void startTimer(int durationSeconds) {
+        if (timerRunning) {
+            return;
+        }
+        timerRunning = true;
         this.remainingSeconds = durationSeconds;
         scheduler.runTimer(plugin, this::tick, 0, 20);
     }
