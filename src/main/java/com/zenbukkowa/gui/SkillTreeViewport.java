@@ -46,7 +46,7 @@ public class SkillTreeViewport {
         inv.setItem(45, canUp ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_up"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
         inv.setItem(46, MenuItems.create(Material.PAPER, ChatColor.GRAY + "V " + (scrollV + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_V + 1)
-                + " · H " + (scrollH + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_H + 1)));
+                + " . H " + (scrollH + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_H + 1)));
         inv.setItem(47, canLeft ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_left"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
         inv.setItem(49, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
@@ -144,6 +144,7 @@ public class SkillTreeViewport {
             case AQUATIC -> ChatColor.BLUE;
             case VOID -> ChatColor.DARK_PURPLE;
             case CROP -> ChatColor.YELLOW;
+            case DISCOVERY -> ChatColor.LIGHT_PURPLE;
         };
     }
 }

@@ -23,9 +23,12 @@ public class AreaCalculator {
         int minY = world.getMinHeight();
         int maxY = world.getMaxHeight();
 
+        result.add(center);
+
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
                 for (int dy = -depth; dy <= depth; dy++) {
+                    if (dx == 0 && dy == 0 && dz == 0) continue;
                     int y = cy + dy;
                     if (y < minY || y >= maxY) {
                         continue;

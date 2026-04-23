@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 public enum SkillType {
-    AREA_RADIUS(PointCategory.TERRA, 5, new int[]{1, 3, 5, 7, 9}),
-    AREA_DEPTH(PointCategory.TERRA, 5, new int[]{1, 3, 5, 7, 9}),
+    AREA_RADIUS(PointCategory.TERRA, 5, new int[]{3, 5, 7, 9, 11}),
+    AREA_DEPTH(PointCategory.TERRA, 5, new int[]{3, 5, 7, 9, 11}),
     PILLAR_BREAK(PointCategory.TERRA, 3, new int[]{1, 2, 3}),
     EFFICIENCY(PointCategory.TERRA, 5, new int[]{1, 2, 3, 4, 5}),
     GRAVITY_WELL(PointCategory.TERRA, 1, new int[]{1}),
@@ -41,6 +41,12 @@ public enum SkillType {
     SEED_SATCHEL(PointCategory.CROP, 1, new int[]{1}),
     FARMERS_FORTUNE(PointCategory.CROP, 3, new int[]{1, 2, 3}),
     HARVEST_WAVE(PointCategory.CROP, 3, new int[]{1, 2, 3}),
+    CURIOUS_MINER(PointCategory.DISCOVERY, 1, new int[]{1}),
+    GEOLOGIST(PointCategory.DISCOVERY, 3, new int[]{1, 2, 3}),
+    SURVEYOR(PointCategory.DISCOVERY, 3, new int[]{1, 2, 3}),
+    CARTOGRAPHER(PointCategory.DISCOVERY, 3, new int[]{1, 2, 3}),
+    PATHFINDER(PointCategory.DISCOVERY, 3, new int[]{1, 2, 3}),
+    WORLD_WALKER(PointCategory.DISCOVERY, 3, new int[]{1, 2, 3}),
     ANGEL_WINGS(PointCategory.TERRA, 3, new int[]{1, 2, 3}, true, List.of(
             Map.of(PointCategory.TERRA, 500, PointCategory.MINERAL, 500, PointCategory.VOID, 500),
             Map.of(PointCategory.TERRA, 1000, PointCategory.MINERAL, 1000, PointCategory.VOID, 1000),

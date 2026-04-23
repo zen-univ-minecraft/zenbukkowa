@@ -61,19 +61,24 @@ public class SkillsPurchaseHandler {
             player.sendMessage(ChatColor.RED + locale.get(player.getUniqueId(), "menu.purchase_maxed"));
             return;
         }
+        int targetTier = current + 1;
+        if (!skillService.canPurchase(player.getUniqueId(), skill, targetTier)) {
+            player.sendMessage(ChatColor.RED + locale.get(player.getUniqueId(), "menu.missing_prerequisite"));
+            return;
+        }
         try {
             if (skill.isMythic()) {
-                Map<PointCategory, Integer> costs = skill.mythicCost(current + 1);
+                Map<PointCategory, Integer> costs = skill.mythicCost(targetTier);
                 pointService.spendPoints(player.getUniqueId(),
                         costs.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> (long) e.getValue().intValue())));
             } else {
-                pointService.spendPoints(player.getUniqueId(), skill.category(), skill.cost(current + 1));
+                pointService.spendPoints(player.getUniqueId(), skill.category(), skill.cost(targetTier));
             }
-            skillService.purchase(player.getUniqueId(), skill, current + 1);
+            skillService.purchase(player.getUniqueId(), skill, targetTier);
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             player.sendMessage(ChatColor.GREEN + locale.get(player.getUniqueId(), "menu.purchase_success")
                     .replace("{skill}", skill.name().replace('_', ' '))
-                    .replace("{tier}", String.valueOf(current + 1)));
+                    .replace("{tier}", String.valueOf(targetTier)));
             effectService.applyAll(player);
             scoreboardService.updateAll();
             SkillsMenu.open(player, menuService, skillService, pointService, locale);

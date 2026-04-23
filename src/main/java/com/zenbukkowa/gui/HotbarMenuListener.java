@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +26,11 @@ public class HotbarMenuListener implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         hotbarMenuService.install(event.getPlayer());
         hotbarMenuService.installDelayed(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDeath(PlayerDeathEvent event) {
+        event.getDrops().removeIf(hotbarMenuService::isToken);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
@@ -77,7 +83,13 @@ public class HotbarMenuListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         hotbarMenuService.ensureInstalled(player);
         int topSize = event.getView().getTopInventory().getSize();
-        int playerHotbarRawSlot = topSize + HotbarMenuService.SLOT;
+        int bottomSize = event.getView().getBottomInventory().getSize();
+        int playerHotbarRawSlot;
+        if (event.getView().getType() == org.bukkit.event.inventory.InventoryType.CRAFTING) {
+            playerHotbarRawSlot = 44;
+        } else {
+            playerHotbarRawSlot = topSize + bottomSize - 1;
+        }
         boolean clickedHotbarSlot = event.getRawSlot() == playerHotbarRawSlot;
         boolean numberKeyOnHotbarSlot = event.getClick() == ClickType.NUMBER_KEY
                 && event.getHotbarButton() == HotbarMenuService.SLOT;
@@ -87,12 +99,10 @@ public class HotbarMenuListener implements Listener {
                 && event.getHotbarButton() >= 0
                 && hotbarMenuService.isToken(player.getInventory().getItem(event.getHotbarButton()));
 
-        // Number-key swap involving token: cancel only, do not open menu
         if (numberKeyOnHotbarSlot || numberKeyUsesToken) {
             event.setCancelled(true);
             return;
         }
-        // Direct click on token slot or token item: cancel and open menu
         if (clickedHotbarSlot || clickedToken || cursorToken) {
             event.setCancelled(true);
             hotbarMenuService.openFromInventoryInteraction(player);
@@ -103,7 +113,13 @@ public class HotbarMenuListener implements Listener {
     public void onInventoryDrag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         int topSize = event.getView().getTopInventory().getSize();
-        int playerHotbarRawSlot = topSize + HotbarMenuService.SLOT;
+        int bottomSize = event.getView().getBottomInventory().getSize();
+        int playerHotbarRawSlot;
+        if (event.getView().getType() == org.bukkit.event.inventory.InventoryType.CRAFTING) {
+            playerHotbarRawSlot = 44;
+        } else {
+            playerHotbarRawSlot = topSize + bottomSize - 1;
+        }
         if (!event.getRawSlots().contains(playerHotbarRawSlot)) return;
         event.setCancelled(true);
         hotbarMenuService.ensureInstalled(player);

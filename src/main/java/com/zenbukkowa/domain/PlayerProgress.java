@@ -8,6 +8,7 @@ public class PlayerProgress {
     private final UUID uuid;
     private final Map<PointCategory, Long> points;
     private long blocksBroken;
+    private long discoveries;
 
     public PlayerProgress(UUID uuid) {
         this.uuid = uuid;
@@ -16,6 +17,7 @@ public class PlayerProgress {
             this.points.put(c, 0L);
         }
         this.blocksBroken = 0;
+        this.discoveries = 0;
     }
 
     public UUID uuid() {
@@ -48,5 +50,17 @@ public class PlayerProgress {
 
     public void setPoints(PointCategory category, long amount) {
         points.put(category, amount);
+    }
+
+    public long discoveries() {
+        return discoveries;
+    }
+
+    public void setDiscoveries(long discoveries) {
+        this.discoveries = discoveries;
+    }
+
+    public void incrementDiscoveries(long amount) {
+        this.discoveries += amount;
     }
 }

@@ -33,7 +33,7 @@ public class SkillService {
     private boolean checkPrerequisites(PlayerSkills skills, SkillType skill, int targetTier) {
         boolean hasAreaRadius = skills.tier(SkillType.AREA_RADIUS) >= 1;
         switch (skill) {
-            case HASTE_AURA, LEAF_CONSUME, TIDE_BREAKER, SALVAGE, VOID_SIPHON, STRUCTURE_SENSE, GREEN_THUMB -> {
+            case HASTE_AURA, LEAF_CONSUME, TIDE_BREAKER, SALVAGE, VOID_SIPHON, STRUCTURE_SENSE, GREEN_THUMB, CURIOUS_MINER -> {
                 if (!hasAreaRadius) return false;
             }
         }
@@ -67,6 +67,11 @@ public class SkillService {
             case SEED_SATCHEL -> skills.hasSkill(SkillType.COMPOST_MASTER);
             case FARMERS_FORTUNE -> skills.hasSkill(SkillType.SEED_SATCHEL);
             case HARVEST_WAVE -> skills.hasSkill(SkillType.FARMERS_FORTUNE);
+            case GEOLOGIST -> skills.hasSkill(SkillType.CURIOUS_MINER);
+            case SURVEYOR -> skills.hasSkill(SkillType.GEOLOGIST);
+            case CARTOGRAPHER -> skills.hasSkill(SkillType.SURVEYOR);
+            case PATHFINDER -> skills.hasSkill(SkillType.CARTOGRAPHER);
+            case WORLD_WALKER -> skills.hasSkill(SkillType.PATHFINDER);
             case ANGEL_WINGS -> skills.tier(SkillType.AREA_RADIUS) >= 3
                     && skills.tier(SkillType.HASTE_AURA) >= 3
                     && skills.tier(SkillType.VOID_SIPHON) >= 2;

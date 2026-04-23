@@ -1,6 +1,8 @@
 package com.zenbukkowa.domain;
 
+import com.zenbukkowa.persistence.BlockDiscoveryDao;
 import com.zenbukkowa.persistence.PlayerDao;
+import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
 
 import java.sql.SQLException;
 import java.util.Comparator;
@@ -13,12 +15,17 @@ import java.util.stream.Collectors;
 
 public class PointService {
     private final PlayerDao playerDao;
+    private final PlayerPlacedBlockDao playerPlacedBlockDao;
+    private final BlockDiscoveryDao blockDiscoveryDao;
     private final Map<UUID, PlayerProgress> cache = new ConcurrentHashMap<>();
     private Consumer<UUID> onChange;
     private double multiplier = 1.0;
 
-    public PointService(PlayerDao playerDao) {
+    public PointService(PlayerDao playerDao, PlayerPlacedBlockDao playerPlacedBlockDao,
+                        BlockDiscoveryDao blockDiscoveryDao) {
         this.playerDao = playerDao;
+        this.playerPlacedBlockDao = playerPlacedBlockDao;
+        this.blockDiscoveryDao = blockDiscoveryDao;
     }
 
     public void setOnChange(Consumer<UUID> onChange) {
@@ -106,6 +113,8 @@ public class PointService {
     public void resetPlayer(UUID uuid) {
         try {
             playerDao.deleteProgress(uuid);
+            playerPlacedBlockDao.deleteForPlayer(uuid.toString());
+            blockDiscoveryDao.deleteForPlayer(uuid);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -116,6 +125,8 @@ public class PointService {
     public void resetAll() {
         try {
             playerDao.deleteAllProgress();
+            playerPlacedBlockDao.deleteAll();
+            blockDiscoveryDao.deleteAll();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

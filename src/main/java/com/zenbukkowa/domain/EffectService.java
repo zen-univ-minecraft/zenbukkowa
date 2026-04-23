@@ -1,5 +1,6 @@
 package com.zenbukkowa.domain;
 
+import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -77,6 +78,10 @@ public class EffectService {
     public void applyAngelWings(Player player) {
         boolean has = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.ANGEL_WINGS);
         boolean canFly = has && eventService.isRunning();
+        GameMode mode = player.getGameMode();
+        if (mode == GameMode.CREATIVE || mode == GameMode.SPECTATOR) {
+            return;
+        }
         if (canFly != player.getAllowFlight()) {
             player.setAllowFlight(canFly);
             if (!canFly) player.setFlying(false);

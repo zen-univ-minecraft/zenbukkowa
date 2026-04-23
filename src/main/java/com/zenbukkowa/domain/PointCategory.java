@@ -6,7 +6,8 @@ public enum PointCategory {
     ORGANIC,
     AQUATIC,
     VOID,
-    CROP;
+    CROP,
+    DISCOVERY;
 
     public String columnName() {
         return name().toLowerCase() + "_points";

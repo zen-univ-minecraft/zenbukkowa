@@ -2,12 +2,15 @@ package com.zenbukkowa.plugin;
 
 import com.zenbukkowa.breaker.AreaBreakListener;
 import com.zenbukkowa.breaker.AreaCalculator;
+import com.zenbukkowa.breaker.BlockPlaceListener;
 import com.zenbukkowa.breaker.BonemealTask;
 import com.zenbukkowa.breaker.BreakPointCalculator;
 import com.zenbukkowa.command.ZenbukkowaCommand;
 import com.zenbukkowa.domain.*;
 import com.zenbukkowa.gui.*;
+import com.zenbukkowa.persistence.BlockDiscoveryDao;
 import com.zenbukkowa.persistence.PlayerDao;
+import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
 import com.zenbukkowa.persistence.SettingsDao;
 import com.zenbukkowa.persistence.SqliteDatabase;
 import com.zenbukkowa.persistence.StructureDao;
@@ -40,9 +43,11 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             PlayerDao playerDao = new PlayerDao(database);
             StructureDao structureDao = new StructureDao(database);
             SettingsDao settingsDao = new SettingsDao(database);
+            PlayerPlacedBlockDao playerPlacedBlockDao = new PlayerPlacedBlockDao(database);
+            BlockDiscoveryDao blockDiscoveryDao = new BlockDiscoveryDao(database);
             settingsDao.initialize();
 
-            PointService pointService = new PointService(playerDao);
+            PointService pointService = new PointService(playerDao, playerPlacedBlockDao, blockDiscoveryDao);
             double savedMultiplier = Double.parseDouble(settingsDao.loadSetting("point_multiplier", "1.0"));
             pointService.setMultiplier(savedMultiplier);
 
@@ -52,8 +57,10 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     config.getInt("points.base-per-block", 1),
                     config.getInt("points.ore-multiplier", 5),
                     config.getInt("points.ancient-debris-multiplier", 20));
+            BlockDiscoveryService blockDiscoveryService = new BlockDiscoveryService(blockDiscoveryDao, pointService);
             BreakService breakService = new BreakService(
-                    pointService, skillService, areaCalculator, pointCalculator);
+                    pointService, skillService, areaCalculator, pointCalculator,
+                    playerPlacedBlockDao, blockDiscoveryService);
             SchedulerBridge scheduler = new PaperSchedulerBridge();
             EventService eventService = new EventService(pointService, this);
             ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
@@ -67,6 +74,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             StructureService structureService = new StructureService(structureDao, pointService);
 
             AreaBreakListener areaBreakListener = new AreaBreakListener(breakService);
+            BlockPlaceListener blockPlaceListener = new BlockPlaceListener(playerPlacedBlockDao);
             BonemealTask bonemealTask = new BonemealTask(skillService, this);
             bonemealTask.start();
             ScoreboardListener scoreboardListener = new ScoreboardListener(scoreboardService);
@@ -87,7 +95,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     playerDao, structureDao, database, scheduler);
 
             VoidWalkListener voidWalkListener = new VoidWalkListener(skillService);
-            registerListeners(areaBreakListener, scoreboardListener, structureBonusListener,
+            registerListeners(areaBreakListener, blockPlaceListener, scoreboardListener, structureBonusListener,
                     menuListener, hotbarMenuListener, effectListener, voidWalkListener);
             registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService, skillService));
 

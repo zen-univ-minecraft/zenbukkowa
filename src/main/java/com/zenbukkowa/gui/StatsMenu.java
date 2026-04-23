@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class StatsMenu {
         inv.setItem(14, MenuItems.create(Material.PRISMARINE, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC))));
         inv.setItem(15, MenuItems.create(Material.OBSIDIAN, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID))));
         inv.setItem(16, MenuItems.create(Material.WHEAT, ChatColor.YELLOW + "CROP: " + format(progress.points(PointCategory.CROP))));
+        inv.setItem(19, MenuItems.create(Material.COMPASS, ChatColor.LIGHT_PURPLE + "DISCOVERY: " + format(progress.points(PointCategory.DISCOVERY))));
         inv.setItem(22, MenuItems.create(Material.DIAMOND_PICKAXE, ChatColor.YELLOW + "Blocks: " + format(progress.blocksBroken())));
         inv.setItem(49, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
         MenuItems.fillEmpty(inv);
@@ -40,8 +42,14 @@ public class StatsMenu {
             Map.Entry<UUID, Long> entry = board.get(i);
             org.bukkit.OfflinePlayer op = Bukkit.getOfflinePlayer(entry.getKey());
             String name = op.getName() != null ? op.getName() : "?";
-            inv.setItem(i, MenuItems.create(Material.PLAYER_HEAD, ChatColor.GOLD + "#" + (i + 1) + " " + name,
-                    ChatColor.YELLOW + "Points: " + format(entry.getValue())));
+            var item = MenuItems.create(Material.PLAYER_HEAD, ChatColor.GOLD + "#" + (i + 1) + " " + name,
+                    ChatColor.YELLOW + "Points: " + format(entry.getValue()));
+            var meta = item.getItemMeta();
+            if (meta instanceof SkullMeta skullMeta) {
+                skullMeta.setOwningPlayer(op);
+                item.setItemMeta(skullMeta);
+            }
+            inv.setItem(i, item);
         }
         inv.setItem(49, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
         MenuItems.fillEmpty(inv);

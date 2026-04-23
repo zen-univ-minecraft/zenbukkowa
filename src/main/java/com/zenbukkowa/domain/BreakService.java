@@ -2,7 +2,9 @@ package com.zenbukkowa.domain;
 
 import com.zenbukkowa.breaker.AreaCalculator;
 import com.zenbukkowa.breaker.BlockCategoryMapper;
+import com.zenbukkowa.breaker.BreakHelper;
 import com.zenbukkowa.breaker.BreakPointCalculator;
+import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,14 +23,20 @@ public class BreakService {
     private final SkillService skillService;
     private final AreaCalculator areaCalculator;
     private final BreakPointCalculator pointCalculator;
+    private final PlayerPlacedBlockDao playerPlacedBlockDao;
+    private final BlockDiscoveryService blockDiscoveryService;
     private final Random random = new Random();
 
     public BreakService(PointService pointService, SkillService skillService,
-                        AreaCalculator areaCalculator, BreakPointCalculator pointCalculator) {
+                        AreaCalculator areaCalculator, BreakPointCalculator pointCalculator,
+                        PlayerPlacedBlockDao playerPlacedBlockDao,
+                        BlockDiscoveryService blockDiscoveryService) {
         this.pointService = pointService;
         this.skillService = skillService;
         this.areaCalculator = areaCalculator;
         this.pointCalculator = pointCalculator;
+        this.playerPlacedBlockDao = playerPlacedBlockDao;
+        this.blockDiscoveryService = blockDiscoveryService;
     }
 
     public void onPlayerBreak(Player player, Block centerBlock) {
@@ -49,7 +57,7 @@ public class BreakService {
         blocks.addAll(getPillarBlocks(player, centerBlock));
 
         ItemStack tool = player.getInventory().getItemInMainHand();
-        int maxBreaks = calculateMaxBreaks(tool, blocks.size());
+        int maxBreaks = BreakHelper.remainingBreaks(tool, blocks.size());
 
         boolean leafConsume = skills.hasSkill(SkillType.LEAF_CONSUME);
         int salvageTier = skills.tier(SkillType.SALVAGE);
@@ -73,23 +81,31 @@ public class BreakService {
                     && block.getY() == centerBlock.getY()
                     && block.getZ() == centerBlock.getZ();
 
+            boolean playerPlaced = playerPlacedBlockDao.isPlayerPlaced(block.getWorld().getName(), block.getX(), block.getY(), block.getZ());
+
             if (!isCenter) {
                 BlockBreakEvent testEvent = new BlockBreakEvent(block, player);
                 player.getServer().getPluginManager().callEvent(testEvent);
                 if (testEvent.isCancelled()) continue;
                 if (gravityWell && (mat == Material.SAND || mat == Material.GRAVEL)) {
                     block.setType(Material.AIR);
-                } else if (!player.getGameMode().equals(GameMode.CREATIVE)) {
-                    block.breakNaturally(tool, true);
                 } else {
-                    block.setType(Material.AIR);
+                    block.breakNaturally(tool, true);
                 }
-                if (!shouldSalvage(salvageChance)) damageTool(tool);
+                if (!shouldSalvage(salvageChance)) BreakHelper.damageTool(tool);
             }
 
-            int points = pointCalculator.calculate(block, category, player, skills);
-            if (points > 0) {
-                pointService.addPoints(player.getUniqueId(), category, points, 1);
+            if (!playerPlaced) {
+                int points = pointCalculator.calculate(block, category, player, skills);
+                if (points > 0) {
+                    pointService.addPoints(player.getUniqueId(), category, points, 1);
+                }
+                if (isCenter) {
+                    blockDiscoveryService.checkDiscovery(player.getUniqueId(), mat, skills);
+                }
+            }
+            if (playerPlaced && isCenter) {
+                playerPlacedBlockDao.record(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), player.getUniqueId().toString());
             }
             broken++;
 
@@ -162,27 +178,6 @@ public class BreakService {
         if (seed != null) {
             block.setType(seed);
         }
-    }
-
-    private int calculateMaxBreaks(ItemStack tool, int targetCount) {
-        if (tool == null || tool.getType().isAir() || !tool.getType().isItem()) return targetCount;
-        var meta = tool.getItemMeta();
-        if (!(meta instanceof org.bukkit.inventory.meta.Damageable d)) return targetCount;
-        int maxDurability = tool.getType().getMaxDurability();
-        if (maxDurability <= 0) return targetCount;
-        int remaining = maxDurability - d.getDamage();
-        return Math.min(targetCount, remaining);
-    }
-
-    private void damageTool(ItemStack tool) {
-        if (tool == null || tool.getType().isAir()) return;
-        var meta = tool.getItemMeta();
-        if (!(meta instanceof org.bukkit.inventory.meta.Damageable d)) return;
-        int maxDurability = tool.getType().getMaxDurability();
-        if (maxDurability <= 0) return;
-        d.setDamage(d.getDamage() + 1);
-        tool.setItemMeta(d);
-        if (d.getDamage() >= maxDurability) tool.setAmount(0);
     }
 
     private void collectDrops(Player player, Location loc) {

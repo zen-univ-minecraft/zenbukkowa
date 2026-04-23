@@ -47,13 +47,13 @@ help:
     children:
       overview:
         label: "Overview"
-        text: "&6=== Rules ===\n&e1. Break blocks to earn points in 6 categories.\n&e2. Spend points to unlock skills.\n&e3. First tier costs 50 points.\n&e4. Destroy structures for huge bonuses.\n&e5. Highest total score wins.\n&e6. No refunds on skill purchases.\n&e7. Containers are protected."
+        text: "&6=== Rules ===\n&e1. Break blocks to earn points in 7 categories.\n&e2. Spend points to unlock skills.\n&e3. First tier costs 50 points.\n&e4. Destroy structures for huge bonuses.\n&e5. Discover new block types for one-time bonuses.\n&e6. Highest total score wins.\n&e7. No refunds on skill purchases.\n&e8. Containers are protected.\n&e9. Player-placed blocks do not award points."
       scoring:
         label: "Scoring"
-        text: "&6=== Scoring ===\n&eBreak blocks to earn category points.\n&eTERRA: stone, dirt, sand, gravel\n&eMINERAL: ores, ancient debris\n&eORGANIC: logs, leaves, crops\n&eAQUATIC: prismarine, coral, sponge\n&eVOID: obsidian, netherrack, end stone\n&eCROP: wheat, carrots, potatoes, cocoa\n&eBase blocks = 1 pt, ores = 5 pts, ancient debris = 20 pts"
+        text: "&6=== Scoring ===\n&eBreak blocks to earn category points.\n&eTERRA: stone, dirt, sand, gravel\n&eMINERAL: ores, ancient debris\n&eORGANIC: logs, leaves, crops\n&eAQUATIC: prismarine, coral, sponge\n&eVOID: obsidian, netherrack, end stone\n&eCROP: wheat, carrots, potatoes, cocoa\n&eDISCOVERY: first break of any natural block\n&eBase blocks = 1 pt, ores = 5 pts, ancient debris = 20 pts"
       protection:
         label: "Protection"
-        text: "&6=== Protection ===\n&eContainers and bedrock cannot be broken.\n&eStructure bonuses are one-time only."
+        text: "&6=== Protection ===\n&eContainers and bedrock cannot be broken.\n&eStructure bonuses are one-time only.\n&ePlayer-placed blocks do not award points.\n&eImmature crops do not award points."
   points:
     children:
       ores:
@@ -68,6 +68,9 @@ help:
       crop:
         label: "CROP"
         text: "&6=== CROP Blocks ===\n&eWheat, carrots, potatoes, beetroots, cocoa, melon stems, pumpkin stems, nether wart give CROP points."
+      discovery:
+        label: "Discovery"
+        text: "&6=== Discovery ===\n&eBreak any naturally occurring block type for the first time to earn DISCOVERY points.\n&eCommon blocks = 10 pts, uncommon = 25 pts, rare = 50 pts, epic = 200 pts.\n&eDiscovery skills increase these bonuses."
   skills:
     children:
       tiers:
@@ -83,10 +86,10 @@ help:
     children:
       radius:
         label: "Radius & Depth"
-        text: "&6=== Area Breaking ===\n&eBreaking one block breaks an area.\n&eRadius = horizontal spread. Depth = vertical layers.\n&eMax area = 9x9x9 at tier 5.\n&eContainers and bedrock are protected."
+        text: "&6=== Area Breaking ===\n&eBreaking one block breaks an area.\n&eRadius = horizontal spread. Depth = vertical layers.\n&eMax area = 11x11x11 at tier 5.\n&eContainers and bedrock are protected."
       protection:
         label: "Protection"
-        text: "&6=== Break Protection ===\n&eContainers and bedrock are never broken.\n&eArea breaks respect claims and protections."
+        text: "&6=== Break Protection ===\n&eContainers and bedrock are never broken.\n&eArea breaks respect claims and protections.\n&ePlayer-placed blocks do not award points."
   structures:
     children:
       monument:
@@ -181,6 +184,18 @@ skill:
     description: "Creative flight during events"
   titan_strike:
     description: "Global radius and depth boost"
+  curious_miner:
+    description: "Unlocks DISCOVERY points"
+  geologist:
+    description: "Boosts common discovery bonus"
+  surveyor:
+    description: "Boosts uncommon discovery bonus"
+  cartographer:
+    description: "Boosts rare discovery bonus"
+  pathfinder:
+    description: "Boosts epic discovery bonus"
+  world_walker:
+    description: "Multiplies all discovery bonuses"
 
 category:
   terra:
@@ -195,3 +210,5 @@ category:
     description: "Nether, End, and deep dark"
   crop:
     description: "Cultivation and harvest"
+  discovery:
+    description: "Exploration and first breaks"
