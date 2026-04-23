@@ -54,7 +54,9 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             pointService.setMultiplier(savedMultiplier);
 
             SkillService skillService = new SkillService(playerDao);
-            AreaCalculator areaCalculator = new AreaCalculator();
+            AreaCalculator areaCalculator = new AreaCalculator(
+                    config.getInt("area.max-radius", 5),
+                    config.getInt("area.max-depth", 5));
             BreakPointCalculator pointCalculator = new BreakPointCalculator(
                     config.getInt("points.base-per-block", 1),
                     config.getInt("points.ore-multiplier", 5),

@@ -9,14 +9,21 @@ import java.util.List;
 import java.util.Set;
 
 public class AreaCalculator {
+    private final int maxRadius;
+    private final int maxDepth;
+
+    public AreaCalculator(int maxRadius, int maxDepth) {
+        this.maxRadius = maxRadius;
+        this.maxDepth = maxDepth;
+    }
 
     public List<Block> calculate(Block center, int radiusValue, int depthValue) {
         return calculate(center, radiusValue, depthValue, 0, 0);
     }
 
     public List<Block> calculate(Block center, int radiusValue, int depthValue, int bonusRadius, int bonusDepth) {
-        int radius = Math.max(0, (radiusValue - 1) / 2 + bonusRadius);
-        int depth = Math.max(0, (depthValue - 1) / 2 + bonusDepth);
+        int radius = Math.max(0, Math.min(maxRadius, (radiusValue - 1) / 2 + bonusRadius));
+        int depth = Math.max(0, Math.min(maxDepth, (depthValue - 1) / 2 + bonusDepth));
         List<Block> result = new ArrayList<>();
         World world = center.getWorld();
         int cx = center.getX();

@@ -14,7 +14,7 @@ class AreaCalculatorTest {
 
     @Test
     void tier1ReturnsSingleBlock() {
-        AreaCalculator calc = new AreaCalculator();
+        AreaCalculator calc = new AreaCalculator(10, 10);
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 1, 1);
         assertEquals(1, result.size());
@@ -22,7 +22,7 @@ class AreaCalculatorTest {
 
     @Test
     void tier3ReturnsNineBlocks() {
-        AreaCalculator calc = new AreaCalculator();
+        AreaCalculator calc = new AreaCalculator(10, 10);
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 3, 1);
         assertEquals(9, result.size());
@@ -30,7 +30,7 @@ class AreaCalculatorTest {
 
     @Test
     void tier5Returns25Blocks() {
-        AreaCalculator calc = new AreaCalculator();
+        AreaCalculator calc = new AreaCalculator(10, 10);
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 5, 1);
         assertEquals(25, result.size());
@@ -38,7 +38,7 @@ class AreaCalculatorTest {
 
     @Test
     void tier9x9x9Returns729Blocks() {
-        AreaCalculator calc = new AreaCalculator();
+        AreaCalculator calc = new AreaCalculator(10, 10);
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 9, 9);
         assertEquals(729, result.size());
@@ -46,15 +46,22 @@ class AreaCalculatorTest {
 
     @Test
     void deduplicateRemovesDuplicates() {
-        AreaCalculator calc = new AreaCalculator();
+        AreaCalculator calc = new AreaCalculator(10, 10);
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 3, 3);
         List<Block> deduped = calc.deduplicate(result);
         assertEquals(result.size(), deduped.size());
-        // Force a duplicate
         result.add(center);
         deduped = calc.deduplicate(result);
         assertEquals(result.size() - 1, deduped.size());
+    }
+
+    @Test
+    void capEnforcesMaxRadius() {
+        AreaCalculator calc = new AreaCalculator(2, 10);
+        Block center = mockBlock(0, 64, 0);
+        List<Block> result = calc.calculate(center, 9, 1);
+        assertEquals(25, result.size()); // capped radius 2 -> 5x5x1
     }
 
     private Block mockBlock(int x, int y, int z) {
