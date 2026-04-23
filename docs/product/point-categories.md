@@ -2,7 +2,7 @@
 
 ## Goal
 
-Divide block-breaking rewards into five categories that must be earned in balance to maximize destruction.
+Divide block-breaking rewards into six categories that must be earned in balance to maximize destruction.
 
 ## Categories
 
@@ -53,6 +53,15 @@ Divide block-breaking rewards into five categories that must be earned in balanc
 - Sculk, sculk vein, sculk sensor, sculk shrieker, sculk catalyst
 - Magma block, glowstone
 
+### CROP
+
+- Wheat, carrots, potatoes, beetroots
+- Melon stem, pumpkin stem, attached stems
+- Cocoa, nether wart
+- Sweet berry bush, cave vines, glow berries
+- Torchflower, pitcher crop
+- Sugar cane (also ORGANIC), cactus (also ORGANIC)
+
 ## Point Values
 
 - Default: `1 point` per block broken.
@@ -62,5 +71,5 @@ Divide block-breaking rewards into five categories that must be earned in balanc
 
 ## Balance Rule
 
-- Max area skills require spending `TERRA` + `MINERAL` + `ORGANIC` + `AQUATIC` + `VOID` points in roughly equal proportion.
+- Max area skills require spending `TERRA` + `MINERAL` + `ORGANIC` + `AQUATIC` + `VOID` + `CROP` points in roughly equal proportion.
 - A player who only mines stone cannot afford `AREA_DEPTH` past tier 2.

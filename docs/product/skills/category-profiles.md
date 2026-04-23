@@ -101,3 +101,22 @@ Obsidian, netherrack, blackstone, basalt, end stone, sculk, magma, glowstone.
 
 ### Strategy Note
 VOID is the slowest category to build because the blocks are scarcer or harder to reach, but VOID_SIPHON turns Nether/End clearing into massive point gains.
+
+---
+
+## CROP — Cultivation and Harvest
+
+### Identity
+CROP rewards tending and harvesting farmland. It is the patience category.
+
+### Typical Blocks
+Wheat, carrots, potatoes, beetroots, melon stems, pumpkin stems, cocoa, nether wart, sweet berries.
+
+### Skill Theme
+- **Base income:** GREEN_THUMB increases points per crop block.
+- **Preservation:** HARVEST_AURA reduces seed loss.
+- **Automation:** COMPOST_MASTER and SEED_SATCHEL reduce replanting labour.
+- **Multiplier:** FARMERS_FORTUNE scales all CROP income.
+
+### Strategy Note
+CROP builds slowly but becomes self-sustaining once SEED_SATCHEL and COMPOST_MASTER are unlocked. Large farms near water generate steady income.

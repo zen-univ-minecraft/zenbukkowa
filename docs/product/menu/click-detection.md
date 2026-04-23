@@ -34,13 +34,15 @@ Use `event.getSlot()` (slot within the clicked top inventory) rather than `ItemS
 | 49 | Close inventory |
 | Any other slot | No action |
 
-## Skills Menu (Scrollable Tree)
+## Skills Menu (2D Scrollable Tree)
 
-| Slot Range | Action |
+| Slot | Action |
 |---|---|
-| 0–44 | Purchase skill at the grid position mapped by current scroll offset |
+| 0–44 | Purchase skill at the grid position mapped by current 2D scroll offsets |
 | 45 | Scroll up |
+| 47 | Scroll left |
 | 49 | Back to Root menu |
+| 51 | Scroll right |
 | 53 | Scroll down |
 | Any other slot | No action |
 

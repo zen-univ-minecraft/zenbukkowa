@@ -2,7 +2,7 @@
 
 ## Invariants
 
-1. `total_points` in `player_progress` equals the sum of the five category columns.
+1. `total_points` in `player_progress` equals the sum of the six category columns.
 2. `player_skills.tier` is never negative.
 3. `structure_claims.claimed_by` is NULL until claimed.
 4. `break_log` is append-only.

@@ -38,6 +38,7 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 - `SALVAGE` requires `AREA_RADIUS`.
 - `VOID_SIPHON` requires `AREA_RADIUS`.
 - `STRUCTURE_SENSE` requires `AREA_RADIUS`.
+- `GREEN_THUMB` requires `AREA_RADIUS`.
 
 ### TERRA
 - `AREA_DEPTH` tier 3+ requires `AREA_RADIUS` tier 3+.
@@ -68,6 +69,20 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 - `NIGHT_VISION` requires `STRUCTURE_SENSE`.
 - `FIRE_RESISTANCE` requires `NIGHT_VISION`.
 - `VOID_WALK` requires `VOID_SIPHON` tier 2.
+
+### CROP
+- `HARVEST_AURA` requires `GREEN_THUMB`.
+- `COMPOST_MASTER` requires `HARVEST_AURA`.
+- `SEED_SATCHEL` requires `COMPOST_MASTER`.
+- `FARMERS_FORTUNE` requires `SEED_SATCHEL`.
+
+---
+
+## Prerequisite Display
+
+- Every skill node in the tree must list its immediate prerequisite skills by human-readable name in the item lore.
+- The prerequisite line is shown regardless of whether the prerequisite is met.
+- Example: `Prerequisite: AREA_DEPTH tier 2`.
 
 ---
 

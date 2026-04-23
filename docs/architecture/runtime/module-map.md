@@ -25,5 +25,5 @@
 - `BreakService`: area break execution, drop consolidation, durability
 - `EventService`: timer, start, end, winner calculation
 - `ScoreboardService`: sidebar update and player sync
-- `MenuService`: inventory GUI lifecycle
+- `MenuService`: inventory GUI lifecycle and 2D scroll state
 - `HotbarMenuService`: slot-8 token lifecycle and lock enforcement

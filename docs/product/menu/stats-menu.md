@@ -9,11 +9,12 @@ Display personal stats and server leaderboard.
 - 54 slots (6 rows).
 - Row 2:
   - Slot 10: `Total Points` (nether star)
-  - Slot 12: `TERRA` (stone)
-  - Slot 13: `MINERAL` (iron ore)
-  - Slot 14: `ORGANIC` (oak log)
-  - Slot 15: `AQUATIC` (prismarine)
-  - Slot 16: `VOID` (obsidian)
+  - Slot 11: `TERRA` (stone)
+  - Slot 12: `MINERAL` (iron ore)
+  - Slot 13: `ORGANIC` (oak log)
+  - Slot 14: `AQUATIC` (prismarine)
+  - Slot 15: `VOID` (obsidian)
+  - Slot 16: `CROP` (wheat)
 - Row 3:
   - Slot 22: `Blocks Broken` (diamond pickaxe)
 - Row 6:
