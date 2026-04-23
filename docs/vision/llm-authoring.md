@@ -21,7 +21,7 @@
 ## Terminology Rules
 
 - Use `points` for currency generated from block breaking.
-- Use `category` for one of the six point types: `TERRA`, `MINERAL`, `ORGANIC`, `AQUATIC`, `VOID`, `CROP`.
+- Use `category` for one of the seven point types: `TERRA`, `MINERAL`, `ORGANIC`, `AQUATIC`, `VOID`, `CROP`, `DISCOVERY`.
 - Use `skill` for a purchasable player upgrade.
 - Use `tier` for a skill level.
 - Use `area` for the break radius and depth.

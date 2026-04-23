@@ -14,7 +14,7 @@ Define player-facing behavior for point categories, skills, block breaking, menu
 
 ## Child Index
 
-- [point-categories.md](point-categories.md): the six point types and block mappings
+- [point-categories.md](point-categories.md): the seven point types and block mappings
 - [skills/README.md](skills/README.md): skill tree, purchase rules, descriptions, and category profiles
 - [breaking/README.md](breaking/README.md): area destruction and structure bonuses
 - [menu/README.md](menu/README.md): inventory menus and interaction policy
