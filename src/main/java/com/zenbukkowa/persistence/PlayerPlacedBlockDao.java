@@ -40,6 +40,19 @@ public class PlayerPlacedBlockDao {
         }
     }
 
+    public void delete(String world, int x, int y, int z) {
+        String sql = "DELETE FROM player_placed_blocks WHERE world = ? AND x = ? AND y = ? AND z = ?";
+        try (PreparedStatement ps = db.connection().prepareStatement(sql)) {
+            ps.setString(1, world);
+            ps.setInt(2, x);
+            ps.setInt(3, y);
+            ps.setInt(4, z);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void deleteForPlayer(String playerUuid) {
         String sql = "DELETE FROM player_placed_blocks WHERE player_uuid = ?";
         try (PreparedStatement ps = db.connection().prepareStatement(sql)) {

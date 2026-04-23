@@ -18,6 +18,7 @@ public class PointService {
     private final PlayerPlacedBlockDao playerPlacedBlockDao;
     private final BlockDiscoveryDao blockDiscoveryDao;
     private final Map<UUID, PlayerProgress> cache = new ConcurrentHashMap<>();
+    private final Map<UUID, PlayerProgress> dirty = new ConcurrentHashMap<>();
     private Consumer<UUID> onChange;
     private double multiplier = 1.0;
 
@@ -51,20 +52,41 @@ public class PointService {
     }
 
     public void addPoints(UUID uuid, PointCategory category, long amount, long blocks) {
+        addPointsBatch(uuid, Map.of(category, amount), blocks);
+    }
+
+    public void addPointsBatch(UUID uuid, Map<PointCategory, Long> amounts, long blocks) {
         PlayerProgress progress = getProgress(uuid);
         synchronized (progress) {
-            progress.addPoints(category, (long) (amount * multiplier));
+            for (Map.Entry<PointCategory, Long> e : amounts.entrySet()) {
+                progress.addPoints(e.getKey(), (long) (e.getValue() * multiplier));
+            }
             progress.incrementBlocksBroken(blocks);
+        }
+        dirty.put(uuid, progress);
+        notifyChange(uuid);
+    }
+
+    public void flush(UUID uuid) {
+        PlayerProgress progress = dirty.remove(uuid);
+        if (progress == null) return;
+        synchronized (progress) {
             try {
                 playerDao.saveProgress(progress);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
-        notifyChange(uuid);
+    }
+
+    public void flushAll() {
+        for (UUID uuid : List.copyOf(dirty.keySet())) {
+            flush(uuid);
+        }
     }
 
     public void spendPoints(UUID uuid, PointCategory category, long amount) {
+        flush(uuid);
         PlayerProgress progress = getProgress(uuid);
         synchronized (progress) {
             if (progress.points(category) < amount) {
@@ -81,6 +103,7 @@ public class PointService {
     }
 
     public void spendPoints(UUID uuid, Map<PointCategory, Long> costs) {
+        flush(uuid);
         PlayerProgress progress = getProgress(uuid);
         synchronized (progress) {
             for (Map.Entry<PointCategory, Long> e : costs.entrySet()) {
@@ -101,6 +124,7 @@ public class PointService {
     }
 
     public List<Map.Entry<UUID, Long>> getLeaderboard(int limit) {
+        flushAll();
         return cache.entrySet().stream()
                 .sorted(Comparator.comparingLong((Map.Entry<UUID, PlayerProgress> e) -> e.getValue().totalPoints()).reversed()
                         .thenComparing(e -> e.getValue().points(PointCategory.MINERAL), Comparator.reverseOrder())
@@ -111,6 +135,7 @@ public class PointService {
     }
 
     public void resetPlayer(UUID uuid) {
+        flush(uuid);
         try {
             playerDao.deleteProgress(uuid);
             playerPlacedBlockDao.deleteForPlayer(uuid.toString());
@@ -123,6 +148,7 @@ public class PointService {
     }
 
     public void resetAll() {
+        flushAll();
         try {
             playerDao.deleteAllProgress();
             playerPlacedBlockDao.deleteAll();
@@ -134,6 +160,7 @@ public class PointService {
     }
 
     public void unload(UUID uuid) {
+        flush(uuid);
         cache.remove(uuid);
     }
 

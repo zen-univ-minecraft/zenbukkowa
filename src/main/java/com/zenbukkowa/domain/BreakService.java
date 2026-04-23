@@ -4,7 +4,7 @@ import com.zenbukkowa.breaker.AreaCalculator;
 import com.zenbukkowa.breaker.BlockCategoryMapper;
 import com.zenbukkowa.breaker.BreakHelper;
 import com.zenbukkowa.breaker.BreakPointCalculator;
-import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
+import com.zenbukkowa.breaker.PlacedBlockCache;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,7 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class BreakService {
@@ -25,7 +27,7 @@ public class BreakService {
     private final SkillService skillService;
     private final AreaCalculator areaCalculator;
     private final BreakPointCalculator pointCalculator;
-    private final PlayerPlacedBlockDao playerPlacedBlockDao;
+    private final PlacedBlockCache placedBlockCache;
     private final BlockDiscoveryService blockDiscoveryService;
     private final ReplantService replantService;
     private final JavaPlugin plugin;
@@ -33,14 +35,14 @@ public class BreakService {
 
     public BreakService(PointService pointService, SkillService skillService,
                         AreaCalculator areaCalculator, BreakPointCalculator pointCalculator,
-                        PlayerPlacedBlockDao playerPlacedBlockDao,
+                        PlacedBlockCache placedBlockCache,
                         BlockDiscoveryService blockDiscoveryService,
                         JavaPlugin plugin) {
         this.pointService = pointService;
         this.skillService = skillService;
         this.areaCalculator = areaCalculator;
         this.pointCalculator = pointCalculator;
-        this.playerPlacedBlockDao = playerPlacedBlockDao;
+        this.placedBlockCache = placedBlockCache;
         this.blockDiscoveryService = blockDiscoveryService;
         this.replantService = new ReplantService(plugin);
         this.plugin = plugin;
@@ -49,19 +51,18 @@ public class BreakService {
     public void onPlayerBreak(Player player, Block centerBlock) {
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
-        int radiusTier = skillService.radius(player.getUniqueId());
-        int depthTier = skillService.depth(player.getUniqueId());
-        if (radiusTier <= 0) radiusTier = 1;
-        if (depthTier <= 0) depthTier = 1;
-
         PlayerSkills skills = skillService.getSkills(player.getUniqueId());
+        int radiusValue = SkillType.AREA_RADIUS.tierValue(skills.tier(SkillType.AREA_RADIUS));
+        int depthValue = SkillType.AREA_DEPTH.tierValue(skills.tier(SkillType.AREA_DEPTH));
+
         PointCategory centerCategory = BlockCategoryMapper.categorize(centerBlock.getType());
         int bonusRadius = domainBonusRadius(skills, centerCategory);
         int bonusDepth = skillService.titanStrike(player.getUniqueId());
         int titanRadius = bonusDepth;
 
-        List<Block> blocks = areaCalculator.calculate(centerBlock, radiusTier, depthTier, bonusRadius + titanRadius, bonusDepth + titanRadius);
+        List<Block> blocks = areaCalculator.calculate(centerBlock, radiusValue, depthValue, bonusRadius + titanRadius, bonusDepth + titanRadius);
         blocks.addAll(getPillarBlocks(player, centerBlock));
+        blocks = areaCalculator.deduplicate(blocks);
 
         ItemStack tool = player.getInventory().getItemInMainHand();
         int maxBreaks = BreakHelper.remainingBreaks(tool, blocks.size());
@@ -71,6 +72,9 @@ public class BreakService {
         boolean gravityWell = skills.hasSkill(SkillType.GRAVITY_WELL);
         boolean seedSatchel = skills.hasSkill(SkillType.SEED_SATCHEL);
         boolean magnet = skills.hasSkill(SkillType.MAGNET);
+
+        Map<PointCategory, Long> batchPoints = new EnumMap<>(PointCategory.class);
+        long batchBlocks = 0;
 
         int broken = 0;
         for (int i = 0; i < Math.min(blocks.size(), maxBreaks); i++) {
@@ -85,7 +89,7 @@ public class BreakService {
                     && block.getY() == centerBlock.getY()
                     && block.getZ() == centerBlock.getZ();
 
-            boolean playerPlaced = playerPlacedBlockDao.isPlayerPlaced(block.getWorld().getName(), block.getX(), block.getY(), block.getZ());
+            boolean playerPlaced = placedBlockCache.isPlayerPlaced(block.getWorld().getName(), block.getX(), block.getY(), block.getZ());
 
             if (!isCenter) {
                 BlockBreakEvent testEvent = new BlockBreakEvent(block, player);
@@ -99,30 +103,28 @@ public class BreakService {
                 if (!shouldSalvage(salvageChance)) BreakHelper.damageTool(tool);
             }
 
+            placedBlockCache.delete(block.getWorld().getName(), block.getX(), block.getY(), block.getZ());
+
             if (!playerPlaced) {
                 int points = pointCalculator.calculate(block, category, player, skills);
                 if (points > 0) {
-                    pointService.addPoints(player.getUniqueId(), category, points, 1);
+                    batchPoints.merge(category, (long) points, Long::sum);
                 }
-                if (isCenter) {
-                    blockDiscoveryService.checkDiscovery(player, mat, skills);
-                }
-            }
-            if (playerPlaced && isCenter) {
-                playerPlacedBlockDao.record(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), player.getUniqueId().toString());
+                batchBlocks++;
+                blockDiscoveryService.checkDiscovery(player, mat, skills);
             }
             broken++;
 
             if (seedSatchel && category == PointCategory.CROP) {
-                if (isCenter) {
-                    replantService.scheduleReplant(centerBlock, mat);
-                } else {
-                    replantService.tryReplant(block, mat);
-                }
+                replantService.scheduleReplant(block, mat);
             }
             if (magnet && !isCenter) {
                 collectDrops(player, block.getLocation());
             }
+        }
+
+        if (!batchPoints.isEmpty() || batchBlocks > 0) {
+            pointService.addPointsBatch(player.getUniqueId(), batchPoints, batchBlocks);
         }
 
         if (broken > 1) {

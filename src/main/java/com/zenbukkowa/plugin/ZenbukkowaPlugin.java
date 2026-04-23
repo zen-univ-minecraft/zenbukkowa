@@ -3,6 +3,7 @@ package com.zenbukkowa.plugin;
 import com.zenbukkowa.breaker.AreaBreakListener;
 import com.zenbukkowa.breaker.AreaCalculator;
 import com.zenbukkowa.breaker.BlockPlaceListener;
+import com.zenbukkowa.breaker.PlacedBlockCache;
 import com.zenbukkowa.breaker.PistonListener;
 import com.zenbukkowa.breaker.BonemealTask;
 import com.zenbukkowa.breaker.BreakPointCalculator;
@@ -58,10 +59,12 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     config.getInt("points.base-per-block", 1),
                     config.getInt("points.ore-multiplier", 5),
                     config.getInt("points.ancient-debris-multiplier", 20));
-            BlockDiscoveryService blockDiscoveryService = new BlockDiscoveryService(blockDiscoveryDao, pointService);
+            PlacedBlockCache placedBlockCache = new PlacedBlockCache(playerPlacedBlockDao);
+            LocaleService localeService = new LocaleService(this, settingsDao, config.getString("locale.default", "en"));
+            BlockDiscoveryService blockDiscoveryService = new BlockDiscoveryService(blockDiscoveryDao, pointService, localeService);
             BreakService breakService = new BreakService(
                     pointService, skillService, areaCalculator, pointCalculator,
-                    playerPlacedBlockDao, blockDiscoveryService, this);
+                    placedBlockCache, blockDiscoveryService, this);
             SchedulerBridge scheduler = new PaperSchedulerBridge();
             EventService eventService = new EventService(pointService, this);
             ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
@@ -69,14 +72,14 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                 org.bukkit.entity.Player p = org.bukkit.Bukkit.getPlayer(uuid);
                 if (p != null) scoreboardService.updatePlayer(p);
             });
-            LocaleService localeService = new LocaleService(this, settingsDao, config.getString("locale.default", "en"));
+            scheduler.runTimer(this, pointService::flushAll, 100, 100);
             MenuService menuService = new MenuService();
             HotbarMenuService hotbarMenuService = new HotbarMenuService(this, menuService, localeService);
             StructureService structureService = new StructureService(structureDao, pointService);
 
             AreaBreakListener areaBreakListener = new AreaBreakListener(breakService);
-            BlockPlaceListener blockPlaceListener = new BlockPlaceListener(playerPlacedBlockDao);
-            PistonListener pistonListener = new PistonListener(playerPlacedBlockDao);
+            BlockPlaceListener blockPlaceListener = new BlockPlaceListener(placedBlockCache);
+            PistonListener pistonListener = new PistonListener(placedBlockCache);
             BonemealTask bonemealTask = new BonemealTask(skillService, this);
             bonemealTask.start();
             ScoreboardListener scoreboardListener = new ScoreboardListener(scoreboardService);

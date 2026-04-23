@@ -1,21 +1,20 @@
 package com.zenbukkowa.breaker;
 
-import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockPlaceListener implements Listener {
-    private final PlayerPlacedBlockDao playerPlacedBlockDao;
+    private final PlacedBlockCache placedBlockCache;
 
-    public BlockPlaceListener(PlayerPlacedBlockDao playerPlacedBlockDao) {
-        this.playerPlacedBlockDao = playerPlacedBlockDao;
+    public BlockPlaceListener(PlacedBlockCache placedBlockCache) {
+        this.placedBlockCache = placedBlockCache;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        playerPlacedBlockDao.record(
+        placedBlockCache.record(
                 event.getBlock().getWorld().getName(),
                 event.getBlock().getX(),
                 event.getBlock().getY(),

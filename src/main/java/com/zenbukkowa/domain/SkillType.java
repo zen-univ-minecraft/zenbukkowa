@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 public enum SkillType {
-    AREA_RADIUS(PointCategory.TERRA, 5, new int[]{3, 5, 7, 9, 11}),
-    AREA_DEPTH(PointCategory.TERRA, 5, new int[]{3, 5, 7, 9, 11}),
+    AREA_RADIUS(PointCategory.TERRA, 5, new int[]{1, 3, 5, 7, 9}),
+    AREA_DEPTH(PointCategory.TERRA, 5, new int[]{1, 3, 5, 7, 9}),
     PILLAR_BREAK(PointCategory.TERRA, 3, new int[]{1, 2, 3}),
     EFFICIENCY(PointCategory.TERRA, 5, new int[]{1, 2, 3, 4, 5}),
     GRAVITY_WELL(PointCategory.TERRA, 1, new int[]{1}),
@@ -48,13 +48,13 @@ public enum SkillType {
     PATHFINDER(PointCategory.DISCOVERY, 3, new int[]{1, 2, 3}),
     WORLD_WALKER(PointCategory.DISCOVERY, 3, new int[]{1, 2, 3}),
     ANGEL_WINGS(PointCategory.TERRA, 3, new int[]{1, 2, 3}, true, List.of(
-            Map.of(PointCategory.TERRA, 500, PointCategory.MINERAL, 500, PointCategory.VOID, 500),
-            Map.of(PointCategory.TERRA, 1000, PointCategory.MINERAL, 1000, PointCategory.VOID, 1000),
-            Map.of(PointCategory.TERRA, 2000, PointCategory.MINERAL, 2000, PointCategory.VOID, 2000))),
+            Map.of(PointCategory.TERRA, 5000, PointCategory.MINERAL, 5000, PointCategory.VOID, 5000),
+            Map.of(PointCategory.TERRA, 10000, PointCategory.MINERAL, 10000, PointCategory.VOID, 10000),
+            Map.of(PointCategory.TERRA, 20000, PointCategory.MINERAL, 20000, PointCategory.VOID, 20000))),
     TITAN_STRIKE(PointCategory.TERRA, 3, new int[]{1, 2, 3}, true, List.of(
-            Map.of(PointCategory.TERRA, 500, PointCategory.ORGANIC, 500, PointCategory.CROP, 500),
-            Map.of(PointCategory.TERRA, 1000, PointCategory.ORGANIC, 1000, PointCategory.CROP, 1000),
-            Map.of(PointCategory.TERRA, 2000, PointCategory.ORGANIC, 2000, PointCategory.CROP, 2000)));
+            Map.of(PointCategory.TERRA, 5000, PointCategory.ORGANIC, 5000, PointCategory.CROP, 5000),
+            Map.of(PointCategory.TERRA, 10000, PointCategory.ORGANIC, 10000, PointCategory.CROP, 10000),
+            Map.of(PointCategory.TERRA, 20000, PointCategory.ORGANIC, 20000, PointCategory.CROP, 20000)));
 
     private final PointCategory category;
     private final int maxTier;
@@ -84,7 +84,7 @@ public enum SkillType {
     }
 
     public int cost(int targetTier) {
-        return 50 * targetTier * targetTier;
+        return 500 * targetTier * targetTier;
     }
 
     public Map<PointCategory, Integer> mythicCost(int targetTier) {

@@ -26,8 +26,8 @@ public class BonemealTask implements Runnable {
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             var skills = skillService.getSkills(player.getUniqueId());
-            int organicRadius = skills.tier(SkillType.BONEMEAL_AURA);
-            int cropRadius = skills.tier(SkillType.COMPOST_MASTER);
+            int organicRadius = halved(skills.tier(SkillType.BONEMEAL_AURA));
+            int cropRadius = halved(skills.tier(SkillType.COMPOST_MASTER));
             if (organicRadius <= 0 && cropRadius <= 0) continue;
             int radius = Math.max(organicRadius, cropRadius);
             Block center = player.getLocation().getBlock();
@@ -42,6 +42,10 @@ public class BonemealTask implements Runnable {
                 }
             }
         }
+    }
+
+    private int halved(int tier) {
+        return (tier + 1) / 2;
     }
 
     private boolean isCrop(Material mat) {

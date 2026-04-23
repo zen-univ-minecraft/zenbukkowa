@@ -3,6 +3,7 @@ package com.zenbukkowa.domain;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ReplantService {
@@ -15,9 +16,8 @@ public class ReplantService {
     public void scheduleReplant(Block block, Material original) {
         Bukkit.getScheduler().runTask(plugin, () -> {
             Block current = block.getWorld().getBlockAt(block.getX(), block.getY(), block.getZ());
-            if (current.getType() == Material.AIR) {
-                tryReplant(current, original);
-            }
+            if (current.getType() != Material.AIR) return;
+            tryReplant(current, original);
         });
     }
 
@@ -32,8 +32,11 @@ public class ReplantService {
             case NETHER_WART -> Material.NETHER_WART;
             default -> null;
         };
-        if (seed != null) {
-            block.setType(seed);
+        if (seed == null) return;
+        block.setType(seed);
+        if (block.getBlockData() instanceof Ageable ageable) {
+            ageable.setAge(0);
+            block.setBlockData(ageable);
         }
     }
 }
