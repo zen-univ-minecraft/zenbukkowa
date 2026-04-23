@@ -7,6 +7,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -50,6 +51,7 @@ public class BreakService {
         double salvageChance = salvageTier * 0.15;
         boolean gravityWell = skills.hasSkill(SkillType.GRAVITY_WELL);
         boolean seedSatchel = skills.hasSkill(SkillType.SEED_SATCHEL);
+        boolean magnet = skills.hasSkill(SkillType.MAGNET);
 
         int broken = 0;
         Location dropLoc = centerBlock.getLocation().add(0.5, 0.5, 0.5);
@@ -88,6 +90,9 @@ public class BreakService {
 
             if (seedSatchel && category == PointCategory.CROP && !isCenter) {
                 tryReplant(block);
+            }
+            if (magnet && !isCenter) {
+                collectDrops(player, block.getLocation());
             }
         }
 
@@ -162,6 +167,12 @@ public class BreakService {
         d.setDamage(d.getDamage() + 1);
         tool.setItemMeta(d);
         if (d.getDamage() >= maxDurability) tool.setAmount(0);
+    }
+
+    private void collectDrops(Player player, Location loc) {
+        for (Item item : loc.getWorld().getNearbyEntitiesByType(Item.class, loc, 5, 5, 5)) {
+            item.teleport(player);
+        }
     }
 
     private boolean shouldSalvage(double chance) {

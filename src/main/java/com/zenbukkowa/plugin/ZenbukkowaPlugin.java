@@ -2,6 +2,7 @@ package com.zenbukkowa.plugin;
 
 import com.zenbukkowa.breaker.AreaBreakListener;
 import com.zenbukkowa.breaker.AreaCalculator;
+import com.zenbukkowa.breaker.BonemealTask;
 import com.zenbukkowa.breaker.BreakPointCalculator;
 import com.zenbukkowa.command.ZenbukkowaCommand;
 import com.zenbukkowa.domain.*;
@@ -66,6 +67,8 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             StructureService structureService = new StructureService(structureDao, pointService);
 
             AreaBreakListener areaBreakListener = new AreaBreakListener(breakService);
+            BonemealTask bonemealTask = new BonemealTask(skillService, this);
+            bonemealTask.start();
             ScoreboardListener scoreboardListener = new ScoreboardListener(scoreboardService);
             StructureBonusListener structureBonusListener = new StructureBonusListener(structureService);
             EffectService effectService = new EffectService(skillService);
