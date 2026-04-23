@@ -93,7 +93,7 @@ public class ScoreboardService {
                 setLine(board, 9, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC)));
                 setLine(board, 8, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID)));
                 setLine(board, 7, ChatColor.YELLOW + "CROP: " + format(progress.points(PointCategory.CROP)));
-                setLine(board, 6, "");
+                setLine(board, 6, ChatColor.LIGHT_PURPLE + "DISCOVERY: " + format(progress.points(PointCategory.DISCOVERY)));
                 setLine(board, 5, "");
             }
             case 2 -> {
