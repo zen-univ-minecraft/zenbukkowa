@@ -1,6 +1,6 @@
 package com.zenbukkowa.gui;
 
-import org.bukkit.event.Event;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,120 +27,117 @@ public class HotbarMenuListener implements Listener {
         hotbarMenuService.installDelayed(event.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getHand() == null) {
-            return;
-        }
-        ItemStack item = event.getPlayer().getInventory().getItem(event.getHand());
-        if (!hotbarMenuService.isToken(item)) {
-            return;
-        }
-        if (event.getHand() == org.bukkit.inventory.EquipmentSlot.OFF_HAND
-                && hotbarMenuService.isToken(event.getPlayer().getInventory().getItemInMainHand())) {
-            return;
-        }
+        hotbarMenuService.ensureInstalled(event.getPlayer());
+        if (event.getHand() != org.bukkit.inventory.EquipmentSlot.HAND) return;
         Action action = event.getAction();
-        boolean isRightClick = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
-        if (!isRightClick) {
+        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK
+                && action != Action.LEFT_CLICK_AIR && action != Action.LEFT_CLICK_BLOCK) {
             return;
         }
+        ItemStack held = event.getItem() != null ? event.getItem()
+                : event.getPlayer().getInventory().getItemInMainHand();
+        if (!hotbarMenuService.isToken(held)) return;
         event.setCancelled(true);
-        hotbarMenuService.openMenu(event.getPlayer());
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onDrop(PlayerDropItemEvent event) {
-        if (hotbarMenuService.isToken(event.getItemDrop().getItemStack())) {
-            event.setCancelled(true);
+        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
             hotbarMenuService.openMenu(event.getPlayer());
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    public void onInteractEntity(PlayerInteractEntityEvent event) {
+        hotbarMenuService.ensureInstalled(event.getPlayer());
+        if (event.getHand() != org.bukkit.inventory.EquipmentSlot.HAND) return;
+        if (!hotbarMenuService.isToken(event.getPlayer().getInventory().getItemInMainHand())) return;
+        event.setCancelled(true);
+        hotbarMenuService.openMenu(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        hotbarMenuService.ensureInstalled(event.getPlayer());
+        if (event.getHand() != org.bukkit.inventory.EquipmentSlot.HAND) return;
+        if (!hotbarMenuService.isToken(event.getPlayer().getInventory().getItemInMainHand())) return;
+        event.setCancelled(true);
+        hotbarMenuService.openMenu(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onDrop(PlayerDropItemEvent event) {
+        hotbarMenuService.ensureInstalled(event.getPlayer());
+        if (!hotbarMenuService.isToken(event.getItemDrop().getItemStack())) return;
+        event.setCancelled(true);
+        event.getItemDrop().remove();
+        hotbarMenuService.openMenu(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof org.bukkit.entity.Player player)) {
-            return;
-        }
-        if (event.getClick() == ClickType.NUMBER_KEY && event.getHotbarButton() == 8) {
-            event.setCancelled(true);
-            return;
-        }
-        if (isSlot8Click(event, player)) {
-            event.setCancelled(true);
-            if (event.getAction() == InventoryAction.PICKUP_ALL
-                    || event.getAction() == InventoryAction.SWAP_WITH_CURSOR
-                    || event.getAction() == InventoryAction.PLACE_ALL
-                    || event.getAction() == InventoryAction.PLACE_ONE) {
-                hotbarMenuService.openMenu(player);
-            }
-            return;
-        }
-        ItemStack current = event.getCurrentItem();
-        ItemStack cursor = event.getCursor();
-        if (hotbarMenuService.isToken(current) || hotbarMenuService.isToken(cursor)) {
-            event.setCancelled(true);
-        }
-    }
-
-    private boolean isSlot8Click(InventoryClickEvent event, org.bukkit.entity.Player player) {
-        if (event.getClickedInventory() != player.getInventory()) {
-            return false;
-        }
-        int rawSlot = event.getRawSlot();
-        if (event.getView().getTopInventory().getSize() > 0) {
-            return rawSlot == 44;
-        }
-        return rawSlot == 8;
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onInventoryDrag(InventoryDragEvent event) {
-        if (!hotbarMenuService.isToken(event.getOldCursor())) {
-            return;
-        }
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        hotbarMenuService.ensureInstalled(player);
         int topSize = event.getView().getTopInventory().getSize();
-        for (int slot : event.getRawSlots()) {
-            if (slot == 8 || (topSize > 0 && slot == 44)) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onSwap(InventoryClickEvent event) {
-        if (event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD) {
-            if (event.getHotbarButton() == 8 || hotbarMenuService.isToken(event.getCurrentItem())) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onSwapHand(PlayerSwapHandItemsEvent event) {
-        if (hotbarMenuService.isToken(event.getMainHandItem()) || hotbarMenuService.isToken(event.getOffHandItem())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onPickup(PlayerAttemptPickupItemEvent event) {
-        org.bukkit.entity.Player player = event.getPlayer();
-        ItemStack slot8 = player.getInventory().getItem(8);
-        if (hotbarMenuService.isToken(slot8)) {
+        int playerHotbarRawSlot = topSize + HotbarMenuService.SLOT;
+        boolean clickedHotbarSlot = event.getRawSlot() == playerHotbarRawSlot;
+        boolean numberKeyOnHotbarSlot = event.getClick() == ClickType.NUMBER_KEY
+                && event.getHotbarButton() == HotbarMenuService.SLOT;
+        boolean clickedToken = hotbarMenuService.isToken(event.getCurrentItem());
+        boolean cursorToken = hotbarMenuService.isToken(event.getCursor());
+        boolean numberKeyUsesToken = event.getClick() == ClickType.NUMBER_KEY
+                && event.getHotbarButton() >= 0
+                && hotbarMenuService.isToken(player.getInventory().getItem(event.getHotbarButton()));
+        if (!clickedHotbarSlot && !numberKeyOnHotbarSlot && !clickedToken && !cursorToken && !numberKeyUsesToken) {
             return;
         }
-        if (player.getInventory().getHeldItemSlot() == 8 && hotbarMenuService.isToken(event.getItem().getItemStack())) {
+        event.setCancelled(true);
+        hotbarMenuService.openFromInventoryInteraction(player);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        int topSize = event.getView().getTopInventory().getSize();
+        int playerHotbarRawSlot = topSize + HotbarMenuService.SLOT;
+        if (!event.getRawSlots().contains(playerHotbarRawSlot)) return;
+        event.setCancelled(true);
+        hotbarMenuService.ensureInstalled(player);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onSwapHand(PlayerSwapHandItemsEvent event) {
+        if (!hotbarMenuService.isToken(event.getMainHandItem()) && !hotbarMenuService.isToken(event.getOffHandItem())) {
+            return;
+        }
+        event.setCancelled(true);
+        hotbarMenuService.ensureInstalled(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPickup(PlayerAttemptPickupItemEvent event) {
+        Player player = event.getPlayer();
+        if (hotbarMenuService.isToken(player.getInventory().getItem(HotbarMenuService.SLOT))) return;
+        if (player.getInventory().getHeldItemSlot() == HotbarMenuService.SLOT
+                && hotbarMenuService.isToken(event.getItem().getItemStack())) {
             event.setCancelled(true);
             hotbarMenuService.install(player);
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onItemHeld(PlayerItemHeldEvent event) {
-        if (event.getNewSlot() == 8) {
+        if (event.getNewSlot() == HotbarMenuService.SLOT) {
             hotbarMenuService.installIfMissing(event.getPlayer());
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (!(event.getPlayer() instanceof Player player)) return;
+        if (!menuTitleIsPluginMenu(event.getView().getTitle())) return;
+        hotbarMenuService.resyncAfterMenuClose(player);
+    }
+
+    private boolean menuTitleIsPluginMenu(String title) {
+        return title != null && title.startsWith(String.valueOf(org.bukkit.ChatColor.BLACK));
     }
 }

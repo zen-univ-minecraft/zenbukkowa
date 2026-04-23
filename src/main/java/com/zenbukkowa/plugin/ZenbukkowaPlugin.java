@@ -65,7 +65,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             StructureBonusListener structureBonusListener = new StructureBonusListener(structureService);
             EffectService effectService = new EffectService(skillService);
             EffectListener effectListener = new EffectListener(effectService, scheduler, this);
-            MenuListener menuListener = new MenuListener(menuService, skillService, pointService,
+            MenuListener menuListener = new MenuListener(menuService, hotbarMenuService, skillService, pointService,
                     scoreboardService, effectService, eventService, localeService);
             HotbarMenuListener hotbarMenuListener = new HotbarMenuListener(hotbarMenuService);
 

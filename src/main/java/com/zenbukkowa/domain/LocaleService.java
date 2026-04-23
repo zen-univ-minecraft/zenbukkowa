@@ -21,8 +21,9 @@ public class LocaleService {
         this.defaultLang = defaultLang;
         loadLang(plugin, "en");
         loadLang(plugin, "ja");
-        for (UUID uuid : settingsDao.loadAllLocales().keySet()) {
-            playerLocales.put(uuid, settingsDao.loadAllLocales().get(uuid));
+        Map<UUID, String> loaded = settingsDao.loadAllLocales();
+        for (Map.Entry<UUID, String> entry : loaded.entrySet()) {
+            playerLocales.put(entry.getKey(), entry.getValue());
         }
     }
 

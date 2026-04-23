@@ -8,6 +8,12 @@ Define unambiguous slot-to-action mapping for every menu, with absolute protecti
 
 Use `event.getSlot()` (slot within the clicked top inventory) rather than `ItemStack.equals()` to determine which item was clicked.
 
+## Cancellation Rule
+
+- Call `event.setCancelled(true)` immediately when a menu is open.
+- Do this BEFORE checking `event.getClickedInventory()` or returning early.
+- If the event is not cancelled first, cursor-held items can be placed into menu slots.
+
 ## Held-Item Guard
 
 - A player may hold an item on their cursor and click a menu slot.
@@ -84,3 +90,4 @@ Use `event.getSlot()` (slot within the clicked top inventory) rather than `ItemS
 - Cancel all clicks in the top inventory unconditionally.
 - Cancel all drags that touch the top inventory when a menu is open.
 - Menu items must never be picked up, moved, swapped, or dropped.
+- After any click that triggers a menu transition, force a 1-tick deferred inventory resync to prevent ghost cursor state.

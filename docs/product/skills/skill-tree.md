@@ -16,20 +16,10 @@ Define the visual tree layout, scroll behavior, and node coordinates for the ski
 
 ## Virtual Grid
 
-- **Width:** 9 columns.
-- **Height:** 12 rows (rows 0–11).
+- **Width:** 9 columns (0–8).
+- **Height:** 12 rows (0–11).
 - **Viewport:** 5 rows tall (rows visible at once).
-- **Max scroll offset:** 7 (offset = first visible row; shows rows 7–11 at default offset).
-
----
-
-## Branch Layout
-
-- **TERRA trunk:** column 4, rows 7–11.
-- **MINERAL branch:** left side, column 2, rows 5–10.
-- **ORGANIC branch:** left side, column 1, rows 3–8.
-- **AQUATIC branch:** right side, column 6, rows 4–9.
-- **VOID branch:** right side, column 7, rows 2–7.
+- **Max scroll offset:** 7 (`GRID_ROWS - VIEWPORT_ROWS`).
 
 ---
 
@@ -42,7 +32,8 @@ Define the visual tree layout, scroll behavior, and node coordinates for the ski
 | AREA_RADIUS | 11 | 4 | — |
 | AREA_DEPTH | 9 | 4 | AREA_RADIUS |
 | PILLAR_BREAK | 7 | 4 | AREA_DEPTH |
-| TERRA_BLESSING | 5 | 4 | PILLAR_BREAK |
+| GRAVITY_WELL | 5 | 4 | AREA_DEPTH |
+| TERRA_BLESSING | 3 | 4 | PILLAR_BREAK |
 
 ### MINERAL Branch (column 2)
 
@@ -61,43 +52,43 @@ Define the visual tree layout, scroll behavior, and node coordinates for the ski
 | LEAF_CONSUME | 8 | 1 | — (requires AREA_RADIUS) |
 | ROOT_RAZE | 6 | 1 | LEAF_CONSUME |
 | SAPLING_REPLANT | 4 | 1 | ROOT_RAZE |
-| NATURE_TOUCH | 2 | 1 | SAPLING_REPLANT |
+| BONEMEAL_AURA | 2 | 1 | SAPLING_REPLANT |
+| NATURE_TOUCH | 0 | 1 | BONEMEAL_AURA |
 
 ### AQUATIC Branch (column 6)
 
 | Skill | Row | Col | Parent |
 |---|---|---|---|
-| TIDE_BREAKER | 9 | 6 | — (requires AREA_RADIUS) |
-| SALVAGE | 7 | 6 | — (requires AREA_RADIUS) |
-| CONDUIT_AURA | 5 | 6 | TIDE_BREAKER |
-| FROST_WALKER | 3 | 6 | TIDE_BREAKER |
-| DEEP_DIVE | 1 | 6 | CONDUIT_AURA |
+| TIDE_BREAKER | 10 | 6 | — (requires AREA_RADIUS) |
+| SALVAGE | 8 | 6 | — (requires AREA_RADIUS) |
+| CONDUIT_AURA | 6 | 6 | TIDE_BREAKER |
+| FROST_WALKER | 4 | 6 | TIDE_BREAKER |
+| DEEP_DIVE | 2 | 6 | CONDUIT_AURA |
 
-### VOID Branch (column 7)
+### VOID Branch (columns 7–8)
 
 | Skill | Row | Col | Parent |
 |---|---|---|---|
-| VOID_SIPHON | 7 | 7 | — (requires AREA_RADIUS) |
-| STRUCTURE_SENSE | 5 | 7 | — (requires AREA_RADIUS) |
-| NIGHT_VISION | 3 | 7 | STRUCTURE_SENSE |
-| FIRE_RESISTANCE | 1 | 7 | NIGHT_VISION |
+| VOID_SIPHON | 8 | 7 | — (requires AREA_RADIUS) |
+| STRUCTURE_SENSE | 6 | 8 | — (requires AREA_RADIUS) |
+| NIGHT_VISION | 4 | 8 | STRUCTURE_SENSE |
+| FIRE_RESISTANCE | 2 | 8 | NIGHT_VISION |
+| VOID_WALK | 4 | 7 | VOID_SIPHON |
 
 ### Cross-Branch
 
 | Skill | Row | Col | Parent |
 |---|---|---|---|
-| EFFICIENCY | 8 | 3 | HASTE_AURA |
-| GRAVITY_WELL | 6 | 4 | AREA_DEPTH |
-| BONEMEAL_AURA | 2 | 1 | SAPLING_REPLANT |
-| VOID_WALK | 3 | 5 | VOID_SIPHON |
+| EFFICIENCY | 9 | 3 | HASTE_AURA |
 
 ---
 
 ## Connection Rendering
 
 - A `GREEN_STAINED_GLASS_PANE` is placed in every grid cell between a parent and child node.
-- Panes have no lore and a gray name (` `) so they are not interactive.
+- Panes have no lore and a blank name (` `) so they are not interactive.
 - Horizontal connections (cross-branch) use `GREEN_STAINED_GLASS_PANE` as well.
+- When a connection cell overlaps with a node cell, the node takes precedence.
 
 ---
 
@@ -111,9 +102,11 @@ Define the visual tree layout, scroll behavior, and node coordinates for the ski
 
 ### State
 - Scroll offset is stored per-player in `MenuService`.
-- Default offset is `7` (bottom of tree visible).
+- Default offset is `7` (bottom of tree visible; rows 7–11).
 - Up-arrow is disabled when offset == 0.
 - Down-arrow is disabled when offset == max.
+- **Scroll state persists across inventory transitions and after close.**
+- It is reset to default only when the Skills menu is opened from the Root menu.
 
 ### Interaction
 1. Clicking a skill node attempts purchase of the next tier.

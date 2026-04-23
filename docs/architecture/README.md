@@ -14,3 +14,4 @@ Define module boundaries, persistence contracts, and runtime rules.
 
 - [runtime/README.md](runtime/README.md): package ownership and lifecycle contracts
 - [data/README.md](data/README.md): SQLite schema and consistency expectations
+- [gui/README.md](gui/README.md): menu system decomposition and state ownership

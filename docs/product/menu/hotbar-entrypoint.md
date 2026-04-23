@@ -21,6 +21,7 @@ Expose all point features through a deterministic right-end hotbar control that 
 5. Menu item interaction opens menu even when the underlying interaction is cancelled by protection.
 6. Menu item interactions are silent on success.
 7. Off-hand events are ignored if the main hand holds the token (prevents double-open).
+8. Entity interaction (right-click mob, armor stand, etc.) while holding the token cancels the interaction and opens the menu.
 
 ## Raw Slot Mapping
 
@@ -28,7 +29,20 @@ Expose all point features through a deterministic right-end hotbar control that 
 - In a custom inventory view: player hotbar slot `8` is raw slot `44`.
 - Both raw slots must be treated as the menu trigger.
 
+## Item Identification
+
+- The token carries a `PersistentDataContainer` marker (`zenbukkowa:menu-token`).
+- `HotbarMenuService.isToken()` validates the marker, not the display name.
+- This prevents forgery via anvil renaming or command-given items.
+
 ## Failure Contract
 
 1. If menu cannot open, player receives explicit failure reason.
 2. Failure to open does not unlock or remove slot `8` reservation.
+
+## Cursor Resync
+
+- After any inventory interaction that involves the token, schedule a 1-tick deferred task to:
+  1. Reinstall the token if missing.
+  2. Clear the token from the cursor if present.
+  3. Call `player.updateInventory()` to force client sync.

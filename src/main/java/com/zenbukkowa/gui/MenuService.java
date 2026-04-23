@@ -14,9 +14,8 @@ public class MenuService {
         openMenus.put(player.getUniqueId(), menuId);
     }
 
-    public void clear(Player player) {
+    public void clearOpen(Player player) {
         openMenus.remove(player.getUniqueId());
-        skillScroll.remove(player.getUniqueId());
     }
 
     public String getOpen(Player player) {
@@ -28,10 +27,14 @@ public class MenuService {
     }
 
     public void setScrollOffset(Player player, int offset) {
-        skillScroll.put(player.getUniqueId(), offset);
+        skillScroll.put(player.getUniqueId(), Math.max(0, Math.min(offset, SkillTreeLayout.MAX_SCROLL)));
     }
 
     public int getScrollOffset(Player player) {
         return skillScroll.getOrDefault(player.getUniqueId(), SkillTreeLayout.MAX_SCROLL);
+    }
+
+    public void resetScroll(Player player) {
+        skillScroll.remove(player.getUniqueId());
     }
 }
