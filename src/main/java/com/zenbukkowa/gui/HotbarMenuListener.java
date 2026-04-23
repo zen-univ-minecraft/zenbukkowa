@@ -86,11 +86,17 @@ public class HotbarMenuListener implements Listener {
         boolean numberKeyUsesToken = event.getClick() == ClickType.NUMBER_KEY
                 && event.getHotbarButton() >= 0
                 && hotbarMenuService.isToken(player.getInventory().getItem(event.getHotbarButton()));
-        if (!clickedHotbarSlot && !numberKeyOnHotbarSlot && !clickedToken && !cursorToken && !numberKeyUsesToken) {
+
+        // Number-key swap involving token: cancel only, do not open menu
+        if (numberKeyOnHotbarSlot || numberKeyUsesToken) {
+            event.setCancelled(true);
             return;
         }
-        event.setCancelled(true);
-        hotbarMenuService.openFromInventoryInteraction(player);
+        // Direct click on token slot or token item: cancel and open menu
+        if (clickedHotbarSlot || clickedToken || cursorToken) {
+            event.setCancelled(true);
+            hotbarMenuService.openFromInventoryInteraction(player);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
