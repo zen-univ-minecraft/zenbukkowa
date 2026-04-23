@@ -48,6 +48,7 @@ class ResetTest {
         pointService.addPoints(a, PointCategory.TERRA, 100, 1);
         pointService.addPoints(b, PointCategory.MINERAL, 200, 1);
         skillService.purchase(a, SkillType.AREA_RADIUS, 1);
+        skillService.purchase(b, SkillType.AREA_RADIUS, 1);
         skillService.purchase(b, SkillType.HASTE_AURA, 1);
 
         pointService.resetAll();

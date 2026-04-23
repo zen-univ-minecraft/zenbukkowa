@@ -39,6 +39,7 @@ class SkillServiceTest {
     @Test
     void cannotExceedMaxTier() {
         UUID uuid = UUID.randomUUID();
+        service.purchase(uuid, SkillType.AREA_RADIUS, 1);
         service.purchase(uuid, SkillType.HASTE_AURA, 1);
         service.purchase(uuid, SkillType.HASTE_AURA, 2);
         service.purchase(uuid, SkillType.HASTE_AURA, 3);
@@ -64,10 +65,29 @@ class SkillServiceTest {
     @Test
     void voidSiphonRequiresStructureSense() {
         UUID uuid = UUID.randomUUID();
+        service.purchase(uuid, SkillType.AREA_RADIUS, 1);
         service.purchase(uuid, SkillType.VOID_SIPHON, 1);
         assertFalse(service.canPurchase(uuid, SkillType.VOID_SIPHON, 2));
         service.purchase(uuid, SkillType.STRUCTURE_SENSE, 1);
         assertTrue(service.canPurchase(uuid, SkillType.VOID_SIPHON, 2));
+    }
+
+    @Test
+    void crossCategoryRootsRequireAreaRadius() {
+        UUID uuid = UUID.randomUUID();
+        assertFalse(service.canPurchase(uuid, SkillType.HASTE_AURA, 1));
+        assertFalse(service.canPurchase(uuid, SkillType.LEAF_CONSUME, 1));
+        assertFalse(service.canPurchase(uuid, SkillType.TIDE_BREAKER, 1));
+        assertFalse(service.canPurchase(uuid, SkillType.SALVAGE, 1));
+        assertFalse(service.canPurchase(uuid, SkillType.VOID_SIPHON, 1));
+        assertFalse(service.canPurchase(uuid, SkillType.STRUCTURE_SENSE, 1));
+        service.purchase(uuid, SkillType.AREA_RADIUS, 1);
+        assertTrue(service.canPurchase(uuid, SkillType.HASTE_AURA, 1));
+        assertTrue(service.canPurchase(uuid, SkillType.LEAF_CONSUME, 1));
+        assertTrue(service.canPurchase(uuid, SkillType.TIDE_BREAKER, 1));
+        assertTrue(service.canPurchase(uuid, SkillType.SALVAGE, 1));
+        assertTrue(service.canPurchase(uuid, SkillType.VOID_SIPHON, 1));
+        assertTrue(service.canPurchase(uuid, SkillType.STRUCTURE_SENSE, 1));
     }
 
     @Test

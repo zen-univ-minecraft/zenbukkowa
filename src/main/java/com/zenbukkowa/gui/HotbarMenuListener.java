@@ -4,6 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -37,6 +38,11 @@ public class HotbarMenuListener implements Listener {
         }
         if (event.getHand() == org.bukkit.inventory.EquipmentSlot.OFF_HAND
                 && hotbarMenuService.isToken(event.getPlayer().getInventory().getItemInMainHand())) {
+            return;
+        }
+        Action action = event.getAction();
+        boolean isRightClick = action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK;
+        if (!isRightClick) {
             return;
         }
         event.setCancelled(true);

@@ -43,4 +43,11 @@ class SkillTreeLayoutTest {
     void maxScrollIsNonNegative() {
         assertTrue(SkillTreeLayout.MAX_SCROLL >= 0);
     }
+
+    @Test
+    void terraRootIsAtBottom() {
+        SkillTreeLayout.Node areaRadius = SkillTreeLayout.findNode(com.zenbukkowa.domain.SkillType.AREA_RADIUS);
+        assertNotNull(areaRadius);
+        assertEquals(SkillTreeLayout.GRID_ROWS - 1, areaRadius.row());
+    }
 }

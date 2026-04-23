@@ -42,56 +42,62 @@ menu:
 
 help:
   rules:
-    - "&6=== Rules ==="
-    - "&e1. Break blocks to earn points in 5 categories."
-    - "&e2. Spend points to unlock skills."
-    - "&e3. First tier costs 50 points."
-    - "&e4. Destroy structures for huge bonuses."
-    - "&e5. Highest total score wins."
-    - "&e6. No refunds on skill purchases."
-    - "&e7. Containers are protected."
+    children:
+      overview:
+        label: "Overview"
+        text: "&6=== Rules ===\n&e1. Break blocks to earn points in 5 categories.\n&e2. Spend points to unlock skills.\n&e3. First tier costs 50 points.\n&e4. Destroy structures for huge bonuses.\n&e5. Highest total score wins.\n&e6. No refunds on skill purchases.\n&e7. Containers are protected."
+      scoring:
+        label: "Scoring"
+        text: "&6=== Scoring ===\n&eBreak blocks to earn category points.\n&eTERRA: stone, dirt, sand, gravel\n&eMINERAL: ores, ancient debris\n&eORGANIC: logs, leaves, crops\n&eAQUATIC: prismarine, coral, sponge\n&eVOID: obsidian, netherrack, end stone\n&eBase blocks = 1 pt, ores = 5 pts, ancient debris = 20 pts"
+      protection:
+        label: "Protection"
+        text: "&6=== Protection ===\n&eContainers and bedrock cannot be broken.\n&eStructure bonuses are one-time only."
   points:
-    - "&6=== Points System ==="
-    - "&eBreak blocks to earn category points."
-    - "&eTERRA: stone, dirt, sand, gravel"
-    - "&eMINERAL: ores, ancient debris"
-    - "&eORGANIC: logs, leaves, crops"
-    - "&eAQUATIC: prismarine, coral, sponge"
-    - "&eVOID: obsidian, netherrack, end stone"
-    - "&eBase blocks = 1 pt, ores = 5 pts, ancient debris = 20 pts"
+    children:
+      ores:
+        label: "Ores"
+        text: "&6=== Ores ===\n&eCoal, iron, copper, gold, redstone, lapis, diamond, emerald, ancient debris, amethyst give MINERAL points.\n&eAncient debris gives 20 points."
+      terra:
+        label: "TERRA"
+        text: "&6=== TERRA Blocks ===\n&eStone, cobblestone, deepslate, tuff, dirt, sand, gravel, granite, terracotta give TERRA points."
+      aquatic:
+        label: "AQUATIC"
+        text: "&6=== AQUATIC Blocks ===\n&ePrismarine, sea lantern, coral, sponge, kelp, clay give AQUATIC points."
   skills:
-    - "&6=== Skills ==="
-    - "&eSpend category points to unlock skills."
-    - "&eSkills have tiers and prerequisites."
-    - "&eBuild a path: TERRA area -> MINERAL haste -> etc."
-    - "&eOpen Skills menu to see all unlocks."
-    - "&eScroll up and down to explore the tree."
+    children:
+      tiers:
+        label: "Tiers"
+        text: "&6=== Skill Tiers ===\n&eEach skill has up to 5 tiers.\n&eHigher tiers cost more points.\n&eYou must buy tiers in order."
+      prerequisites:
+        label: "Prerequisites"
+        text: "&6=== Prerequisites ===\n&eSome skills require other skills first.\n&eTERRA is the root of the tree.\n&eAll branches require AREA_RADIUS tier 1."
+      costs:
+        label: "Costs"
+        text: "&6=== Skill Costs ===\n&eCost formula: 50 * tier * tier.\n&eTier 1 = 50 points.\n&eTier 2 = 200 points.\n&eTier 3 = 450 points."
   breaking:
-    - "&6=== Area Breaking ==="
-    - "&eBreaking one block breaks an area."
-    - "&eRadius = horizontal spread. Depth = vertical layers."
-    - "&eMax area = 9x9x9 at tier 5."
-    - "&eContainers and bedrock are protected."
+    children:
+      radius:
+        label: "Radius & Depth"
+        text: "&6=== Area Breaking ===\n&eBreaking one block breaks an area.\n&eRadius = horizontal spread. Depth = vertical layers.\n&eMax area = 9x9x9 at tier 5.\n&eContainers and bedrock are protected."
+      protection:
+        label: "Protection"
+        text: "&6=== Break Protection ===\n&eContainers and bedrock are never broken.\n&eArea breaks respect claims and protections."
   structures:
-    - "&6=== Structures ==="
-    - "&eDestroy 80% of an Ocean Monument or Woodland Mansion."
-    - "&eEarn +5000 points and a server broadcast."
-    - "&eOnly the first player to destroy each gets the bonus."
-  tips:
-    - "&6=== Tips ==="
-    - "&e1. Balance your categories for faster skill unlocks."
-    - "&e2. Mine deep for VOID bonus with Void Siphon."
-    - "&e3. Use Tide Breaker to clear Ocean Monuments."
-    - "&e4. Buy Haste Aura early for faster mining."
-    - "&e5. Check the scoreboard to track progress."
+    children:
+      monument:
+        label: "Ocean Monument"
+        text: "&6=== Ocean Monument ===\n&eDestroy 80% of an Ocean Monument.\n&eEarn +5000 points and a server broadcast.\n&eOnly the first player to destroy each gets the bonus."
+      mansion:
+        label: "Woodland Mansion"
+        text: "&6=== Woodland Mansion ===\n&eDestroy 80% of a Woodland Mansion.\n&eEarn +5000 points and a server broadcast.\n&eOnly the first player to destroy each gets the bonus."
   commands:
-    - "&6=== Commands ==="
-    - "&e/zenbukkowa start - start event (op)"
-    - "&e/zenbukkowa end - end event (op)"
-    - "&e/zenbukkowa status - check event status"
-    - "&e/zenbukkowa reset <player> - reset player (op)"
-    - "&e/zenbukkowa resetall - reset all players (op)"
-    - "&eClick the Nether Star in hotbar slot 8 for menus."
+    children:
+      op:
+        label: "Operator"
+        text: "&6=== Operator Commands ===\n&e/zenbukkowa start - start event\n&e/zenbukkowa end - end event\n&e/zenbukkowa reset <player> - reset player\n&e/zenbukkowa resetall - reset all players"
+      player:
+        label: "Player"
+        text: "&6=== Player Commands ===\n&e/zenbukkowa status - check event status\n&eClick the Nether Star in hotbar slot 8 for menus."
 
 skill:
   area_radius:

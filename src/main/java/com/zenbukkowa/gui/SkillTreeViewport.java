@@ -19,20 +19,17 @@ public class SkillTreeViewport {
         PlayerSkills skills = skillService.getSkills(player.getUniqueId());
         PlayerProgress progress = pointService.getProgress(player.getUniqueId());
 
-        // clear viewport area
         for (int i = 0; i < 45; i++) {
             inv.setItem(i, null);
         }
 
-        // connections
         for (SkillTreeLayout.Connection conn : SkillTreeLayout.connections()) {
             int slot = toSlot(conn.row(), conn.col(), scrollOffset);
             if (slot >= 0 && slot < 45) {
-                inv.setItem(slot, MenuItems.filler(Material.STICK));
+                inv.setItem(slot, MenuItems.filler(Material.GREEN_STAINED_GLASS_PANE));
             }
         }
 
-        // skill nodes
         for (SkillTreeLayout.Node node : SkillTreeLayout.nodes()) {
             int slot = toSlot(node.row(), node.col(), scrollOffset);
             if (slot < 0 || slot >= 45) continue;
@@ -40,7 +37,6 @@ public class SkillTreeViewport {
             inv.setItem(slot, item);
         }
 
-        // controls
         boolean canUp = scrollOffset > 0;
         boolean canDown = scrollOffset < SkillTreeLayout.MAX_SCROLL;
         inv.setItem(45, canUp ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_up"))
@@ -50,7 +46,6 @@ public class SkillTreeViewport {
         inv.setItem(53, canDown ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_down"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
 
-        // fill remaining nulls with gray panes
         for (int i = 0; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null) inv.setItem(i, MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
         }
@@ -94,8 +89,8 @@ public class SkillTreeViewport {
             lore.add(ChatColor.DARK_GREEN + "Maxed");
         }
 
-        Material mat = maxed ? Material.LIME_STAINED_GLASS_PANE
-                : (canBuy ? Material.GREEN_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+        Material mat = maxed ? Material.EMERALD_BLOCK
+                : (canBuy ? Material.GREEN_WOOL : Material.GRAY_WOOL);
         String name = categoryColor(skill.category()) + skill.name().replace('_', ' ')
                 + (maxed ? "" : " (Tier " + currentTier + ")");
 

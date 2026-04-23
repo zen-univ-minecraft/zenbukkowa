@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class MenuListener implements Listener {
@@ -41,12 +42,12 @@ public class MenuListener implements Listener {
         event.setCancelled(true);
         if (event.getClickedInventory() != event.getInventory()) return;
         ItemStack clicked = event.getCurrentItem();
-        // FIX: do not return early when clicked is null (player may hold an item on cursor)
         if (clicked != null && clicked.getType() == Material.GRAY_STAINED_GLASS_PANE) return;
         int slot = event.getSlot();
 
         if (open.startsWith("help_")) {
             if (slot == 49) HelpMenu.open(player, menuService, locale);
+            else HelpTopicMenu.onClick(player, menuService, locale, open.substring(5), slot);
             return;
         }
         switch (open) {
@@ -56,6 +57,20 @@ public class MenuListener implements Listener {
             case "leaderboard" -> handleLeaderboard(player, slot);
             case "settings" -> handleSettings(player, slot);
             case "help" -> handleHelp(player, slot);
+        }
+    }
+
+    @EventHandler
+    public void onDrag(InventoryDragEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (menuService.getOpen(player) == null) return;
+        int topSize = event.getView().getTopInventory().getSize();
+        if (topSize == 0) return;
+        for (int rawSlot : event.getRawSlots()) {
+            if (rawSlot < topSize) {
+                event.setCancelled(true);
+                return;
+            }
         }
     }
 
@@ -122,7 +137,7 @@ public class MenuListener implements Listener {
     }
 
     private void handleLeaderboard(Player player, int slot) {
-        if (slot == 49) StatsMenu.openPersonal(player, menuService, pointService, locale);
+        if (slot == 49) RootMenu.open(player, menuService, locale);
     }
 
     private void handleSettings(Player player, int slot) {
