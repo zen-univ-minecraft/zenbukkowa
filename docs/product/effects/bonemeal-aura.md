@@ -11,8 +11,16 @@ Automatically apply bonemeal to growable blocks near players who own BONEMEAL_AU
 ## Effect
 
 - For each player with `BONEMEAL_AURA` or `COMPOST_MASTER`, scan a cubic radius around the player.
-- Radius = `tier` blocks horizontally, ±2 vertically.
+- Radius = `(tier + 1) / 2` blocks horizontally, ±2 vertically.
 - Every crop block inside the radius receives one bonemeal application.
+
+## Radius Table
+
+| Tier | Radius | Horizontal area |
+|---|---|---|
+| 1 | 1 | 3x3 |
+| 2 | 1 | 3x3 |
+| 3 | 2 | 5x5 |
 
 ## Crop Blocks
 

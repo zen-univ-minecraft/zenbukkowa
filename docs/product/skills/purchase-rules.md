@@ -17,10 +17,10 @@ Define how players buy skills with points, including costs, prerequisites, and r
 
 ## Cost Formula
 
-- Base cost for tier N of a normal skill: `50 * N * N` points of that category.
-- Example: `AREA_RADIUS` tier 1 costs `50 TERRA` points.
-- Example: `AREA_RADIUS` tier 3 costs `450 TERRA` points.
-- Example: `HASTE_AURA` tier V costs `1250 MINERAL` points.
+- Base cost for tier N of a normal skill: `500 * N * N` points of that category.
+- Example: `AREA_RADIUS` tier 1 costs `500 TERRA` points.
+- Example: `AREA_RADIUS` tier 3 costs `4500 TERRA` points.
+- Example: `HASTE_AURA` tier V costs `12500 MINERAL` points.
 
 ## Tier Order
 
@@ -98,8 +98,8 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 ### Cost Structure
 
 - Mythic skills consume points from **multiple categories simultaneously**.
-- The cost is fixed per tier and is NOT computed by `50 * N * N`.
-- Example: `ANGEL_WINGS` tier 1 costs `500 TERRA + 500 MINERAL + 500 VOID`.
+- The cost is fixed per tier and is NOT computed by `500 * N * N`.
+- Example: `ANGEL_WINGS` tier 1 costs `5000 TERRA + 5000 MINERAL + 5000 VOID`.
 
 ### Prerequisites
 
@@ -110,7 +110,7 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 ### Display
 
 - Mythic skill lore lists every required category and cost.
-- Example: `Cost: 500 TERRA + 500 MINERAL + 500 VOID`.
+- Example: `Cost: 5000 TERRA + 5000 MINERAL + 5000 VOID`.
 - Prerequisite skills are listed by name.
 
 ---

@@ -14,10 +14,12 @@ Break surrounding blocks automatically when a player breaks one target block.
 
 - Horizontal: square centered on target block, radius from `AREA_RADIUS` skill.
 - Vertical: column centered on target block Y, depth from `AREA_DEPTH` skill.
-- Tier values are converted to radius/depth via `(tierValue - 1) / 2`.
-- `AREA_RADIUS` tier values: `[3, 5, 7, 9, 11]` (tiers 1-5).
-- `AREA_DEPTH` tier values: `[3, 5, 7, 9, 11]` (tiers 1-5).
-- Max area: 11x11x11 when both skills are at tier 5.
+- Radius formula: `(tierValue - 1) / 2`.
+- `AREA_RADIUS` tier values: `[1, 3, 5, 7, 9]` (tiers 1-5).
+- `AREA_DEPTH` tier values: `[1, 3, 5, 7, 9]` (tiers 1-5).
+- Tier 1 with both skills produces a 1x1x1 area (center block only).
+- Tier 5 with both skills produces a 9x9x9 area.
+- Absolute caps are read from `config.yml` (`area.max-radius`, `area.max-depth`).
 
 ## Block Filtering
 
@@ -27,6 +29,7 @@ Break surrounding blocks automatically when a player breaks one target block.
 - Chests, ender chests, shulker boxes, barrels, hoppers, dispensers, and droppers are excluded.
 - Player-placed blocks are excluded from point awards but are still broken.
 - Immature crops are excluded from point awards but are still broken.
+- When a block is broken, its coordinate is removed from the player-placed tracking set.
 
 ## Tool Durability
 
@@ -44,7 +47,13 @@ Break surrounding blocks automatically when a player breaks one target block.
 ## Crop Skills
 
 - `SEED_SATCHEL` automatically replants wheat, carrots, potatoes, beetroot, and nether wart on mature crop break.
+- Replanting schedules on the next server tick so the break is fully committed first.
 - Points are only awarded for blocks that are actually broken (respects protection cancellations).
+
+## Pillar Break
+
+- `PILLAR_BREAK` adds blocks directly above the center block.
+- These blocks are deduplicated against the main area list so they are never processed twice.
 
 ## Safety
 

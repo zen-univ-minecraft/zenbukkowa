@@ -10,6 +10,7 @@ Reward players for encountering and breaking diverse naturally occurring block t
 2. The first time a player breaks a naturally occurring block type, they receive a DISCOVERY point bonus.
 3. Player-placed blocks do not trigger discovery bonuses.
 4. Discovery bonuses are awarded in addition to normal category points.
+5. Discovery is checked for **every** block in an area break, not just the center block.
 
 ## Eligible Blocks
 
@@ -39,7 +40,7 @@ The DISCOVERY skill tree branch improves discovery bonuses:
 
 ## Feedback
 
-- On first break of a new block type: chat message `Discovered {BlockName}! +{N} DISCOVERY points`.
+- On first break of a new block type: localized chat message `Discovered {BlockName}! +{N} DISCOVERY points`.
 - Discovery progress is shown in the Stats menu.
 
 ## Persistence
