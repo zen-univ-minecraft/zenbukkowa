@@ -19,54 +19,8 @@ public class SkillTreeLayout {
     public record Node(SkillType skill, int row, int col) {}
     public record Connection(int row, int col) {}
 
-    private static final List<Node> NODES = List.of(
-            new Node(SkillType.ANGEL_WINGS, 0, 8),
-            new Node(SkillType.TITAN_STRIKE, 0, 10),
-            new Node(SkillType.AREA_RADIUS, 12, 9),
-            new Node(SkillType.AREA_DEPTH, 10, 9),
-            new Node(SkillType.PILLAR_BREAK, 8, 9),
-            new Node(SkillType.GRAVITY_WELL, 6, 9),
-            new Node(SkillType.TERRA_BLESSING, 4, 9),
-            new Node(SkillType.HASTE_AURA, 11, 6),
-            new Node(SkillType.FORTUNE_TOUCH, 9, 6),
-            new Node(SkillType.VEIN_MINER, 7, 6),
-            new Node(SkillType.MAGNET, 5, 6),
-            new Node(SkillType.CRYSTAL_VISION, 3, 6),
-            new Node(SkillType.BLAST_MINING, 1, 6),
-            new Node(SkillType.LEAF_CONSUME, 11, 3),
-            new Node(SkillType.ROOT_RAZE, 9, 3),
-            new Node(SkillType.SAPLING_REPLANT, 7, 3),
-            new Node(SkillType.BONEMEAL_AURA, 5, 3),
-            new Node(SkillType.NATURE_TOUCH, 3, 3),
-            new Node(SkillType.WILD_GROWTH, 1, 3),
-            new Node(SkillType.TIDE_BREAKER, 11, 12),
-            new Node(SkillType.SALVAGE, 11, 14),
-            new Node(SkillType.CONDUIT_AURA, 7, 12),
-            new Node(SkillType.FROST_WALKER, 9, 13),
-            new Node(SkillType.DEEP_DIVE, 3, 12),
-            new Node(SkillType.TSUNAMI, 1, 12),
-            new Node(SkillType.VOID_SIPHON, 9, 15),
-            new Node(SkillType.STRUCTURE_SENSE, 9, 17),
-            new Node(SkillType.NIGHT_VISION, 5, 17),
-            new Node(SkillType.FIRE_RESISTANCE, 3, 17),
-            new Node(SkillType.VOID_WALK, 5, 15),
-            new Node(SkillType.VOID_RIFT, 1, 15),
-            new Node(SkillType.GREEN_THUMB, 11, 0),
-            new Node(SkillType.HARVEST_AURA, 9, 0),
-            new Node(SkillType.COMPOST_MASTER, 7, 0),
-            new Node(SkillType.SEED_SATCHEL, 5, 1),
-            new Node(SkillType.FARMERS_FORTUNE, 3, 0),
-            new Node(SkillType.HARVEST_WAVE, 1, 0),
-            new Node(SkillType.EFFICIENCY, 10, 10),
-            new Node(SkillType.CURIOUS_MINER, 11, 18),
-            new Node(SkillType.GEOLOGIST, 9, 18),
-            new Node(SkillType.SURVEYOR, 7, 18),
-            new Node(SkillType.CARTOGRAPHER, 5, 18),
-            new Node(SkillType.PATHFINDER, 3, 18),
-            new Node(SkillType.WORLD_WALKER, 1, 18)
-    );
-
     private static final Map<SkillType, SkillType> PARENTS = buildParents();
+    private static final List<Node> NODES = SkillTreeGenerator.generateNodes(PARENTS);
 
     private static Map<SkillType, SkillType> buildParents() {
         Map<SkillType, SkillType> map = new EnumMap<>(SkillType.class);
