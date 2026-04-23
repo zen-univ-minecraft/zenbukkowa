@@ -2,10 +2,10 @@ package com.zenbukkowa.domain;
 
 import com.zenbukkowa.breaker.AreaCalculator;
 import com.zenbukkowa.breaker.BlockCategoryMapper;
+import com.zenbukkowa.breaker.BreakPointCalculator;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,20 +19,15 @@ public class BreakService {
     private final PointService pointService;
     private final SkillService skillService;
     private final AreaCalculator areaCalculator;
+    private final BreakPointCalculator pointCalculator;
     private final Random random = new Random();
-    private final int basePoints;
-    private final int oreMultiplier;
-    private final int ancientDebrisMultiplier;
 
     public BreakService(PointService pointService, SkillService skillService,
-                        AreaCalculator areaCalculator, int basePoints,
-                        int oreMultiplier, int ancientDebrisMultiplier) {
+                        AreaCalculator areaCalculator, BreakPointCalculator pointCalculator) {
         this.pointService = pointService;
         this.skillService = skillService;
         this.areaCalculator = areaCalculator;
-        this.basePoints = basePoints;
-        this.oreMultiplier = oreMultiplier;
-        this.ancientDebrisMultiplier = ancientDebrisMultiplier;
+        this.pointCalculator = pointCalculator;
     }
 
     public void onPlayerBreak(Player player, Block centerBlock) {
@@ -50,17 +45,11 @@ public class BreakService {
         int maxBreaks = calculateMaxBreaks(tool, blocks.size());
 
         PlayerSkills skills = skillService.getSkills(player.getUniqueId());
-        int fortuneTier = skills.tier(SkillType.FORTUNE_TOUCH);
-        double fortuneChance = fortuneTier * 0.10;
-        int voidTier = skills.tier(SkillType.VOID_SIPHON);
-        double voidBonus = voidTier * 0.25;
         boolean leafConsume = skills.hasSkill(SkillType.LEAF_CONSUME);
         int salvageTier = skills.tier(SkillType.SALVAGE);
         double salvageChance = salvageTier * 0.15;
-        double terraBonus = 1 + (skills.tier(SkillType.TERRA_BLESSING) * 0.10);
-        double natureBonus = 1 + (skills.tier(SkillType.NATURE_TOUCH) * 0.10);
-        double deepBonus = 1 + (skills.tier(SkillType.DEEP_DIVE) * 0.10);
         boolean gravityWell = skills.hasSkill(SkillType.GRAVITY_WELL);
+        boolean seedSatchel = skills.hasSkill(SkillType.SEED_SATCHEL);
 
         int broken = 0;
         Location dropLoc = centerBlock.getLocation().add(0.5, 0.5, 0.5);
@@ -71,17 +60,12 @@ public class BreakService {
             PointCategory category = BlockCategoryMapper.categorize(mat);
             if (category == null) continue;
             if (!leafConsume && mat.name().endsWith("_LEAVES")) continue;
-            if (isContainer(mat)) continue;
-
-            int points = calculatePoints(block, category, fortuneChance, voidBonus, player.getWorld(),
-                    terraBonus, natureBonus, deepBonus, player);
-            if (points > 0) {
-                pointService.addPoints(player.getUniqueId(), category, points, 1);
-            }
+            if (isProtected(mat)) continue;
 
             boolean isCenter = block.getX() == centerBlock.getX()
                     && block.getY() == centerBlock.getY()
                     && block.getZ() == centerBlock.getZ();
+
             if (!isCenter) {
                 BlockBreakEvent testEvent = new BlockBreakEvent(block, player);
                 player.getServer().getPluginManager().callEvent(testEvent);
@@ -94,9 +78,16 @@ public class BreakService {
                     block.setType(Material.AIR);
                 }
                 if (!shouldSalvage(salvageChance)) damageTool(tool);
-                broken++;
-            } else {
-                broken++;
+            }
+
+            int points = pointCalculator.calculate(block, category, player, skills);
+            if (points > 0) {
+                pointService.addPoints(player.getUniqueId(), category, points, 1);
+            }
+            broken++;
+
+            if (seedSatchel && category == PointCategory.CROP && !isCenter) {
+                tryReplant(block);
             }
         }
 
@@ -123,41 +114,33 @@ public class BreakService {
         return extra;
     }
 
-    private int calculatePoints(Block block, PointCategory category, double fortuneChance,
-                                double voidBonus, World world,
-                                double terraBonus, double natureBonus, double deepBonus,
-                                Player player) {
-        int value = BlockCategoryMapper.pointValue(block.getType());
-        if (value == 0) value = basePoints;
-        if (category == PointCategory.MINERAL) value = Math.max(value, oreMultiplier);
-        if (block.getType() == Material.ANCIENT_DEBRIS) value = ancientDebrisMultiplier;
-        if (random.nextDouble() < fortuneChance) value *= 2;
-        if (voidBonus > 0 && (block.getY() < 0 || isVoidWorld(world))) {
-            value = (int) (value * (1 + voidBonus));
-        }
-        if (category == PointCategory.TERRA) value = (int) (value * terraBonus);
-        if (category == PointCategory.ORGANIC) value = (int) (value * natureBonus);
-        if (category == PointCategory.AQUATIC && player.isInWater()) {
-            value = (int) (value * deepBonus);
-        }
-        int veinTier = skillService.getSkills(player.getUniqueId()).tier(SkillType.VEIN_MINER);
-        if (veinTier > 0 && category == PointCategory.MINERAL && value > basePoints) {
-            value += veinTier;
-        }
-        return value;
-    }
-
-    private boolean isVoidWorld(World world) {
-        return world.getEnvironment() == World.Environment.NETHER
-                || world.getEnvironment() == World.Environment.THE_END;
-    }
-
-    private boolean isContainer(Material mat) {
+    private boolean isProtected(Material mat) {
         return mat == Material.CHEST || mat == Material.TRAPPED_CHEST
                 || mat == Material.BARREL || mat == Material.SHULKER_BOX
                 || mat.name().endsWith("_SHULKER_BOX")
                 || mat == Material.HOPPER || mat == Material.DISPENSER
-                || mat == Material.DROPPER;
+                || mat == Material.DROPPER || mat == Material.ENDER_CHEST
+                || mat == Material.BEDROCK || mat == Material.BARRIER
+                || mat == Material.COMMAND_BLOCK || mat == Material.REPEATING_COMMAND_BLOCK
+                || mat == Material.CHAIN_COMMAND_BLOCK || mat == Material.STRUCTURE_BLOCK
+                || mat == Material.JIGSAW || mat == Material.SPAWNER
+                || mat == Material.TRIAL_SPAWNER || mat == Material.VAULT;
+    }
+
+    private void tryReplant(Block block) {
+        Material below = block.getRelative(0, -1, 0).getType();
+        if (below != Material.FARMLAND && below != Material.SOUL_SAND) return;
+        Material seed = switch (block.getType()) {
+            case WHEAT -> Material.WHEAT;
+            case CARROTS -> Material.CARROTS;
+            case POTATOES -> Material.POTATOES;
+            case BEETROOTS -> Material.BEETROOTS;
+            case NETHER_WART -> Material.NETHER_WART;
+            default -> null;
+        };
+        if (seed != null) {
+            block.setType(seed);
+        }
     }
 
     private int calculateMaxBreaks(ItemStack tool, int targetCount) {

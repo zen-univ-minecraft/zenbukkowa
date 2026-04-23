@@ -33,6 +33,15 @@ class PointServiceTest {
     }
 
     @Test
+    void addCropPointsIncreasesTotal() {
+        UUID uuid = UUID.randomUUID();
+        service.addPoints(uuid, PointCategory.CROP, 50, 10);
+        assertEquals(50, service.getProgress(uuid).points(PointCategory.CROP));
+        assertEquals(50, service.getProgress(uuid).totalPoints());
+        assertEquals(10, service.getProgress(uuid).blocksBroken());
+    }
+
+    @Test
     void spendPointsReducesBalance() {
         UUID uuid = UUID.randomUUID();
         service.addPoints(uuid, PointCategory.MINERAL, 500, 1);
@@ -44,6 +53,14 @@ class PointServiceTest {
     void spendPointsThrowsWhenInsufficient() {
         UUID uuid = UUID.randomUUID();
         assertThrows(IllegalStateException.class, () -> service.spendPoints(uuid, PointCategory.TERRA, 1));
+    }
+
+    @Test
+    void spendCropPointsReducesBalance() {
+        UUID uuid = UUID.randomUUID();
+        service.addPoints(uuid, PointCategory.CROP, 500, 1);
+        service.spendPoints(uuid, PointCategory.CROP, 50);
+        assertEquals(450, service.getProgress(uuid).points(PointCategory.CROP));
     }
 
     @Test

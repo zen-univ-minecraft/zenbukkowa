@@ -81,6 +81,7 @@ class SkillServiceTest {
         assertFalse(service.canPurchase(uuid, SkillType.SALVAGE, 1));
         assertFalse(service.canPurchase(uuid, SkillType.VOID_SIPHON, 1));
         assertFalse(service.canPurchase(uuid, SkillType.STRUCTURE_SENSE, 1));
+        assertFalse(service.canPurchase(uuid, SkillType.GREEN_THUMB, 1));
         service.purchase(uuid, SkillType.AREA_RADIUS, 1);
         assertTrue(service.canPurchase(uuid, SkillType.HASTE_AURA, 1));
         assertTrue(service.canPurchase(uuid, SkillType.LEAF_CONSUME, 1));
@@ -88,12 +89,29 @@ class SkillServiceTest {
         assertTrue(service.canPurchase(uuid, SkillType.SALVAGE, 1));
         assertTrue(service.canPurchase(uuid, SkillType.VOID_SIPHON, 1));
         assertTrue(service.canPurchase(uuid, SkillType.STRUCTURE_SENSE, 1));
+        assertTrue(service.canPurchase(uuid, SkillType.GREEN_THUMB, 1));
+    }
+
+    @Test
+    void cropBranchRequiresPrerequisites() {
+        UUID uuid = UUID.randomUUID();
+        service.purchase(uuid, SkillType.AREA_RADIUS, 1);
+        assertTrue(service.canPurchase(uuid, SkillType.GREEN_THUMB, 1));
+        service.purchase(uuid, SkillType.GREEN_THUMB, 1);
+        assertTrue(service.canPurchase(uuid, SkillType.HARVEST_AURA, 1));
+        service.purchase(uuid, SkillType.HARVEST_AURA, 1);
+        assertTrue(service.canPurchase(uuid, SkillType.COMPOST_MASTER, 1));
+        service.purchase(uuid, SkillType.COMPOST_MASTER, 1);
+        assertTrue(service.canPurchase(uuid, SkillType.SEED_SATCHEL, 1));
+        service.purchase(uuid, SkillType.SEED_SATCHEL, 1);
+        assertTrue(service.canPurchase(uuid, SkillType.FARMERS_FORTUNE, 1));
     }
 
     @Test
     void tierOneCostsFifty() {
         assertEquals(50, SkillType.AREA_RADIUS.cost(1));
         assertEquals(50, SkillType.HASTE_AURA.cost(1));
+        assertEquals(50, SkillType.GREEN_THUMB.cost(1));
     }
 
     @Test

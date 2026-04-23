@@ -2,6 +2,7 @@ package com.zenbukkowa.plugin;
 
 import com.zenbukkowa.breaker.AreaBreakListener;
 import com.zenbukkowa.breaker.AreaCalculator;
+import com.zenbukkowa.breaker.BreakPointCalculator;
 import com.zenbukkowa.command.ZenbukkowaCommand;
 import com.zenbukkowa.domain.*;
 import com.zenbukkowa.gui.HotbarMenuListener;
@@ -46,11 +47,12 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             PointService pointService = new PointService(playerDao);
             SkillService skillService = new SkillService(playerDao);
             AreaCalculator areaCalculator = new AreaCalculator();
-            BreakService breakService = new BreakService(
-                    pointService, skillService, areaCalculator,
+            BreakPointCalculator pointCalculator = new BreakPointCalculator(
                     config.getInt("points.base-per-block", 1),
                     config.getInt("points.ore-multiplier", 5),
                     config.getInt("points.ancient-debris-multiplier", 20));
+            BreakService breakService = new BreakService(
+                    pointService, skillService, areaCalculator, pointCalculator);
             SchedulerBridge scheduler = new PaperSchedulerBridge();
             EventService eventService = new EventService(pointService, this);
             ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
