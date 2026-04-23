@@ -73,4 +73,17 @@ class PointServiceTest {
         assertEquals(b, board.get(0).getKey());
         assertEquals(a, board.get(1).getKey());
     }
+
+    @Test
+    void multiplierScalesPoints() {
+        UUID uuid = UUID.randomUUID();
+        service.setMultiplier(2.0);
+        service.addPoints(uuid, PointCategory.TERRA, 100, 1);
+        assertEquals(200, service.getProgress(uuid).points(PointCategory.TERRA));
+    }
+
+    @Test
+    void defaultMultiplierIsOne() {
+        assertEquals(1.0, service.getMultiplier());
+    }
 }

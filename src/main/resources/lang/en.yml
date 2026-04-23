@@ -167,6 +167,20 @@ skill:
     description: "Auto-replant harvested crops"
   farmers_fortune:
     description: "Bonus CROP points multiplier"
+  blast_mining:
+    description: "Bonus radius for mineral blocks"
+  wild_growth:
+    description: "Bonus radius for organic blocks"
+  tsunami:
+    description: "Bonus radius for aquatic blocks"
+  void_rift:
+    description: "Bonus radius for void blocks"
+  harvest_wave:
+    description: "Bonus radius for crop blocks"
+  angel_wings:
+    description: "Creative flight during events"
+  titan_strike:
+    description: "Global radius and depth boost"
 
 category:
   terra:

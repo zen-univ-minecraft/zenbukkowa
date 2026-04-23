@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SkillTreeViewport {
 
@@ -84,7 +85,6 @@ public class SkillTreeViewport {
         int currentTier = skills.tier(skill);
         boolean maxed = currentTier >= skill.maxTier();
         boolean canBuy = !maxed && skillService.canPurchase(player.getUniqueId(), skill, currentTier + 1);
-        int cost = maxed ? 0 : skill.cost(currentTier + 1);
 
         List<String> lore = new ArrayList<>();
         String desc = locale.get(player.getUniqueId(), "skill." + skill.name().toLowerCase() + ".description");
@@ -99,17 +99,31 @@ public class SkillTreeViewport {
         if (currentTier > 0) lore.add(ChatColor.GREEN + "Current: tier " + currentTier);
         if (!maxed) {
             lore.add(ChatColor.YELLOW + "Next: tier " + (currentTier + 1));
-            lore.add(ChatColor.GOLD + "Cost: " + cost + " " + skill.category() + " Points");
-            long balance = progress.points(skill.category());
-            lore.add(ChatColor.GRAY + "You have: " + balance);
-            if (!canBuy) lore.add(balance < cost ? ChatColor.RED + "Insufficient points" : ChatColor.RED + "Missing prerequisite");
+            if (skill.isMythic()) {
+                Map<PointCategory, Integer> costs = skill.mythicCost(currentTier + 1);
+                lore.add(ChatColor.GOLD + "Cost:");
+                for (Map.Entry<PointCategory, Integer> e : costs.entrySet()) {
+                    long balance = progress.points(e.getKey());
+                    lore.add(ChatColor.GRAY + "  " + e.getKey() + ": " + e.getValue()
+                            + ChatColor.DARK_GRAY + " (have " + balance + ")");
+                }
+                boolean anyShort = costs.entrySet().stream().anyMatch(e -> progress.points(e.getKey()) < e.getValue());
+                if (!canBuy) lore.add(anyShort ? ChatColor.RED + "Insufficient points" : ChatColor.RED + "Missing prerequisite");
+            } else {
+                int cost = skill.cost(currentTier + 1);
+                lore.add(ChatColor.GOLD + "Cost: " + cost + " " + skill.category() + " Points");
+                long balance = progress.points(skill.category());
+                lore.add(ChatColor.GRAY + "You have: " + balance);
+                if (!canBuy) lore.add(balance < cost ? ChatColor.RED + "Insufficient points" : ChatColor.RED + "Missing prerequisite");
+            }
         } else {
             lore.add(ChatColor.DARK_GREEN + "Maxed");
         }
 
         Material mat = maxed ? Material.EMERALD_BLOCK
                 : (canBuy ? Material.GREEN_WOOL : Material.GRAY_WOOL);
-        String name = categoryColor(skill.category()) + skill.name().replace('_', ' ')
+        ChatColor color = skill.isMythic() ? ChatColor.LIGHT_PURPLE : categoryColor(skill.category());
+        String name = color + skill.name().replace('_', ' ')
                 + (maxed ? "" : " (Tier " + currentTier + ")");
 
         ItemStack item = new ItemStack(mat);

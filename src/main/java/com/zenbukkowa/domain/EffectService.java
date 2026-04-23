@@ -9,9 +9,11 @@ import org.bukkit.potion.PotionEffectType;
 
 public class EffectService {
     private final SkillService skillService;
+    private final EventService eventService;
 
-    public EffectService(SkillService skillService) {
+    public EffectService(SkillService skillService, EventService eventService) {
         this.skillService = skillService;
+        this.eventService = eventService;
     }
 
     public void applyAll(Player player) {
@@ -23,6 +25,7 @@ public class EffectService {
         applyFrostWalker(player);
         applyConduitAura(player);
         applyVoidWalk(player);
+        applyAngelWings(player);
     }
 
     public void applyTideBreaker(Player player) {
@@ -68,6 +71,15 @@ public class EffectService {
         int tier = skillService.getSkills(player.getUniqueId()).tier(SkillType.VOID_WALK);
         if (tier > 0) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 400, Math.min(tier - 1, 2), true, false, true));
+        }
+    }
+
+    public void applyAngelWings(Player player) {
+        boolean has = skillService.getSkills(player.getUniqueId()).hasSkill(SkillType.ANGEL_WINGS);
+        boolean canFly = has && eventService.isRunning();
+        if (canFly != player.getAllowFlight()) {
+            player.setAllowFlight(canFly);
+            if (!canFly) player.setFlying(false);
         }
     }
 

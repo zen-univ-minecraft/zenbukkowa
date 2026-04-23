@@ -35,4 +35,15 @@ class SettingsDaoTest {
         var all = dao.loadAllLocales();
         assertNull(all.get(uuid));
     }
+
+    @Test
+    void saveAndLoadSetting() {
+        dao.saveSetting("point_multiplier", "2.5");
+        assertEquals("2.5", dao.loadSetting("point_multiplier", "1.0"));
+    }
+
+    @Test
+    void loadSettingReturnsDefaultWhenMissing() {
+        assertEquals("1.0", dao.loadSetting("point_multiplier", "1.0"));
+    }
 }

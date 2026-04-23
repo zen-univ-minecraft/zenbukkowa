@@ -47,21 +47,32 @@ public class SkillService {
             case VEIN_MINER -> skills.tier(SkillType.FORTUNE_TOUCH) >= 2;
             case MAGNET -> skills.tier(SkillType.VEIN_MINER) >= 1;
             case CRYSTAL_VISION -> skills.hasSkill(SkillType.MAGNET);
+            case BLAST_MINING -> skills.hasSkill(SkillType.CRYSTAL_VISION);
             case ROOT_RAZE -> skills.hasSkill(SkillType.LEAF_CONSUME);
             case SAPLING_REPLANT -> skills.hasSkill(SkillType.ROOT_RAZE);
             case BONEMEAL_AURA -> skills.hasSkill(SkillType.SAPLING_REPLANT);
             case NATURE_TOUCH -> skills.tier(SkillType.BONEMEAL_AURA) >= 2;
+            case WILD_GROWTH -> skills.hasSkill(SkillType.NATURE_TOUCH);
             case FROST_WALKER -> skills.hasSkill(SkillType.TIDE_BREAKER);
             case CONDUIT_AURA -> skills.hasSkill(SkillType.TIDE_BREAKER);
             case DEEP_DIVE -> skills.tier(SkillType.CONDUIT_AURA) >= 2;
+            case TSUNAMI -> skills.hasSkill(SkillType.DEEP_DIVE);
             case VOID_SIPHON -> targetTier < 2 || skills.hasSkill(SkillType.STRUCTURE_SENSE);
             case NIGHT_VISION -> skills.hasSkill(SkillType.STRUCTURE_SENSE);
             case FIRE_RESISTANCE -> skills.hasSkill(SkillType.NIGHT_VISION);
             case VOID_WALK -> skills.tier(SkillType.VOID_SIPHON) >= 2;
+            case VOID_RIFT -> skills.hasSkill(SkillType.VOID_WALK);
             case HARVEST_AURA -> skills.hasSkill(SkillType.GREEN_THUMB);
             case COMPOST_MASTER -> skills.hasSkill(SkillType.HARVEST_AURA);
             case SEED_SATCHEL -> skills.hasSkill(SkillType.COMPOST_MASTER);
             case FARMERS_FORTUNE -> skills.hasSkill(SkillType.SEED_SATCHEL);
+            case HARVEST_WAVE -> skills.hasSkill(SkillType.FARMERS_FORTUNE);
+            case ANGEL_WINGS -> skills.tier(SkillType.AREA_RADIUS) >= 3
+                    && skills.tier(SkillType.HASTE_AURA) >= 3
+                    && skills.tier(SkillType.VOID_SIPHON) >= 2;
+            case TITAN_STRIKE -> skills.tier(SkillType.AREA_RADIUS) >= 3
+                    && skills.tier(SkillType.NATURE_TOUCH) >= 2
+                    && skills.tier(SkillType.FARMERS_FORTUNE) >= 2;
             default -> true;
         };
     }
@@ -80,6 +91,7 @@ public class SkillService {
     public int depth(UUID uuid) { return getSkills(uuid).tier(SkillType.AREA_DEPTH); }
     public int haste(UUID uuid) { return getSkills(uuid).tier(SkillType.HASTE_AURA); }
     public int efficiency(UUID uuid) { return getSkills(uuid).tier(SkillType.EFFICIENCY); }
+    public int titanStrike(UUID uuid) { return getSkills(uuid).tier(SkillType.TITAN_STRIKE); }
 
     public void resetPlayer(UUID uuid) {
         try {

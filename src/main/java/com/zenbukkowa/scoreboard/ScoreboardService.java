@@ -21,6 +21,8 @@ public class ScoreboardService {
     private final JavaPlugin plugin;
     private final Map<UUID, Scoreboard> boards = new HashMap<>();
     private final Map<UUID, Boolean> enabled = new HashMap<>();
+    private int currentPage = 0;
+    private int tickCounter = 0;
 
     public ScoreboardService(PointService pointService, SkillService skillService,
                              EventService eventService, SchedulerBridge scheduler, JavaPlugin plugin) {
@@ -54,6 +56,11 @@ public class ScoreboardService {
     }
 
     public void tick() {
+        tickCounter++;
+        if (tickCounter >= 10) {
+            tickCounter = 0;
+            currentPage = (currentPage + 1) % 3;
+        }
         updateAll();
     }
 
@@ -73,11 +80,33 @@ public class ScoreboardService {
         setLine(board, 12, ChatColor.GRAY + "-------------");
         setLine(board, 11, ChatColor.YELLOW + "Time: " + formatTime());
         setLine(board, 10, ChatColor.WHITE + "Total: " + format(progress.totalPoints()));
-        setLine(board, 9, ChatColor.GREEN + "TERRA: " + format(progress.points(PointCategory.TERRA)));
-        setLine(board, 8, ChatColor.AQUA + "MINERAL: " + format(progress.points(PointCategory.MINERAL)));
-        setLine(board, 7, ChatColor.DARK_GREEN + "ORGANIC: " + format(progress.points(PointCategory.ORGANIC)));
-        setLine(board, 6, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC)));
-        setLine(board, 5, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID)));
+
+        switch (currentPage) {
+            case 0 -> {
+                setLine(board, 9, ChatColor.GREEN + "TERRA: " + format(progress.points(PointCategory.TERRA)));
+                setLine(board, 8, ChatColor.AQUA + "MINERAL: " + format(progress.points(PointCategory.MINERAL)));
+                setLine(board, 7, ChatColor.DARK_GREEN + "ORGANIC: " + format(progress.points(PointCategory.ORGANIC)));
+                setLine(board, 6, "");
+                setLine(board, 5, "");
+            }
+            case 1 -> {
+                setLine(board, 9, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC)));
+                setLine(board, 8, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID)));
+                setLine(board, 7, ChatColor.YELLOW + "CROP: " + format(progress.points(PointCategory.CROP)));
+                setLine(board, 6, "");
+                setLine(board, 5, "");
+            }
+            case 2 -> {
+                PointCategory best = Arrays.stream(PointCategory.values())
+                        .max(Comparator.comparingLong(progress::points)).orElse(PointCategory.TERRA);
+                setLine(board, 9, ChatColor.GOLD + "Best: " + best + " " + format(progress.points(best)));
+                setLine(board, 8, ChatColor.GRAY + (eventService.isRunning() ? "Event Running" : eventService.isFinished() ? "Finished" : "Waiting"));
+                setLine(board, 7, "");
+                setLine(board, 6, "");
+                setLine(board, 5, "");
+            }
+        }
+
         setLine(board, 4, ChatColor.GRAY + "-------------");
         int r = skillService.radius(player.getUniqueId());
         int d = skillService.depth(player.getUniqueId());

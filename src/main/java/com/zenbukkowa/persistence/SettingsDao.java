@@ -18,6 +18,12 @@ public class SettingsDao {
                     locale TEXT NOT NULL DEFAULT 'en'
                 )
                 """);
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS server_settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL
+                )
+                """);
         }
     }
 
@@ -41,5 +47,27 @@ public class SettingsDao {
             }
         } catch (SQLException ignored) {}
         return map;
+    }
+
+    public void saveSetting(String key, String value) {
+        String sql = "INSERT INTO server_settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value";
+        try (PreparedStatement ps = db.connection().prepareStatement(sql)) {
+            ps.setString(1, key);
+            ps.setString(2, value);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String loadSetting(String key, String defaultValue) {
+        String sql = "SELECT value FROM server_settings WHERE key = ?";
+        try (PreparedStatement ps = db.connection().prepareStatement(sql)) {
+            ps.setString(1, key);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("value");
+            }
+        } catch (SQLException ignored) {}
+        return defaultValue;
     }
 }

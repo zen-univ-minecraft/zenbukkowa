@@ -6,10 +6,7 @@ import com.zenbukkowa.breaker.BonemealTask;
 import com.zenbukkowa.breaker.BreakPointCalculator;
 import com.zenbukkowa.command.ZenbukkowaCommand;
 import com.zenbukkowa.domain.*;
-import com.zenbukkowa.gui.HotbarMenuListener;
-import com.zenbukkowa.gui.HotbarMenuService;
-import com.zenbukkowa.gui.MenuListener;
-import com.zenbukkowa.gui.MenuService;
+import com.zenbukkowa.gui.*;
 import com.zenbukkowa.persistence.PlayerDao;
 import com.zenbukkowa.persistence.SettingsDao;
 import com.zenbukkowa.persistence.SqliteDatabase;
@@ -46,6 +43,9 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             settingsDao.initialize();
 
             PointService pointService = new PointService(playerDao);
+            double savedMultiplier = Double.parseDouble(settingsDao.loadSetting("point_multiplier", "1.0"));
+            pointService.setMultiplier(savedMultiplier);
+
             SkillService skillService = new SkillService(playerDao);
             AreaCalculator areaCalculator = new AreaCalculator();
             BreakPointCalculator pointCalculator = new BreakPointCalculator(
@@ -71,10 +71,12 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             bonemealTask.start();
             ScoreboardListener scoreboardListener = new ScoreboardListener(scoreboardService);
             StructureBonusListener structureBonusListener = new StructureBonusListener(structureService);
-            EffectService effectService = new EffectService(skillService);
+            EffectService effectService = new EffectService(skillService, eventService);
             EffectListener effectListener = new EffectListener(effectService, scheduler, this);
-            MenuListener menuListener = new MenuListener(menuService, hotbarMenuService, skillService, pointService,
-                    scoreboardService, effectService, eventService, localeService);
+            SkillsPurchaseHandler skillsPurchaseHandler = new SkillsPurchaseHandler(
+                    menuService, skillService, pointService, scoreboardService, effectService, localeService);
+            MenuListener menuListener = new MenuListener(menuService, hotbarMenuService, skillsPurchaseHandler,
+                    scoreboardService, effectService, eventService, localeService, settingsDao);
             HotbarMenuListener hotbarMenuListener = new HotbarMenuListener(hotbarMenuService);
 
             services = new Services(

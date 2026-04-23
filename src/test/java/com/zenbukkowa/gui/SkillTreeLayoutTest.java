@@ -52,7 +52,8 @@ class SkillTreeLayoutTest {
     void terraRootIsAtBottom() {
         SkillTreeLayout.Node areaRadius = SkillTreeLayout.findNode(com.zenbukkowa.domain.SkillType.AREA_RADIUS);
         assertNotNull(areaRadius);
-        assertEquals(SkillTreeLayout.GRID_ROWS - 1, areaRadius.row());
+        int maxRow = SkillTreeLayout.nodes().stream().mapToInt(SkillTreeLayout.Node::row).max().orElse(0);
+        assertEquals(maxRow, areaRadius.row());
     }
 
     @Test

@@ -15,6 +15,7 @@ public class PointService {
     private final PlayerDao playerDao;
     private final Map<UUID, PlayerProgress> cache = new ConcurrentHashMap<>();
     private Consumer<UUID> onChange;
+    private double multiplier = 1.0;
 
     public PointService(PlayerDao playerDao) {
         this.playerDao = playerDao;
@@ -22,6 +23,14 @@ public class PointService {
 
     public void setOnChange(Consumer<UUID> onChange) {
         this.onChange = onChange;
+    }
+
+    public void setMultiplier(double multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    public double getMultiplier() {
+        return multiplier;
     }
 
     public PlayerProgress getProgress(UUID uuid) {
@@ -37,7 +46,7 @@ public class PointService {
     public void addPoints(UUID uuid, PointCategory category, long amount, long blocks) {
         PlayerProgress progress = getProgress(uuid);
         synchronized (progress) {
-            progress.addPoints(category, amount);
+            progress.addPoints(category, (long) (amount * multiplier));
             progress.incrementBlocksBroken(blocks);
             try {
                 playerDao.saveProgress(progress);
@@ -55,6 +64,26 @@ public class PointService {
                 throw new IllegalStateException("Insufficient " + category + " points");
             }
             progress.addPoints(category, -amount);
+            try {
+                playerDao.saveProgress(progress);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        notifyChange(uuid);
+    }
+
+    public void spendPoints(UUID uuid, Map<PointCategory, Long> costs) {
+        PlayerProgress progress = getProgress(uuid);
+        synchronized (progress) {
+            for (Map.Entry<PointCategory, Long> e : costs.entrySet()) {
+                if (progress.points(e.getKey()) < e.getValue()) {
+                    throw new IllegalStateException("Insufficient " + e.getKey() + " points");
+                }
+            }
+            for (Map.Entry<PointCategory, Long> e : costs.entrySet()) {
+                progress.addPoints(e.getKey(), -e.getValue());
+            }
             try {
                 playerDao.saveProgress(progress);
             } catch (SQLException e) {

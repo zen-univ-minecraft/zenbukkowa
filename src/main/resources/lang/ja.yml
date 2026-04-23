@@ -167,6 +167,20 @@ skill:
     description: "収穫後に自動再植"
   farmers_fortune:
     description: "CROPポイントボーナス"
+  blast_mining:
+    description: "鉱石ブロックのボーナス範囲"
+  wild_growth:
+    description: "植物ブロックのボーナス範囲"
+  tsunami:
+    description: "水中ブロックのボーナス範囲"
+  void_rift:
+    description: "VOIDブロックのボーナス範囲"
+  harvest_wave:
+    description: "作物ブロックのボーナス範囲"
+  angel_wings:
+    description: "イベント中にクリエイティブ飛行"
+  titan_strike:
+    description: "全カテゴリの範囲と深度増加"
 
 category:
   terra:

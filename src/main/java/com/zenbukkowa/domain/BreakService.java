@@ -39,13 +39,18 @@ public class BreakService {
         if (radiusTier <= 0) radiusTier = 1;
         if (depthTier <= 0) depthTier = 1;
 
-        List<Block> blocks = areaCalculator.calculate(centerBlock, radiusTier, depthTier);
+        PlayerSkills skills = skillService.getSkills(player.getUniqueId());
+        PointCategory centerCategory = BlockCategoryMapper.categorize(centerBlock.getType());
+        int bonusRadius = domainBonusRadius(skills, centerCategory);
+        int bonusDepth = skillService.titanStrike(player.getUniqueId());
+        int titanRadius = bonusDepth;
+
+        List<Block> blocks = areaCalculator.calculate(centerBlock, radiusTier, depthTier, bonusRadius + titanRadius, bonusDepth + titanRadius);
         blocks.addAll(getPillarBlocks(player, centerBlock));
 
         ItemStack tool = player.getInventory().getItemInMainHand();
         int maxBreaks = calculateMaxBreaks(tool, blocks.size());
 
-        PlayerSkills skills = skillService.getSkills(player.getUniqueId());
         boolean leafConsume = skills.hasSkill(SkillType.LEAF_CONSUME);
         int salvageTier = skills.tier(SkillType.SALVAGE);
         double salvageChance = salvageTier * 0.15;
@@ -99,6 +104,17 @@ public class BreakService {
         if (broken > 1) {
             player.incrementStatistic(org.bukkit.Statistic.MINE_BLOCK, centerBlock.getType(), broken - 1);
         }
+    }
+
+    private int domainBonusRadius(PlayerSkills skills, PointCategory category) {
+        return switch (category) {
+            case MINERAL -> skills.tier(SkillType.BLAST_MINING);
+            case ORGANIC -> skills.tier(SkillType.WILD_GROWTH);
+            case AQUATIC -> skills.tier(SkillType.TSUNAMI);
+            case VOID -> skills.tier(SkillType.VOID_RIFT);
+            case CROP -> skills.tier(SkillType.HARVEST_WAVE);
+            default -> 0;
+        };
     }
 
     private List<Block> getPillarBlocks(Player player, Block center) {

@@ -1,6 +1,7 @@
 package com.zenbukkowa.gui;
 
 import com.zenbukkowa.domain.*;
+import com.zenbukkowa.persistence.SettingsDao;
 import com.zenbukkowa.scoreboard.ScoreboardService;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,25 +16,25 @@ import org.bukkit.inventory.ItemStack;
 public class MenuListener implements Listener {
     private final MenuService menuService;
     private final HotbarMenuService hotbarMenuService;
-    private final SkillService skillService;
-    private final PointService pointService;
+    private final SkillsPurchaseHandler skillsHandler;
     private final ScoreboardService scoreboardService;
     private final EffectService effectService;
     private final EventService eventService;
     private final LocaleService locale;
+    private final SettingsDao settingsDao;
 
     public MenuListener(MenuService menuService, HotbarMenuService hotbarMenuService,
-                        SkillService skillService, PointService pointService,
-                        ScoreboardService scoreboardService, EffectService effectService,
-                        EventService eventService, LocaleService locale) {
+                        SkillsPurchaseHandler skillsHandler, ScoreboardService scoreboardService,
+                        EffectService effectService, EventService eventService,
+                        LocaleService locale, SettingsDao settingsDao) {
         this.menuService = menuService;
         this.hotbarMenuService = hotbarMenuService;
-        this.skillService = skillService;
-        this.pointService = pointService;
+        this.skillsHandler = skillsHandler;
         this.scoreboardService = scoreboardService;
         this.effectService = effectService;
         this.eventService = eventService;
         this.locale = locale;
+        this.settingsDao = settingsDao;
     }
 
     @EventHandler
@@ -52,7 +53,7 @@ public class MenuListener implements Listener {
         } else {
             switch (open) {
                 case "root" -> handleRoot(player, slot);
-                case "skills" -> handleSkills(player, slot);
+                case "skills" -> skillsHandler.handleSkills(player, slot);
                 case "stats" -> handleStats(player, slot);
                 case "leaderboard" -> handleLeaderboard(player, slot);
                 case "settings" -> handleSettings(player, slot);
@@ -88,59 +89,12 @@ public class MenuListener implements Listener {
 
     private void handleRoot(Player player, int slot) {
         switch (slot) {
-            case 11 -> { menuService.resetScroll(player); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
-            case 12 -> StatsMenu.openPersonal(player, menuService, pointService, locale);
-            case 13 -> StatsMenu.openLeaderboard(player, menuService, pointService, locale);
-            case 14 -> SettingsMenu.open(player, menuService, locale, scoreboardService, eventService);
+            case 11 -> { menuService.resetScroll(player); SkillsMenu.open(player, menuService, skillsHandler.skillService(), skillsHandler.pointService(), locale); }
+            case 12 -> StatsMenu.openPersonal(player, menuService, skillsHandler.pointService(), locale);
+            case 13 -> StatsMenu.openLeaderboard(player, menuService, skillsHandler.pointService(), locale);
+            case 14 -> SettingsMenu.open(player, menuService, locale, scoreboardService, eventService, settingsDao);
             case 15 -> HelpMenu.open(player, menuService, locale);
             case 49 -> player.closeInventory();
-        }
-    }
-
-    private void handleSkills(Player player, int slot) {
-        if (slot == 49) { RootMenu.open(player, menuService, locale); return; }
-        if (slot == 45) {
-            int off = menuService.getScrollOffsetV(player);
-            if (off > 0) { menuService.setScrollOffsetV(player, off - 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
-            return;
-        }
-        if (slot == 53) {
-            int off = menuService.getScrollOffsetV(player);
-            if (off < SkillTreeLayout.MAX_SCROLL_V) { menuService.setScrollOffsetV(player, off + 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
-            return;
-        }
-        if (slot == 47) {
-            int off = menuService.getScrollOffsetH(player);
-            if (off > 0) { menuService.setScrollOffsetH(player, off - 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
-            return;
-        }
-        if (slot == 51) {
-            int off = menuService.getScrollOffsetH(player);
-            if (off < SkillTreeLayout.MAX_SCROLL_H) { menuService.setScrollOffsetH(player, off + 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
-            return;
-        }
-        int offsetV = menuService.getScrollOffsetV(player);
-        int offsetH = menuService.getScrollOffsetH(player);
-        SkillType skill = SkillTreeViewport.skillAtSlot(slot, offsetV, offsetH);
-        if (skill == null) return;
-        int current = skillService.getSkills(player.getUniqueId()).tier(skill);
-        if (current >= skill.maxTier()) {
-            player.sendMessage(ChatColor.RED + locale.get(player.getUniqueId(), "menu.purchase_maxed"));
-            return;
-        }
-        int cost = skill.cost(current + 1);
-        try {
-            pointService.spendPoints(player.getUniqueId(), skill.category(), cost);
-            skillService.purchase(player.getUniqueId(), skill, current + 1);
-            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-            player.sendMessage(ChatColor.GREEN + locale.get(player.getUniqueId(), "menu.purchase_success")
-                    .replace("{skill}", skill.name().replace('_', ' '))
-                    .replace("{tier}", String.valueOf(current + 1)));
-            effectService.applyAll(player);
-            scoreboardService.updateAll();
-            SkillsMenu.open(player, menuService, skillService, pointService, locale);
-        } catch (IllegalStateException e) {
-            player.sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 
@@ -157,23 +111,38 @@ public class MenuListener implements Listener {
             case 10 -> {
                 String next = locale.toggleLocale(player.getUniqueId());
                 player.sendMessage(ChatColor.GREEN + "Language: " + next.toUpperCase());
-                SettingsMenu.open(player, menuService, locale, scoreboardService, eventService);
+                SettingsMenu.open(player, menuService, locale, scoreboardService, eventService, settingsDao);
             }
             case 12 -> {
                 boolean next = !scoreboardService.isEnabled(player.getUniqueId());
                 scoreboardService.setEnabled(player.getUniqueId(), next);
                 player.sendMessage(ChatColor.YELLOW + (next ? "Scoreboard ON" : "Scoreboard OFF"));
-                SettingsMenu.open(player, menuService, locale, scoreboardService, eventService);
+                SettingsMenu.open(player, menuService, locale, scoreboardService, eventService, settingsDao);
             }
             case 14 -> { if (player.isOp()) { eventService.start(); player.sendMessage(ChatColor.GREEN + locale.get(player.getUniqueId(), "menu.event_started")); } }
             case 16 -> { if (player.isOp()) { eventService.end(); player.sendMessage(ChatColor.RED + locale.get(player.getUniqueId(), "menu.event_ended")); } }
+            case 20 -> {
+                if (player.isOp()) {
+                    double current = Double.parseDouble(settingsDao.loadSetting("point_multiplier", "1.0"));
+                    double next = switch ((int) (current * 10)) {
+                        case 5 -> 1.0;
+                        case 10 -> 2.0;
+                        case 20 -> 5.0;
+                        default -> 0.5;
+                    };
+                    settingsDao.saveSetting("point_multiplier", String.valueOf(next));
+                    skillsHandler.pointService().setMultiplier(next);
+                    player.sendMessage(ChatColor.GREEN + "Point multiplier: " + next + "x");
+                    SettingsMenu.open(player, menuService, locale, scoreboardService, eventService, settingsDao);
+                }
+            }
             case 31 -> {
                 if (player.isOp()) {
-                    pointService.resetAll(); skillService.resetAll(); eventService.reset();
+                    skillsHandler.pointService().resetAll(); skillsHandler.skillService().resetAll(); eventService.reset();
                     player.sendMessage(ChatColor.RED + locale.get(player.getUniqueId(), "menu.reset_done"));
                     for (Player p : org.bukkit.Bukkit.getOnlinePlayers()) effectService.applyAll(p);
                     scoreboardService.updateAll();
-                    SettingsMenu.open(player, menuService, locale, scoreboardService, eventService);
+                    SettingsMenu.open(player, menuService, locale, scoreboardService, eventService, settingsDao);
                 }
             }
             case 49 -> RootMenu.open(player, menuService, locale);
