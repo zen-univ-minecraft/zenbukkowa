@@ -26,7 +26,7 @@ Stone, cobblestone, deepslate, tuff, dirt, sand, gravel, granite, terracotta.
 - **Point multiplier:** TERRA_BLESSING scales all TERRA income.
 
 ### Strategy Note
-TERRA is the cheapest branch to enter (first tier costs 10 TERRA points). It no longer gates other branches.
+TERRA is the cheapest branch to enter (first tier costs 50 TERRA points). It no longer gates other branches.
 
 ---
 

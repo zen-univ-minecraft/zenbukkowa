@@ -92,14 +92,14 @@ public enum SkillType {
     ANGEL_WINGS(PointCategory.TERRA, 3, new int[]{1, 2, 3}) {
         @Override
         public Map<PointCategory, Integer> tierCost(int t) {
-            int c = 100 * t * t;
+            int c = 250 * t;
             return Map.of(PointCategory.TERRA, c, PointCategory.MINERAL, c, PointCategory.VOID, c);
         }
     },
     TITAN_STRIKE(PointCategory.TERRA, 3, new int[]{1, 2, 3}) {
         @Override
         public Map<PointCategory, Integer> tierCost(int t) {
-            int c = 100 * t * t;
+            int c = 250 * t;
             return Map.of(PointCategory.TERRA, c, PointCategory.ORGANIC, c, PointCategory.CROP, c);
         }
     };
@@ -123,7 +123,7 @@ public enum SkillType {
     }
 
     public int cost(int targetTier) {
-        return 10 * targetTier * targetTier;
+        return 50 * targetTier;
     }
 
     public Map<PointCategory, Integer> tierCost(int targetTier) {

@@ -17,12 +17,12 @@ Define how players buy skills with points, including costs, prerequisites, and r
 
 ## Cost Formula
 
-- Base cost for tier N of a normal skill: `10 * N * N` points of that category.
-- Example: `AREA_RADIUS` tier 1 costs `10 TERRA` points.
-- Example: `AREA_RADIUS` tier 3 costs `90 TERRA` points.
+- Base cost for tier N of a normal skill: `50 * N` points of that category.
+- Example: `AREA_RADIUS` tier 1 costs `50 TERRA` points.
+- Example: `AREA_RADIUS` tier 3 costs `150 TERRA` points.
 - Example: `HASTE_AURA` tier V costs `250 MINERAL` points.
 - Cross-category skills cost their primary category **plus** one secondary category at the same rate.
-- Example: `EFFICIENCY` tier 2 costs `40 TERRA + 40 MINERAL`.
+- Example: `EFFICIENCY` tier 2 costs `100 TERRA + 100 MINERAL`.
 
 ## Tier Order
 
@@ -100,8 +100,8 @@ Each branch root unlocks independently with its own category points. No `AREA_RA
 ### Cost Structure
 
 - Mythic skills consume points from **multiple categories simultaneously**.
-- Mythic cost per category per tier: `100 * N * N`.
-- Example: `ANGEL_WINGS` tier 1 costs `100 TERRA + 100 MINERAL + 100 VOID`.
+- Mythic cost per category per tier: `250 * N`.
+- Example: `ANGEL_WINGS` tier 1 costs `250 TERRA + 250 MINERAL + 250 VOID`.
 
 ### Prerequisites
 
@@ -113,7 +113,7 @@ Each branch root unlocks independently with its own category points. No `AREA_RA
 ### Display
 
 - Mythic skill lore lists every required category and cost.
-- Example: `Cost: 100 TERRA + 100 MINERAL + 100 VOID`.
+- Example: `Cost: 250 TERRA + 250 MINERAL + 250 VOID`.
 - Prerequisite skills are listed by name.
 
 ---

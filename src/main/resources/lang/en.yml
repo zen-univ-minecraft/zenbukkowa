@@ -47,7 +47,7 @@ help:
     children:
       overview:
         label: "Overview"
-        text: "&6=== Rules ===\n&e1. Break blocks to earn points in 7 categories.\n&e2. Spend points to unlock skills.\n&e3. First tier costs 10 points.\n&e4. Destroy structures for huge bonuses.\n&e5. Discover new block types for one-time bonuses.\n&e6. Highest total score wins.\n&e7. No refunds on skill purchases.\n&e8. Containers are protected.\n&e9. Player-placed blocks do not award points."
+        text: "&6=== Rules ===\n&e1. Break blocks to earn points in 7 categories.\n&e2. Spend points to unlock skills.\n&e3. First tier costs 50 points.\n&e4. Destroy structures for huge bonuses.\n&e5. Discover new block types for one-time bonuses.\n&e6. Highest total score wins.\n&e7. No refunds on skill purchases.\n&e8. Containers are protected.\n&e9. Player-placed blocks do not award points."
       scoring:
         label: "Scoring"
         text: "&6=== Scoring ===\n&eBreak blocks to earn category points.\n&eTERRA: stone, dirt, sand, gravel\n&eMINERAL: ores, ancient debris\n&eORGANIC: logs, leaves, crops\n&eAQUATIC: prismarine, coral, sponge\n&eVOID: obsidian, netherrack, end stone\n&eCROP: wheat, carrots, potatoes, cocoa\n&eDISCOVERY: first break of any natural block\n&eBase blocks = 5 pts, ores = 25 pts, ancient debris = 100 pts"
@@ -81,7 +81,7 @@ help:
         text: "&6=== Prerequisites ===\n&eSome skills require other skills first.\n&eEach branch unlocks independently.\n&eSome skills cost multiple categories."
       costs:
         label: "Costs"
-        text: "&6=== Skill Costs ===\n&eCost formula: 10 * tier * tier.\n&eTier 1 = 10 points.\n&eTier 2 = 40 points.\n&eTier 3 = 90 points.\n&eMythic skills cost 100 * tier * tier per category."
+        text: "&6=== Skill Costs ===\n&eCost formula: 50 * tier.\n&eTier 1 = 50 points.\n&eTier 2 = 100 points.\n&eTier 3 = 150 points.\n&eMythic skills cost 250 * tier per category."
   breaking:
     children:
       radius:

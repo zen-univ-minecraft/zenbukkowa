@@ -16,7 +16,7 @@ public class PlayerProgress {
         this.points = new EnumMap<>(PointCategory.class);
         this.lastUpdated = new EnumMap<>(PointCategory.class);
         for (PointCategory c : PointCategory.values()) {
-            this.points.put(c, 50L);
+            this.points.put(c, 0L);
             this.lastUpdated.put(c, 0L);
         }
         this.blocksBroken = 0;

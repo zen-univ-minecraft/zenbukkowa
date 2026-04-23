@@ -100,17 +100,17 @@ class SkillServiceTest {
     }
 
     @Test
-    void tierOneCostsTen() {
-        assertEquals(10, SkillType.AREA_RADIUS.cost(1));
-        assertEquals(10, SkillType.HASTE_AURA.cost(1));
-        assertEquals(10, SkillType.GREEN_THUMB.cost(1));
+    void tierOneCostsFifty() {
+        assertEquals(50, SkillType.AREA_RADIUS.cost(1));
+        assertEquals(50, SkillType.HASTE_AURA.cost(1));
+        assertEquals(50, SkillType.GREEN_THUMB.cost(1));
     }
 
     @Test
-    void costFollowsQuadraticCurve() {
-        assertEquals(40, SkillType.AREA_RADIUS.cost(2));
-        assertEquals(90, SkillType.AREA_RADIUS.cost(3));
-        assertEquals(160, SkillType.AREA_RADIUS.cost(4));
+    void costFollowsLinearCurve() {
+        assertEquals(100, SkillType.AREA_RADIUS.cost(2));
+        assertEquals(150, SkillType.AREA_RADIUS.cost(3));
+        assertEquals(200, SkillType.AREA_RADIUS.cost(4));
         assertEquals(250, SkillType.AREA_RADIUS.cost(5));
     }
 
@@ -124,8 +124,8 @@ class SkillServiceTest {
     @Test
     void mythicSkillHasHighMultiCategoryCost() {
         Map<PointCategory, Integer> cost = SkillType.ANGEL_WINGS.tierCost(1);
-        assertEquals(100, cost.get(PointCategory.TERRA));
-        assertEquals(100, cost.get(PointCategory.MINERAL));
-        assertEquals(100, cost.get(PointCategory.VOID));
+        assertEquals(250, cost.get(PointCategory.TERRA));
+        assertEquals(250, cost.get(PointCategory.MINERAL));
+        assertEquals(250, cost.get(PointCategory.VOID));
     }
 }
