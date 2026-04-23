@@ -1,10 +1,10 @@
-# Slot Enforcement
+# Menu Item Protection
 
 ## Goal
 
-Prevent the menu token from leaving slot `8` through any vector.
+Prevent the menu token from leaving slot `8` and prevent all menu inventory items from being moved or dropped.
 
-## Enforcement Vectors
+## Enforcement Vectors — Hotbar Token
 
 ### PlayerInteractEvent
 - Right-click air/block with token: open menu, cancel event.
@@ -38,3 +38,17 @@ Prevent the menu token from leaving slot `8` through any vector.
 ### Respawn
 - On respawn: install token immediately.
 - Also schedule reinstall 1 tick later (inventory may not be ready).
+
+## Enforcement Vectors — Menu Inventories
+
+### InventoryClickEvent
+- Any click in a custom menu top inventory: cancel unconditionally.
+- Shift-clicks that would move items into or out of the menu: cancel.
+- Number-key presses while a menu is open: cancel.
+
+### InventoryDragEvent
+- Any drag operation where at least one raw slot is inside the top inventory: cancel.
+- This prevents dragging items out of or into the menu.
+
+### InventoryCloseEvent
+- On close, clear the player's open-menu state so periodic scans resume normally.

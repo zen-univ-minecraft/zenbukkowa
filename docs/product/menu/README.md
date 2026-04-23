@@ -11,6 +11,7 @@ Define all inventory menus and the hotbar entrypoint.
 - [skills-menu.md](skills-menu.md): skill purchase interface
 - [stats-menu.md](stats-menu.md): personal and leaderboard stats
 - [settings-menu.md](settings-menu.md): preferences and operator controls
-- [help-menu.md](help-menu.md): in-game documentation
-- [click-detection.md](click-detection.md): slot-to-action mapping
-- [slot-enforcement.md](slot-enforcement.md): all enforcement vectors
+- [help-menu.md](help-menu.md): in-game documentation parent menu
+- [help-topic-menu.md](help-topic-menu.md): child help items and chat explanations
+- [click-detection.md](click-detection.md): slot-to-action mapping and drag protection
+- [menu-item-protection.md](menu-item-protection.md): hotbar token and menu inventory protection

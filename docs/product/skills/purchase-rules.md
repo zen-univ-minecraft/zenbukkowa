@@ -29,6 +29,16 @@ Define how players buy skills with points, including costs, prerequisites, and r
 
 ## Unlock Gating
 
+### Cross-Category Roots
+
+All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
+- `HASTE_AURA` requires `AREA_RADIUS`.
+- `LEAF_CONSUME` requires `AREA_RADIUS`.
+- `TIDE_BREAKER` requires `AREA_RADIUS`.
+- `SALVAGE` requires `AREA_RADIUS`.
+- `VOID_SIPHON` requires `AREA_RADIUS`.
+- `STRUCTURE_SENSE` requires `AREA_RADIUS`.
+
 ### TERRA
 - `AREA_DEPTH` tier 3+ requires `AREA_RADIUS` tier 3+.
 - `PILLAR_BREAK` requires `AREA_DEPTH` tier 2+.

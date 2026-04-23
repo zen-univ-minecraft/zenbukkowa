@@ -2,7 +2,7 @@
 
 ## Goal
 
-Define unambiguous slot-to-action mapping for every menu.
+Define unambiguous slot-to-action mapping for every menu, with absolute protection against item movement.
 
 ## Rule
 
@@ -49,7 +49,7 @@ Use `event.getSlot()` (slot within the clicked top inventory) rather than `ItemS
 
 | Slot | Action |
 |---|---|
-| 49 | Back to Stats menu |
+| 49 | Back to Root menu |
 | Any other slot | No action |
 
 ## Settings Menu
@@ -82,3 +82,5 @@ Use `event.getSlot()` (slot within the clicked top inventory) rather than `ItemS
 
 - Ignore clicks in the bottom inventory (player inventory).
 - Cancel all clicks in the top inventory unconditionally.
+- Cancel all drags that touch the top inventory when a menu is open.
+- Menu items must never be picked up, moved, swapped, or dropped.

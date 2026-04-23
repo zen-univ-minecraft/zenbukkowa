@@ -24,14 +24,14 @@ Purchase and upgrade skills using category points inside a scrollable tree-shape
   - Cost: `{Cost} {Category} Points`.
   - Player balance.
   - Prerequisite status.
-- Green glass pane: purchasable.
-- Red glass pane: locked (prerequisite or insufficient points).
-- Lime glass pane: maxed.
+- Green wool block: purchasable / unlocked.
+- Gray wool block: locked (prerequisite or insufficient points).
+- Emerald block: maxed.
 
 ## Connection Items
 
-- `STICK` items fill grid cells between parent and child nodes.
-- Sticks have blank names and no lore; they are not interactive.
+- `GREEN_STAINED_GLASS_PANE` fills grid cells between parent and child nodes.
+- Connections have blank names and no lore; they are not interactive.
 
 ## Navigation
 
@@ -48,3 +48,4 @@ Purchase and upgrade skills using category points inside a scrollable tree-shape
 5. Scroll arrows re-render the viewport.
 6. Clicks in the bottom inventory (player inventory) are ignored.
 7. Held items on the cursor do not block slot-based click detection.
+8. All drags inside the menu are cancelled.

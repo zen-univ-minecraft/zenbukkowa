@@ -24,8 +24,8 @@ Display personal stats and server leaderboard.
 - 54 slots (6 rows).
 - Top 27 players shown as player heads in rows 1-3 (slots 0-26).
 - Row 6:
-  - Slot 49: `Back` (arrow) -> Stats menu
+  - Slot 49: `Back` (arrow) -> Root menu
 
 ## Navigation
 
-- Back returns to Root (stats) or Stats (leaderboard).
+- Back on both pages returns to Root menu.
