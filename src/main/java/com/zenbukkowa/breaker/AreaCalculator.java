@@ -23,7 +23,7 @@ public class AreaCalculator {
 
     public List<Block> calculate(Block center, int radiusValue, int depthValue, int bonusRadius, int bonusDepth) {
         int radius = Math.max(0, Math.min(maxRadius, (radiusValue - 1) / 2 + bonusRadius));
-        int depth = Math.max(0, Math.min(maxDepth, (depthValue - 1) / 2 + bonusDepth));
+        int depth = Math.max(0, Math.min(maxDepth, depthValue + bonusDepth));
         List<Block> result = new ArrayList<>();
         World world = center.getWorld();
         int cx = center.getX();
@@ -36,7 +36,7 @@ public class AreaCalculator {
 
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
-                for (int dy = -depth; dy <= depth; dy++) {
+                for (int dy = 0; dy < depth; dy++) {
                     if (dx == 0 && dy == 0 && dz == 0) continue;
                     int y = cy + dy;
                     if (y < minY || y >= maxY) {

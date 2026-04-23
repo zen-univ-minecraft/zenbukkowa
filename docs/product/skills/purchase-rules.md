@@ -46,7 +46,7 @@ Each branch root unlocks independently with its own category points. No `AREA_RA
 - `CURIOUS_MINER` unlocks with `DISCOVERY` points.
 
 ### TERRA
-- `AREA_DEPTH` tier 3+ requires `AREA_RADIUS` tier 3+.
+- `AREA_DEPTH` tier 3 (max) requires `AREA_RADIUS` tier 3 (max).
 - `PILLAR_BREAK` requires `AREA_DEPTH` tier 2+.
 - `GRAVITY_WELL` requires `AREA_DEPTH` tier 3+.
 - `EFFICIENCY` requires `HASTE_AURA` tier 2+.

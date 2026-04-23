@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum SkillType {
-    AREA_RADIUS(PointCategory.TERRA, 5, new int[]{1, 3, 5, 7, 9}),
-    AREA_DEPTH(PointCategory.TERRA, 5, new int[]{1, 3, 5, 7, 9}),
+    AREA_RADIUS(PointCategory.TERRA, 3, new int[]{1, 3, 3}),
+    AREA_DEPTH(PointCategory.TERRA, 3, new int[]{1, 1, 2}),
     PILLAR_BREAK(PointCategory.TERRA, 3, new int[]{1, 2, 3}),
     EFFICIENCY(PointCategory.TERRA, 5, new int[]{1, 2, 3, 4, 5}) {
         @Override

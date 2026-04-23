@@ -88,7 +88,7 @@ public class ScoreboardService {
         setLine(board, 5, ChatColor.GRAY + "-------------");
         int r = skillService.radius(player.getUniqueId());
         int d = skillService.depth(player.getUniqueId());
-        setLine(board, 4, ChatColor.YELLOW + "Area: " + r + "x" + r + "x" + d);
+        setLine(board, 4, ChatColor.YELLOW + "Area: " + r + "x" + d + "x" + r);
         int h = skillService.haste(player.getUniqueId());
         setLine(board, 3, ChatColor.YELLOW + "Haste: " + roman(h));
         setLine(board, 2, ChatColor.GRAY + (eventService.isRunning() ? "Event Running" : eventService.isFinished() ? "Finished" : "Waiting"));
