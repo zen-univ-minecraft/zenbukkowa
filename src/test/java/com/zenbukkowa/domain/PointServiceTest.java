@@ -1,6 +1,8 @@
 package com.zenbukkowa.domain;
 
+import com.zenbukkowa.persistence.BlockDiscoveryDao;
 import com.zenbukkowa.persistence.PlayerDao;
+import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
 import com.zenbukkowa.persistence.SqliteDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,9 @@ class PointServiceTest {
         SqliteDatabase db = new SqliteDatabase(tmp);
         db.initialize();
         PlayerDao dao = new PlayerDao(db);
-        service = new PointService(dao);
+        PlayerPlacedBlockDao placedDao = new PlayerPlacedBlockDao(db);
+        BlockDiscoveryDao discoveryDao = new BlockDiscoveryDao(db);
+        service = new PointService(dao, placedDao, discoveryDao);
     }
 
     @Test

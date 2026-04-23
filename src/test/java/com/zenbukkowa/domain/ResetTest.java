@@ -1,6 +1,8 @@
 package com.zenbukkowa.domain;
 
+import com.zenbukkowa.persistence.BlockDiscoveryDao;
 import com.zenbukkowa.persistence.PlayerDao;
+import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
 import com.zenbukkowa.persistence.SqliteDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,9 @@ class ResetTest {
         SqliteDatabase db = new SqliteDatabase(tmp);
         db.initialize();
         PlayerDao dao = new PlayerDao(db);
-        pointService = new PointService(dao);
+        PlayerPlacedBlockDao placedDao = new PlayerPlacedBlockDao(db);
+        BlockDiscoveryDao discoveryDao = new BlockDiscoveryDao(db);
+        pointService = new PointService(dao, placedDao, discoveryDao);
         skillService = new SkillService(dao);
     }
 

@@ -15,10 +15,11 @@ public class BlockPlaceListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        var block = event.getBlock();
         playerPlacedBlockDao.record(
-                block.getWorld().getName(),
-                block.getX(), block.getY(), block.getZ(),
+                event.getBlock().getWorld().getName(),
+                event.getBlock().getX(),
+                event.getBlock().getY(),
+                event.getBlock().getZ(),
                 event.getPlayer().getUniqueId().toString()
         );
     }
