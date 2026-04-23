@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,7 +66,6 @@ class SkillServiceTest {
     @Test
     void voidSiphonRequiresStructureSense() {
         UUID uuid = UUID.randomUUID();
-        service.purchase(uuid, SkillType.AREA_RADIUS, 1);
         service.purchase(uuid, SkillType.VOID_SIPHON, 1);
         assertFalse(service.canPurchase(uuid, SkillType.VOID_SIPHON, 2));
         service.purchase(uuid, SkillType.STRUCTURE_SENSE, 1);
@@ -73,16 +73,8 @@ class SkillServiceTest {
     }
 
     @Test
-    void crossCategoryRootsRequireAreaRadius() {
+    void branchRootsAreIndependent() {
         UUID uuid = UUID.randomUUID();
-        assertFalse(service.canPurchase(uuid, SkillType.HASTE_AURA, 1));
-        assertFalse(service.canPurchase(uuid, SkillType.LEAF_CONSUME, 1));
-        assertFalse(service.canPurchase(uuid, SkillType.TIDE_BREAKER, 1));
-        assertFalse(service.canPurchase(uuid, SkillType.SALVAGE, 1));
-        assertFalse(service.canPurchase(uuid, SkillType.VOID_SIPHON, 1));
-        assertFalse(service.canPurchase(uuid, SkillType.STRUCTURE_SENSE, 1));
-        assertFalse(service.canPurchase(uuid, SkillType.GREEN_THUMB, 1));
-        service.purchase(uuid, SkillType.AREA_RADIUS, 1);
         assertTrue(service.canPurchase(uuid, SkillType.HASTE_AURA, 1));
         assertTrue(service.canPurchase(uuid, SkillType.LEAF_CONSUME, 1));
         assertTrue(service.canPurchase(uuid, SkillType.TIDE_BREAKER, 1));
@@ -90,12 +82,12 @@ class SkillServiceTest {
         assertTrue(service.canPurchase(uuid, SkillType.VOID_SIPHON, 1));
         assertTrue(service.canPurchase(uuid, SkillType.STRUCTURE_SENSE, 1));
         assertTrue(service.canPurchase(uuid, SkillType.GREEN_THUMB, 1));
+        assertTrue(service.canPurchase(uuid, SkillType.CURIOUS_MINER, 1));
     }
 
     @Test
     void cropBranchRequiresPrerequisites() {
         UUID uuid = UUID.randomUUID();
-        service.purchase(uuid, SkillType.AREA_RADIUS, 1);
         assertTrue(service.canPurchase(uuid, SkillType.GREEN_THUMB, 1));
         service.purchase(uuid, SkillType.GREEN_THUMB, 1);
         assertTrue(service.canPurchase(uuid, SkillType.HARVEST_AURA, 1));
@@ -108,17 +100,32 @@ class SkillServiceTest {
     }
 
     @Test
-    void tierOneCostsFiveHundred() {
-        assertEquals(500, SkillType.AREA_RADIUS.cost(1));
-        assertEquals(500, SkillType.HASTE_AURA.cost(1));
-        assertEquals(500, SkillType.GREEN_THUMB.cost(1));
+    void tierOneCostsTen() {
+        assertEquals(10, SkillType.AREA_RADIUS.cost(1));
+        assertEquals(10, SkillType.HASTE_AURA.cost(1));
+        assertEquals(10, SkillType.GREEN_THUMB.cost(1));
     }
 
     @Test
     void costFollowsQuadraticCurve() {
-        assertEquals(2000, SkillType.AREA_RADIUS.cost(2));
-        assertEquals(4500, SkillType.AREA_RADIUS.cost(3));
-        assertEquals(8000, SkillType.AREA_RADIUS.cost(4));
-        assertEquals(12500, SkillType.AREA_RADIUS.cost(5));
+        assertEquals(40, SkillType.AREA_RADIUS.cost(2));
+        assertEquals(90, SkillType.AREA_RADIUS.cost(3));
+        assertEquals(160, SkillType.AREA_RADIUS.cost(4));
+        assertEquals(250, SkillType.AREA_RADIUS.cost(5));
+    }
+
+    @Test
+    void crossCategorySkillHasMultipleCosts() {
+        Map<PointCategory, Integer> cost = SkillType.EFFICIENCY.tierCost(2);
+        assertTrue(cost.containsKey(PointCategory.TERRA));
+        assertTrue(cost.containsKey(PointCategory.MINERAL));
+    }
+
+    @Test
+    void mythicSkillHasHighMultiCategoryCost() {
+        Map<PointCategory, Integer> cost = SkillType.ANGEL_WINGS.tierCost(1);
+        assertEquals(100, cost.get(PointCategory.TERRA));
+        assertEquals(100, cost.get(PointCategory.MINERAL));
+        assertEquals(100, cost.get(PointCategory.VOID));
     }
 }

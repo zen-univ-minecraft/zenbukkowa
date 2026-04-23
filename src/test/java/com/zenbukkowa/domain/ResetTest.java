@@ -35,13 +35,13 @@ class ResetTest {
         pointService.addPoints(uuid, PointCategory.TERRA, 100, 5);
         skillService.purchase(uuid, SkillType.AREA_RADIUS, 1);
 
-        assertEquals(100, pointService.getProgress(uuid).points(PointCategory.TERRA));
+        assertEquals(150, pointService.getProgress(uuid).points(PointCategory.TERRA));
         assertEquals(1, skillService.getSkills(uuid).tier(SkillType.AREA_RADIUS));
 
         pointService.resetPlayer(uuid);
         skillService.resetPlayer(uuid);
 
-        assertEquals(0, pointService.getProgress(uuid).points(PointCategory.TERRA));
+        assertEquals(50, pointService.getProgress(uuid).points(PointCategory.TERRA));
         assertEquals(0, skillService.getSkills(uuid).tier(SkillType.AREA_RADIUS));
     }
 
@@ -58,8 +58,8 @@ class ResetTest {
         pointService.resetAll();
         skillService.resetAll();
 
-        assertEquals(0, pointService.getProgress(a).totalPoints());
-        assertEquals(0, pointService.getProgress(b).totalPoints());
+        assertEquals(350, pointService.getProgress(a).totalPoints());
+        assertEquals(350, pointService.getProgress(b).totalPoints());
         assertEquals(0, skillService.getSkills(a).tier(SkillType.AREA_RADIUS));
         assertEquals(0, skillService.getSkills(b).tier(SkillType.HASTE_AURA));
     }

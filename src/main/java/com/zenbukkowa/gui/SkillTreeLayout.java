@@ -12,7 +12,7 @@ public class SkillTreeLayout {
     public static final int GRID_ROWS = 13;
     public static final int GRID_COLS = 20;
     public static final int VIEWPORT_ROWS = 5;
-    public static final int VIEWPORT_COLS = 9;
+    public static final int VIEWPORT_COLS = 7;
     public static final int MAX_SCROLL_V = GRID_ROWS - VIEWPORT_ROWS;
     public static final int MAX_SCROLL_H = GRID_COLS - VIEWPORT_COLS;
 

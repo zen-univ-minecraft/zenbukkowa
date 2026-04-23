@@ -31,12 +31,6 @@ public class SkillService {
     }
 
     private boolean checkPrerequisites(PlayerSkills skills, SkillType skill, int targetTier) {
-        boolean hasAreaRadius = skills.tier(SkillType.AREA_RADIUS) >= 1;
-        switch (skill) {
-            case HASTE_AURA, LEAF_CONSUME, TIDE_BREAKER, SALVAGE, VOID_SIPHON, STRUCTURE_SENSE, GREEN_THUMB, CURIOUS_MINER -> {
-                if (!hasAreaRadius) return false;
-            }
-        }
         return switch (skill) {
             case AREA_DEPTH -> targetTier < 3 || skills.tier(SkillType.AREA_RADIUS) >= 3;
             case PILLAR_BREAK -> skills.tier(SkillType.AREA_DEPTH) >= 2;

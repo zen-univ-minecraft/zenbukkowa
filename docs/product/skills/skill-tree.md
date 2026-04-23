@@ -9,7 +9,7 @@ Define the visual tree layout, 2D scroll behavior, and node coordinates for the 
 1. The tree grows bottom-to-top: roots at the bottom, advanced skills higher.
 2. TERRA is the central trunk; all other categories branch from it.
 3. Parent-child skills are connected by `GREEN_STAINED_GLASS_PANE` items.
-4. The viewport is a 54-slot inventory showing a 9x5 slice of a larger virtual grid.
+4. The viewport is a 54-slot inventory showing a 7x5 slice of a larger virtual grid.
 5. Scroll arrows move the viewport one row or one column at a time.
 6. Empty separator columns exist between branches for visual clarity.
 
@@ -21,7 +21,7 @@ Define the visual tree layout, 2D scroll behavior, and node coordinates for the 
 - **Height:** 13 rows (0-12).
 - **Viewport:** 9 columns wide x 5 rows tall.
 - **Max vertical scroll:** 8 (`GRID_ROWS - VIEWPORT_ROWS`).
-- **Max horizontal scroll:** 11 (`GRID_COLS - VIEWPORT_COLS`).
+- **Max horizontal scroll:** 13 (`GRID_COLS - VIEWPORT_COLS`).
 
 ---
 
@@ -67,9 +67,9 @@ Coordinates are **derived at runtime** from the relationship tree. `PARENTS` is 
    - TERRA trunk base row = 12
    - All other branches base row = 11
 
-### Roots (direct children of AREA_RADIUS)
+### Roots
 
-All roots require AREA_RADIUS tier 1 and sit at the bottom of their branch:
+All roots unlock independently with their own category points and sit at the bottom of their branch:
 - `GREEN_THUMB` (CROP)
 - `LEAF_CONSUME` (ORGANIC)
 - `HASTE_AURA` (MINERAL)
@@ -95,11 +95,11 @@ All roots require AREA_RADIUS tier 1 and sit at the bottom of their branch:
 ## 2D Scroll Contract
 
 ### Controls
-- **Slot 45:** Scroll up (show higher rows). Arrow item.
-- **Slot 53:** Scroll down (show lower rows). Arrow item.
-- **Slot 47:** Scroll left (show lower columns). Arrow item.
-- **Slot 51:** Scroll right (show higher columns). Arrow item.
-- **Slot 49:** Back to Root menu.
+- **Slot 43:** Scroll up (show higher rows). Arrow item — `W`.
+- **Slot 51:** Scroll left (show lower columns). Arrow item — `A`.
+- **Slot 52:** Scroll down (show lower rows). Arrow item — `S`.
+- **Slot 53:** Scroll right (show higher columns). Arrow item — `D`.
+- **Slot 45:** Back to Root menu.
 - **Slot 46:** Page indicator (`V X / Y . H A / B`).
 
 ### State

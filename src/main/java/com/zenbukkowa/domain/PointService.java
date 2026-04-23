@@ -55,11 +55,20 @@ public class PointService {
         addPointsBatch(uuid, Map.of(category, amount), blocks);
     }
 
+    public void addPoints(UUID uuid, PointCategory category, long amount, long blocks, boolean touch) {
+        addPointsBatch(uuid, Map.of(category, amount), blocks, touch);
+    }
+
     public void addPointsBatch(UUID uuid, Map<PointCategory, Long> amounts, long blocks) {
+        addPointsBatch(uuid, amounts, blocks, true);
+    }
+
+    public void addPointsBatch(UUID uuid, Map<PointCategory, Long> amounts, long blocks, boolean touch) {
         PlayerProgress progress = getProgress(uuid);
         synchronized (progress) {
             for (Map.Entry<PointCategory, Long> e : amounts.entrySet()) {
                 progress.addPoints(e.getKey(), (long) (e.getValue() * multiplier));
+                if (touch) progress.touch(e.getKey());
             }
             progress.incrementBlocksBroken(blocks);
         }
@@ -93,6 +102,7 @@ public class PointService {
                 throw new IllegalStateException("Insufficient " + category + " points");
             }
             progress.addPoints(category, -amount);
+            progress.touch(category);
             try {
                 playerDao.saveProgress(progress);
             } catch (SQLException e) {
@@ -113,6 +123,7 @@ public class PointService {
             }
             for (Map.Entry<PointCategory, Long> e : costs.entrySet()) {
                 progress.addPoints(e.getKey(), -e.getValue());
+                progress.touch(e.getKey());
             }
             try {
                 playerDao.saveProgress(progress);

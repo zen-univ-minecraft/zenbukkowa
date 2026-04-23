@@ -21,8 +21,6 @@ public class ScoreboardService {
     private final JavaPlugin plugin;
     private final Map<UUID, Scoreboard> boards = new HashMap<>();
     private final Map<UUID, Boolean> enabled = new HashMap<>();
-    private int currentPage = 0;
-    private int tickCounter = 0;
 
     public ScoreboardService(PointService pointService, SkillService skillService,
                              EventService eventService, SchedulerBridge scheduler, JavaPlugin plugin) {
@@ -56,11 +54,6 @@ public class ScoreboardService {
     }
 
     public void tick() {
-        tickCounter++;
-        if (tickCounter >= 10) {
-            tickCounter = 0;
-            currentPage = (currentPage + 1) % 3;
-        }
         updateAll();
     }
 
@@ -77,42 +70,28 @@ public class ScoreboardService {
         Scoreboard board = boards.computeIfAbsent(player.getUniqueId(), u -> createBoard());
         var progress = pointService.getProgress(player.getUniqueId());
 
-        setLine(board, 12, ChatColor.GRAY + "-------------");
-        setLine(board, 11, ChatColor.YELLOW + "Time: " + formatTime());
-        setLine(board, 10, ChatColor.WHITE + "Total: " + format(progress.totalPoints()));
+        List<PointCategory> sorted = Arrays.stream(PointCategory.values())
+                .sorted(Comparator.comparingLong((PointCategory c) -> progress.lastUpdated(c)).reversed()
+                        .thenComparing(Enum::ordinal))
+                .toList();
 
-        switch (currentPage) {
-            case 0 -> {
-                setLine(board, 9, ChatColor.GREEN + "TERRA: " + format(progress.points(PointCategory.TERRA)));
-                setLine(board, 8, ChatColor.AQUA + "MINERAL: " + format(progress.points(PointCategory.MINERAL)));
-                setLine(board, 7, ChatColor.DARK_GREEN + "ORGANIC: " + format(progress.points(PointCategory.ORGANIC)));
-                setLine(board, 6, "");
-                setLine(board, 5, "");
-            }
-            case 1 -> {
-                setLine(board, 9, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC)));
-                setLine(board, 8, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID)));
-                setLine(board, 7, ChatColor.YELLOW + "CROP: " + format(progress.points(PointCategory.CROP)));
-                setLine(board, 6, ChatColor.LIGHT_PURPLE + "DISCOVERY: " + format(progress.points(PointCategory.DISCOVERY)));
-                setLine(board, 5, "");
-            }
-            case 2 -> {
-                PointCategory best = Arrays.stream(PointCategory.values())
-                        .max(Comparator.comparingLong(progress::points)).orElse(PointCategory.TERRA);
-                setLine(board, 9, ChatColor.GOLD + "Best: " + best + " " + format(progress.points(best)));
-                setLine(board, 8, ChatColor.GRAY + (eventService.isRunning() ? "Event Running" : eventService.isFinished() ? "Finished" : "Waiting"));
-                setLine(board, 7, "");
-                setLine(board, 6, "");
-                setLine(board, 5, "");
-            }
+        setLine(board, 15, ChatColor.GRAY + "-------------");
+        setLine(board, 14, ChatColor.YELLOW + "Time: " + formatTime());
+        setLine(board, 13, ChatColor.WHITE + "Total: " + format(progress.totalPoints()));
+
+        int score = 12;
+        for (PointCategory cat : sorted) {
+            setLine(board, score, categoryColor(cat) + cat.name() + ": " + format(progress.points(cat)));
+            score--;
         }
 
-        setLine(board, 4, ChatColor.GRAY + "-------------");
+        setLine(board, 5, ChatColor.GRAY + "-------------");
         int r = skillService.radius(player.getUniqueId());
         int d = skillService.depth(player.getUniqueId());
-        setLine(board, 3, ChatColor.YELLOW + "Area: " + r + "x" + r + "x" + d);
+        setLine(board, 4, ChatColor.YELLOW + "Area: " + r + "x" + r + "x" + d);
         int h = skillService.haste(player.getUniqueId());
-        setLine(board, 2, ChatColor.YELLOW + "Haste: " + roman(h));
+        setLine(board, 3, ChatColor.YELLOW + "Haste: " + roman(h));
+        setLine(board, 2, ChatColor.GRAY + (eventService.isRunning() ? "Event Running" : eventService.isFinished() ? "Finished" : "Waiting"));
         setLine(board, 1, ChatColor.GRAY + "-------------");
 
         player.setScoreboard(board);
@@ -170,6 +149,18 @@ public class ScoreboardService {
             case 4 -> "IV";
             case 5 -> "V";
             default -> "0";
+        };
+    }
+
+    private ChatColor categoryColor(PointCategory cat) {
+        return switch (cat) {
+            case TERRA -> ChatColor.GREEN;
+            case MINERAL -> ChatColor.AQUA;
+            case ORGANIC -> ChatColor.DARK_GREEN;
+            case AQUATIC -> ChatColor.BLUE;
+            case VOID -> ChatColor.DARK_PURPLE;
+            case CROP -> ChatColor.YELLOW;
+            case DISCOVERY -> ChatColor.LIGHT_PURPLE;
         };
     }
 

@@ -26,7 +26,7 @@ Stone, cobblestone, deepslate, tuff, dirt, sand, gravel, granite, terracotta.
 - **Point multiplier:** TERRA_BLESSING scales all TERRA income.
 
 ### Strategy Note
-TERRA is the cheapest branch to enter (first tier costs 50 TERRA points) and is required to unlock the largest physical destruction.
+TERRA is the cheapest branch to enter (first tier costs 10 TERRA points). It no longer gates other branches.
 
 ---
 
@@ -104,7 +104,7 @@ Obsidian, netherrack, blackstone, basalt, end stone, sculk, magma, glowstone.
 - **Area expansion:** VOID_RIFT expands break radius when breaking void blocks in dimensions or deep caves.
 
 ### Strategy Note
-VOID is the slowest category to build because the blocks are scarcer or harder to reach, but VOID_SIPHON turns Nether/End clearing into massive point gains. VOID_RIFT makes deep-slate strip mining devastating.
+VOID is the slowest category to build because the blocks are scarcer or harder to reach, but VOID_SIPHON turns Nether/End clearing into massive point gains. VOID_RIFT makes deep-slate strip mining devastating. Branch roots are independent — a player can start in VOID immediately.
 
 ---
 

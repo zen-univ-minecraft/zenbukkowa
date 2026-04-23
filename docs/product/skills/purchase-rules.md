@@ -17,10 +17,12 @@ Define how players buy skills with points, including costs, prerequisites, and r
 
 ## Cost Formula
 
-- Base cost for tier N of a normal skill: `500 * N * N` points of that category.
-- Example: `AREA_RADIUS` tier 1 costs `500 TERRA` points.
-- Example: `AREA_RADIUS` tier 3 costs `4500 TERRA` points.
-- Example: `HASTE_AURA` tier V costs `12500 MINERAL` points.
+- Base cost for tier N of a normal skill: `10 * N * N` points of that category.
+- Example: `AREA_RADIUS` tier 1 costs `10 TERRA` points.
+- Example: `AREA_RADIUS` tier 3 costs `90 TERRA` points.
+- Example: `HASTE_AURA` tier V costs `250 MINERAL` points.
+- Cross-category skills cost their primary category **plus** one secondary category at the same rate.
+- Example: `EFFICIENCY` tier 2 costs `40 TERRA + 40 MINERAL`.
 
 ## Tier Order
 
@@ -31,17 +33,17 @@ Define how players buy skills with points, including costs, prerequisites, and r
 
 ## Unlock Gating
 
-### Cross-Category Roots
+### Branch Roots
 
-All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
-- `HASTE_AURA` requires `AREA_RADIUS`.
-- `LEAF_CONSUME` requires `AREA_RADIUS`.
-- `TIDE_BREAKER` requires `AREA_RADIUS`.
-- `SALVAGE` requires `AREA_RADIUS`.
-- `VOID_SIPHON` requires `AREA_RADIUS`.
-- `STRUCTURE_SENSE` requires `AREA_RADIUS`.
-- `GREEN_THUMB` requires `AREA_RADIUS`.
-- `CURIOUS_MINER` requires `AREA_RADIUS`.
+Each branch root unlocks independently with its own category points. No `AREA_RADIUS` requirement.
+- `HASTE_AURA` unlocks with `MINERAL` points.
+- `LEAF_CONSUME` unlocks with `ORGANIC` points.
+- `TIDE_BREAKER` unlocks with `AQUATIC + TERRA` points.
+- `SALVAGE` unlocks with `AQUATIC` points.
+- `VOID_SIPHON` unlocks with `VOID` points.
+- `STRUCTURE_SENSE` unlocks with `VOID` points.
+- `GREEN_THUMB` unlocks with `CROP` points.
+- `CURIOUS_MINER` unlocks with `DISCOVERY` points.
 
 ### TERRA
 - `AREA_DEPTH` tier 3+ requires `AREA_RADIUS` tier 3+.
@@ -98,19 +100,20 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 ### Cost Structure
 
 - Mythic skills consume points from **multiple categories simultaneously**.
-- The cost is fixed per tier and is NOT computed by `500 * N * N`.
-- Example: `ANGEL_WINGS` tier 1 costs `5000 TERRA + 5000 MINERAL + 5000 VOID`.
+- Mythic cost per category per tier: `100 * N * N`.
+- Example: `ANGEL_WINGS` tier 1 costs `100 TERRA + 100 MINERAL + 100 VOID`.
 
 ### Prerequisites
 
 - Mythic skills require high-tier normal skills across multiple domains.
 - `ANGEL_WINGS` requires `AREA_RADIUS` tier 3, `HASTE_AURA` tier 3, and `VOID_SIPHON` tier 2.
 - `TITAN_STRIKE` requires `AREA_RADIUS` tier 3, `NATURE_TOUCH` tier 2, and `FARMERS_FORTUNE` tier 2.
+- Prerequisites still enforce branch-internal chains even though roots are independent.
 
 ### Display
 
 - Mythic skill lore lists every required category and cost.
-- Example: `Cost: 5000 TERRA + 5000 MINERAL + 5000 VOID`.
+- Example: `Cost: 100 TERRA + 100 MINERAL + 100 VOID`.
 - Prerequisite skills are listed by name.
 
 ---

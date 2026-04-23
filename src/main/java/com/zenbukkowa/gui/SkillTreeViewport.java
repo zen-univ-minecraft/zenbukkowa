@@ -20,7 +20,7 @@ public class SkillTreeViewport {
         PlayerSkills skills = skillService.getSkills(player.getUniqueId());
         PlayerProgress progress = pointService.getProgress(player.getUniqueId());
 
-        for (int i = 0; i < 45; i++) {
+        for (int i = 0; i < 54; i++) {
             inv.setItem(i, null);
         }
 
@@ -43,16 +43,16 @@ public class SkillTreeViewport {
         boolean canLeft = scrollH > 0;
         boolean canRight = scrollH < SkillTreeLayout.MAX_SCROLL_H;
 
-        inv.setItem(45, canUp ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_up"))
-                : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
+        inv.setItem(45, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
         inv.setItem(46, MenuItems.create(Material.PAPER, ChatColor.GRAY + "V " + (scrollV + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_V + 1)
                 + " . H " + (scrollH + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_H + 1)));
-        inv.setItem(47, canLeft ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_left"))
+        inv.setItem(43, canUp ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_up"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
-        inv.setItem(49, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
-        inv.setItem(51, canRight ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_right"))
+        inv.setItem(51, canLeft ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_left"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
-        inv.setItem(53, canDown ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_down"))
+        inv.setItem(52, canDown ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_down"))
+                : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
+        inv.setItem(53, canRight ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_right"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
 
         for (int i = 0; i < inv.getSize(); i++) {
@@ -99,23 +99,15 @@ public class SkillTreeViewport {
         if (currentTier > 0) lore.add(ChatColor.GREEN + "Current: tier " + currentTier);
         if (!maxed) {
             lore.add(ChatColor.YELLOW + "Next: tier " + (currentTier + 1));
-            if (skill.isMythic()) {
-                Map<PointCategory, Integer> costs = skill.mythicCost(currentTier + 1);
-                lore.add(ChatColor.GOLD + "Cost:");
-                for (Map.Entry<PointCategory, Integer> e : costs.entrySet()) {
-                    long balance = progress.points(e.getKey());
-                    lore.add(ChatColor.GRAY + "  " + e.getKey() + ": " + e.getValue()
-                            + ChatColor.DARK_GRAY + " (have " + balance + ")");
-                }
-                boolean anyShort = costs.entrySet().stream().anyMatch(e -> progress.points(e.getKey()) < e.getValue());
-                if (!canBuy) lore.add(anyShort ? ChatColor.RED + "Insufficient points" : ChatColor.RED + "Missing prerequisite");
-            } else {
-                int cost = skill.cost(currentTier + 1);
-                lore.add(ChatColor.GOLD + "Cost: " + cost + " " + skill.category() + " Points");
-                long balance = progress.points(skill.category());
-                lore.add(ChatColor.GRAY + "You have: " + balance);
-                if (!canBuy) lore.add(balance < cost ? ChatColor.RED + "Insufficient points" : ChatColor.RED + "Missing prerequisite");
+            Map<PointCategory, Integer> costs = skill.tierCost(currentTier + 1);
+            lore.add(ChatColor.GOLD + "Cost:");
+            for (Map.Entry<PointCategory, Integer> e : costs.entrySet()) {
+                long balance = progress.points(e.getKey());
+                lore.add(ChatColor.GRAY + "  " + e.getKey() + ": " + e.getValue()
+                        + ChatColor.DARK_GRAY + " (have " + balance + ")");
             }
+            boolean anyShort = costs.entrySet().stream().anyMatch(e -> progress.points(e.getKey()) < e.getValue());
+            if (!canBuy) lore.add(anyShort ? ChatColor.RED + "Insufficient points" : ChatColor.RED + "Missing prerequisite");
         } else {
             lore.add(ChatColor.DARK_GREEN + "Maxed");
         }

@@ -46,6 +46,7 @@ class SkillTreeLayoutTest {
     void maxScrollIsNonNegative() {
         assertTrue(SkillTreeLayout.MAX_SCROLL_V >= 0);
         assertTrue(SkillTreeLayout.MAX_SCROLL_H >= 0);
+        assertEquals(13, SkillTreeLayout.MAX_SCROLL_H);
     }
 
     @Test
@@ -110,6 +111,17 @@ class SkillTreeLayoutTest {
                 assertNotNull(parentNode, "Parent node missing for " + node.skill());
                 assertTrue(parentNode.row() > node.row(), "Parent must be below child");
             }
+        }
+    }
+
+    @Test
+    void wasdSlotsDoNotOverlapSkillsAtDefaultScroll() {
+        int scrollV = 8;
+        int scrollH = 0;
+        int[] wasdSlots = {43, 51, 52, 53};
+        for (int slot : wasdSlots) {
+            assertNull(SkillTreeViewport.skillAtSlot(slot, scrollV, scrollH),
+                    "WASD slot " + slot + " overlaps a skill at default scroll");
         }
     }
 }

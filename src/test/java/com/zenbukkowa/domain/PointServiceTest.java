@@ -31,8 +31,8 @@ class PointServiceTest {
     void addPointsIncreasesTotal() {
         UUID uuid = UUID.randomUUID();
         service.addPoints(uuid, PointCategory.TERRA, 100, 5);
-        assertEquals(100, service.getProgress(uuid).points(PointCategory.TERRA));
-        assertEquals(100, service.getProgress(uuid).totalPoints());
+        assertEquals(150, service.getProgress(uuid).points(PointCategory.TERRA));
+        assertEquals(450, service.getProgress(uuid).totalPoints());
         assertEquals(5, service.getProgress(uuid).blocksBroken());
     }
 
@@ -40,8 +40,8 @@ class PointServiceTest {
     void addCropPointsIncreasesTotal() {
         UUID uuid = UUID.randomUUID();
         service.addPoints(uuid, PointCategory.CROP, 50, 10);
-        assertEquals(50, service.getProgress(uuid).points(PointCategory.CROP));
-        assertEquals(50, service.getProgress(uuid).totalPoints());
+        assertEquals(100, service.getProgress(uuid).points(PointCategory.CROP));
+        assertEquals(400, service.getProgress(uuid).totalPoints());
         assertEquals(10, service.getProgress(uuid).blocksBroken());
     }
 
@@ -50,13 +50,13 @@ class PointServiceTest {
         UUID uuid = UUID.randomUUID();
         service.addPoints(uuid, PointCategory.MINERAL, 500, 1);
         service.spendPoints(uuid, PointCategory.MINERAL, 200);
-        assertEquals(300, service.getProgress(uuid).points(PointCategory.MINERAL));
+        assertEquals(350, service.getProgress(uuid).points(PointCategory.MINERAL));
     }
 
     @Test
     void spendPointsThrowsWhenInsufficient() {
         UUID uuid = UUID.randomUUID();
-        assertThrows(IllegalStateException.class, () -> service.spendPoints(uuid, PointCategory.TERRA, 1));
+        assertThrows(IllegalStateException.class, () -> service.spendPoints(uuid, PointCategory.TERRA, 51));
     }
 
     @Test
@@ -64,7 +64,7 @@ class PointServiceTest {
         UUID uuid = UUID.randomUUID();
         service.addPoints(uuid, PointCategory.CROP, 500, 1);
         service.spendPoints(uuid, PointCategory.CROP, 50);
-        assertEquals(450, service.getProgress(uuid).points(PointCategory.CROP));
+        assertEquals(500, service.getProgress(uuid).points(PointCategory.CROP));
     }
 
     @Test
@@ -83,11 +83,33 @@ class PointServiceTest {
         UUID uuid = UUID.randomUUID();
         service.setMultiplier(2.0);
         service.addPoints(uuid, PointCategory.TERRA, 100, 1);
-        assertEquals(200, service.getProgress(uuid).points(PointCategory.TERRA));
+        assertEquals(250, service.getProgress(uuid).points(PointCategory.TERRA));
     }
 
     @Test
     void defaultMultiplierIsOne() {
         assertEquals(1.0, service.getMultiplier());
+    }
+
+    @Test
+    void lastUpdatedTracksPointMutations() throws InterruptedException {
+        UUID uuid = UUID.randomUUID();
+        service.addPoints(uuid, PointCategory.TERRA, 10, 1);
+        long terraTime = service.getProgress(uuid).lastUpdated(PointCategory.TERRA);
+        assertTrue(terraTime > 0);
+        assertEquals(0, service.getProgress(uuid).lastUpdated(PointCategory.MINERAL));
+
+        Thread.sleep(2);
+        service.addPoints(uuid, PointCategory.MINERAL, 20, 1);
+        long mineralTime = service.getProgress(uuid).lastUpdated(PointCategory.MINERAL);
+        assertTrue(mineralTime > terraTime);
+    }
+
+    @Test
+    void startingBalanceIsFifty() {
+        UUID uuid = UUID.randomUUID();
+        for (PointCategory c : PointCategory.values()) {
+            assertEquals(50, service.getProgress(uuid).points(c));
+        }
     }
 }
