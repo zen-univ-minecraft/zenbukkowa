@@ -18,9 +18,9 @@ Break surrounding blocks automatically when a player breaks one target block.
 ## Block Filtering
 
 - Only blocks mappable to a `PointCategory` are broken.
-- Bedrock, barrier, command blocks, and other admin blocks are excluded.
+- Bedrock, barrier, command blocks, jigsaw, structure blocks, spawners, trial spawners, vaults, and other admin blocks are excluded.
 - If `LEAF_CONSUME` is off, leaves are excluded from area breaks.
-- Chests, shulker boxes, and other container blocks are excluded.
+- Chests, ender chests, shulker boxes, barrels, hoppers, dispensers, and droppers are excluded.
 
 ## Tool Durability
 
@@ -32,10 +32,16 @@ Break surrounding blocks automatically when a player breaks one target block.
 
 - Drops spawn at the original target block location to reduce entity spam.
 - Experience orbs also consolidate.
+- `MAGNET` teleports nearby item drops to the player after each break.
 - Point calculation uses `BlockCategoryMapper` values.
+
+## Crop Skills
+
+- `SEED_SATCHEL` automatically replants wheat, carrots, potatoes, beetroot, and nether wart on mature crop break.
+- Points are only awarded for blocks that are actually broken (respects protection cancellations).
 
 ## Safety
 
 - Fire `BlockBreakEvent` for each additional block so protection plugins can cancel.
-- If any individual block break is cancelled, skip that block only.
+- If any individual block break is cancelled, skip that block and its points.
 - Player gamemode creative bypasses durability and drop logic.
