@@ -1,7 +1,6 @@
 package com.zenbukkowa.domain;
 
 import com.zenbukkowa.persistence.PlayerDao;
-import com.zenbukkowa.scoreboard.ScoreboardService;
 
 import java.sql.SQLException;
 import java.util.Comparator;
@@ -9,19 +8,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PointService {
     private final PlayerDao playerDao;
     private final Map<UUID, PlayerProgress> cache = new ConcurrentHashMap<>();
-    private ScoreboardService scoreboardService;
+    private Consumer<UUID> onChange;
 
     public PointService(PlayerDao playerDao) {
         this.playerDao = playerDao;
     }
 
-    public void setScoreboardService(ScoreboardService scoreboardService) {
-        this.scoreboardService = scoreboardService;
+    public void setOnChange(Consumer<UUID> onChange) {
+        this.onChange = onChange;
     }
 
     public PlayerProgress getProgress(UUID uuid) {
@@ -45,12 +45,7 @@ public class PointService {
                 throw new RuntimeException(e);
             }
         }
-        if (scoreboardService != null) {
-            org.bukkit.entity.Player player = org.bukkit.Bukkit.getPlayer(uuid);
-            if (player != null) {
-                scoreboardService.updatePlayer(player);
-            }
-        }
+        notifyChange(uuid);
     }
 
     public void spendPoints(UUID uuid, PointCategory category, long amount) {
@@ -66,12 +61,7 @@ public class PointService {
                 throw new RuntimeException(e);
             }
         }
-        if (scoreboardService != null) {
-            org.bukkit.entity.Player player = org.bukkit.Bukkit.getPlayer(uuid);
-            if (player != null) {
-                scoreboardService.updatePlayer(player);
-            }
-        }
+        notifyChange(uuid);
     }
 
     public List<Map.Entry<UUID, Long>> getLeaderboard(int limit) {
@@ -91,12 +81,7 @@ public class PointService {
             throw new RuntimeException(e);
         }
         cache.remove(uuid);
-        if (scoreboardService != null) {
-            org.bukkit.entity.Player player = org.bukkit.Bukkit.getPlayer(uuid);
-            if (player != null) {
-                scoreboardService.updatePlayer(player);
-            }
-        }
+        notifyChange(uuid);
     }
 
     public void resetAll() {
@@ -106,12 +91,15 @@ public class PointService {
             throw new RuntimeException(e);
         }
         cache.clear();
-        if (scoreboardService != null) {
-            scoreboardService.updateAll();
-        }
     }
 
     public void unload(UUID uuid) {
         cache.remove(uuid);
+    }
+
+    private void notifyChange(UUID uuid) {
+        if (onChange != null) {
+            onChange.accept(uuid);
+        }
     }
 }

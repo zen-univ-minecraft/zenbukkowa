@@ -26,7 +26,12 @@ public enum SkillType {
     STRUCTURE_SENSE(PointCategory.VOID, 1, new int[]{1}),
     NIGHT_VISION(PointCategory.VOID, 1, new int[]{1}),
     FIRE_RESISTANCE(PointCategory.VOID, 1, new int[]{1}),
-    VOID_WALK(PointCategory.VOID, 3, new int[]{1, 2, 3});
+    VOID_WALK(PointCategory.VOID, 3, new int[]{1, 2, 3}),
+    GREEN_THUMB(PointCategory.CROP, 5, new int[]{1, 2, 3, 4, 5}),
+    HARVEST_AURA(PointCategory.CROP, 3, new int[]{1, 2, 3}),
+    COMPOST_MASTER(PointCategory.CROP, 3, new int[]{1, 2, 3}),
+    SEED_SATCHEL(PointCategory.CROP, 1, new int[]{1}),
+    FARMERS_FORTUNE(PointCategory.CROP, 3, new int[]{1, 2, 3});
 
     private final PointCategory category;
     private final int maxTier;

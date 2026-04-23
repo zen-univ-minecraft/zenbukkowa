@@ -13,7 +13,7 @@ import java.util.List;
 
 public class SkillTreeViewport {
 
-    public static void render(Inventory inv, Player player, int scrollOffset,
+    public static void render(Inventory inv, Player player, int scrollV, int scrollH,
                               SkillService skillService, PointService pointService,
                               LocaleService locale) {
         PlayerSkills skills = skillService.getSkills(player.getUniqueId());
@@ -24,25 +24,33 @@ public class SkillTreeViewport {
         }
 
         for (SkillTreeLayout.Connection conn : SkillTreeLayout.connections()) {
-            int slot = toSlot(conn.row(), conn.col(), scrollOffset);
+            int slot = toSlot(conn.row(), conn.col(), scrollV, scrollH);
             if (slot >= 0 && slot < 45) {
                 inv.setItem(slot, MenuItems.filler(Material.GREEN_STAINED_GLASS_PANE));
             }
         }
 
         for (SkillTreeLayout.Node node : SkillTreeLayout.nodes()) {
-            int slot = toSlot(node.row(), node.col(), scrollOffset);
+            int slot = toSlot(node.row(), node.col(), scrollV, scrollH);
             if (slot < 0 || slot >= 45) continue;
             ItemStack item = buildSkillItem(player, node.skill(), skills, progress, skillService, locale);
             inv.setItem(slot, item);
         }
 
-        boolean canUp = scrollOffset > 0;
-        boolean canDown = scrollOffset < SkillTreeLayout.MAX_SCROLL;
+        boolean canUp = scrollV > 0;
+        boolean canDown = scrollV < SkillTreeLayout.MAX_SCROLL_V;
+        boolean canLeft = scrollH > 0;
+        boolean canRight = scrollH < SkillTreeLayout.MAX_SCROLL_H;
+
         inv.setItem(45, canUp ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_up"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
-        inv.setItem(46, MenuItems.create(Material.PAPER, ChatColor.GRAY + "Page " + (scrollOffset + 1) + "/" + (SkillTreeLayout.MAX_SCROLL + 1)));
+        inv.setItem(46, MenuItems.create(Material.PAPER, ChatColor.GRAY + "V " + (scrollV + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_V + 1)
+                + " · H " + (scrollH + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_H + 1)));
+        inv.setItem(47, canLeft ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_left"))
+                : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
         inv.setItem(49, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
+        inv.setItem(51, canRight ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_right"))
+                : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
         inv.setItem(53, canDown ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_down"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
 
@@ -51,19 +59,23 @@ public class SkillTreeViewport {
         }
     }
 
-    public static SkillType skillAtSlot(int slot, int scrollOffset) {
-        int row = slot / 9 + scrollOffset;
-        int col = slot % 9;
+    public static SkillType skillAtSlot(int slot, int scrollV, int scrollH) {
+        int viewRow = slot / 9;
+        int viewCol = slot % 9;
+        int row = viewRow + scrollV;
+        int col = viewCol + scrollH;
         for (SkillTreeLayout.Node node : SkillTreeLayout.nodes()) {
             if (node.row() == row && node.col() == col) return node.skill();
         }
         return null;
     }
 
-    private static int toSlot(int row, int col, int scrollOffset) {
-        int viewRow = row - scrollOffset;
+    private static int toSlot(int row, int col, int scrollV, int scrollH) {
+        int viewRow = row - scrollV;
+        int viewCol = col - scrollH;
         if (viewRow < 0 || viewRow >= SkillTreeLayout.VIEWPORT_ROWS) return -1;
-        return viewRow * 9 + col;
+        if (viewCol < 0 || viewCol >= SkillTreeLayout.VIEWPORT_COLS) return -1;
+        return viewRow * 9 + viewCol;
     }
 
     private static ItemStack buildSkillItem(Player player, SkillType skill, PlayerSkills skills,
@@ -77,6 +89,12 @@ public class SkillTreeViewport {
         List<String> lore = new ArrayList<>();
         String desc = locale.get(player.getUniqueId(), "skill." + skill.name().toLowerCase() + ".description");
         if (!desc.startsWith("skill.")) lore.add(ChatColor.GRAY + desc);
+
+        SkillType parent = SkillTreeLayout.parentOf(skill);
+        if (parent != null) {
+            String parentName = parent.name().replace('_', ' ');
+            lore.add(ChatColor.DARK_AQUA + "Requires: " + parentName);
+        }
 
         if (currentTier > 0) lore.add(ChatColor.GREEN + "Current: tier " + currentTier);
         if (!maxed) {
@@ -111,6 +129,7 @@ public class SkillTreeViewport {
             case ORGANIC -> ChatColor.DARK_GREEN;
             case AQUATIC -> ChatColor.BLUE;
             case VOID -> ChatColor.DARK_PURPLE;
+            case CROP -> ChatColor.YELLOW;
         };
     }
 }

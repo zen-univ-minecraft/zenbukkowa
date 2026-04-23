@@ -8,7 +8,8 @@ import java.util.UUID;
 
 public class MenuService {
     private final Map<UUID, String> openMenus = new HashMap<>();
-    private final Map<UUID, Integer> skillScroll = new HashMap<>();
+    private final Map<UUID, Integer> skillScrollV = new HashMap<>();
+    private final Map<UUID, Integer> skillScrollH = new HashMap<>();
 
     public void setOpen(Player player, String menuId) {
         openMenus.put(player.getUniqueId(), menuId);
@@ -26,15 +27,24 @@ public class MenuService {
         return openMenus.containsKey(player.getUniqueId());
     }
 
-    public void setScrollOffset(Player player, int offset) {
-        skillScroll.put(player.getUniqueId(), Math.max(0, Math.min(offset, SkillTreeLayout.MAX_SCROLL)));
+    public void setScrollOffsetV(Player player, int offset) {
+        skillScrollV.put(player.getUniqueId(), Math.max(0, Math.min(offset, SkillTreeLayout.MAX_SCROLL_V)));
     }
 
-    public int getScrollOffset(Player player) {
-        return skillScroll.getOrDefault(player.getUniqueId(), SkillTreeLayout.MAX_SCROLL);
+    public int getScrollOffsetV(Player player) {
+        return skillScrollV.getOrDefault(player.getUniqueId(), SkillTreeLayout.MAX_SCROLL_V);
+    }
+
+    public void setScrollOffsetH(Player player, int offset) {
+        skillScrollH.put(player.getUniqueId(), Math.max(0, Math.min(offset, SkillTreeLayout.MAX_SCROLL_H)));
+    }
+
+    public int getScrollOffsetH(Player player) {
+        return skillScrollH.getOrDefault(player.getUniqueId(), 0);
     }
 
     public void resetScroll(Player player) {
-        skillScroll.remove(player.getUniqueId());
+        skillScrollV.remove(player.getUniqueId());
+        skillScrollH.remove(player.getUniqueId());
     }
 }

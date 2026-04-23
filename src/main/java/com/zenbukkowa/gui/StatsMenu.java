@@ -19,11 +19,12 @@ public class StatsMenu {
         Inventory inv = Bukkit.createInventory(null, 54, ChatColor.BLACK + locale.get(player.getUniqueId(), "menu.stats_title"));
         var progress = pointService.getProgress(player.getUniqueId());
         inv.setItem(10, MenuItems.create(Material.NETHER_STAR, ChatColor.GOLD + "Total: " + format(progress.totalPoints())));
-        inv.setItem(12, MenuItems.create(Material.STONE, ChatColor.GREEN + "TERRA: " + format(progress.points(PointCategory.TERRA))));
-        inv.setItem(13, MenuItems.create(Material.IRON_ORE, ChatColor.AQUA + "MINERAL: " + format(progress.points(PointCategory.MINERAL))));
-        inv.setItem(14, MenuItems.create(Material.OAK_LOG, ChatColor.DARK_GREEN + "ORGANIC: " + format(progress.points(PointCategory.ORGANIC))));
-        inv.setItem(15, MenuItems.create(Material.PRISMARINE, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC))));
-        inv.setItem(16, MenuItems.create(Material.OBSIDIAN, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID))));
+        inv.setItem(11, MenuItems.create(Material.STONE, ChatColor.GREEN + "TERRA: " + format(progress.points(PointCategory.TERRA))));
+        inv.setItem(12, MenuItems.create(Material.IRON_ORE, ChatColor.AQUA + "MINERAL: " + format(progress.points(PointCategory.MINERAL))));
+        inv.setItem(13, MenuItems.create(Material.OAK_LOG, ChatColor.DARK_GREEN + "ORGANIC: " + format(progress.points(PointCategory.ORGANIC))));
+        inv.setItem(14, MenuItems.create(Material.PRISMARINE, ChatColor.BLUE + "AQUATIC: " + format(progress.points(PointCategory.AQUATIC))));
+        inv.setItem(15, MenuItems.create(Material.OBSIDIAN, ChatColor.DARK_PURPLE + "VOID: " + format(progress.points(PointCategory.VOID))));
+        inv.setItem(16, MenuItems.create(Material.WHEAT, ChatColor.YELLOW + "CROP: " + format(progress.points(PointCategory.CROP))));
         inv.setItem(22, MenuItems.create(Material.DIAMOND_PICKAXE, ChatColor.YELLOW + "Blocks: " + format(progress.blocksBroken())));
         inv.setItem(49, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
         MenuItems.fillEmpty(inv);

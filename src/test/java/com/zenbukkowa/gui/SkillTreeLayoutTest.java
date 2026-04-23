@@ -1,8 +1,11 @@
 package com.zenbukkowa.gui;
 
+import com.zenbukkowa.domain.SkillType;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +44,8 @@ class SkillTreeLayoutTest {
 
     @Test
     void maxScrollIsNonNegative() {
-        assertTrue(SkillTreeLayout.MAX_SCROLL >= 0);
+        assertTrue(SkillTreeLayout.MAX_SCROLL_V >= 0);
+        assertTrue(SkillTreeLayout.MAX_SCROLL_H >= 0);
     }
 
     @Test
@@ -49,5 +53,62 @@ class SkillTreeLayoutTest {
         SkillTreeLayout.Node areaRadius = SkillTreeLayout.findNode(com.zenbukkowa.domain.SkillType.AREA_RADIUS);
         assertNotNull(areaRadius);
         assertEquals(SkillTreeLayout.GRID_ROWS - 1, areaRadius.row());
+    }
+
+    @Test
+    void noConnectionOverlapsUnrelatedNode() {
+        Map<String, SkillTreeLayout.Node> nodeMap = new HashMap<>();
+        Map<SkillTreeLayout.Node, SkillType> nodeToParent = new HashMap<>();
+        for (SkillTreeLayout.Node node : SkillTreeLayout.nodes()) {
+            nodeMap.put(node.row() + "," + node.col(), node);
+            SkillType p = SkillTreeLayout.parentOf(node.skill());
+            if (p != null) nodeToParent.put(node, p);
+        }
+
+        for (SkillTreeLayout.Connection conn : SkillTreeLayout.connections()) {
+            String key = conn.row() + "," + conn.col();
+            SkillTreeLayout.Node nodeAtConn = nodeMap.get(key);
+            if (nodeAtConn == null) continue;
+
+            boolean isParentOrChild = false;
+            for (Map.Entry<SkillTreeLayout.Node, SkillType> e : nodeToParent.entrySet()) {
+                SkillTreeLayout.Node child = e.getKey();
+                SkillType parentSkill = e.getValue();
+                SkillTreeLayout.Node parent = SkillTreeLayout.findNode(parentSkill);
+                if (parent == null) continue;
+
+                boolean connIsBetweenThisPair =
+                        (conn.row() > child.row() && conn.row() < parent.row() && conn.col() == parent.col())
+                                || (conn.row() == child.row() && conn.col() >= Math.min(parent.col(), child.col()) && conn.col() <= Math.max(parent.col(), child.col()));
+
+                if (connIsBetweenThisPair) {
+                    if (nodeAtConn.skill() == child.skill() || nodeAtConn.skill() == parent.skill()) {
+                        isParentOrChild = true;
+                        break;
+                    }
+                    var nodeParent = SkillTreeLayout.parentOf(nodeAtConn.skill());
+                    if (nodeParent != null && nodeParent == parentSkill) {
+                        isParentOrChild = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isParentOrChild) {
+                fail("Connection at " + key + " overlaps unrelated node " + nodeAtConn.skill());
+            }
+        }
+    }
+
+    @Test
+    void everyNodeHasCorrectParent() {
+        for (SkillTreeLayout.Node node : SkillTreeLayout.nodes()) {
+            var parent = SkillTreeLayout.parentOf(node.skill());
+            if (parent != null) {
+                var parentNode = SkillTreeLayout.findNode(parent);
+                assertNotNull(parentNode, "Parent node missing for " + node.skill());
+                assertTrue(parentNode.row() > node.row(), "Parent must be below child");
+            }
+        }
     }
 }

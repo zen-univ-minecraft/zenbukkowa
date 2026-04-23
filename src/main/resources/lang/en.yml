@@ -30,6 +30,8 @@ menu:
   help_commands: "Commands"
   scroll_up: "Scroll Up"
   scroll_down: "Scroll Down"
+  scroll_left: "Scroll Left"
+  scroll_right: "Scroll Right"
   reset_all: "Reset All Data"
   reset_done: "All player data reset."
   purchase_success: "Purchased {skill} tier {tier}"
@@ -45,10 +47,10 @@ help:
     children:
       overview:
         label: "Overview"
-        text: "&6=== Rules ===\n&e1. Break blocks to earn points in 5 categories.\n&e2. Spend points to unlock skills.\n&e3. First tier costs 50 points.\n&e4. Destroy structures for huge bonuses.\n&e5. Highest total score wins.\n&e6. No refunds on skill purchases.\n&e7. Containers are protected."
+        text: "&6=== Rules ===\n&e1. Break blocks to earn points in 6 categories.\n&e2. Spend points to unlock skills.\n&e3. First tier costs 50 points.\n&e4. Destroy structures for huge bonuses.\n&e5. Highest total score wins.\n&e6. No refunds on skill purchases.\n&e7. Containers are protected."
       scoring:
         label: "Scoring"
-        text: "&6=== Scoring ===\n&eBreak blocks to earn category points.\n&eTERRA: stone, dirt, sand, gravel\n&eMINERAL: ores, ancient debris\n&eORGANIC: logs, leaves, crops\n&eAQUATIC: prismarine, coral, sponge\n&eVOID: obsidian, netherrack, end stone\n&eBase blocks = 1 pt, ores = 5 pts, ancient debris = 20 pts"
+        text: "&6=== Scoring ===\n&eBreak blocks to earn category points.\n&eTERRA: stone, dirt, sand, gravel\n&eMINERAL: ores, ancient debris\n&eORGANIC: logs, leaves, crops\n&eAQUATIC: prismarine, coral, sponge\n&eVOID: obsidian, netherrack, end stone\n&eCROP: wheat, carrots, potatoes, cocoa\n&eBase blocks = 1 pt, ores = 5 pts, ancient debris = 20 pts"
       protection:
         label: "Protection"
         text: "&6=== Protection ===\n&eContainers and bedrock cannot be broken.\n&eStructure bonuses are one-time only."
@@ -63,6 +65,9 @@ help:
       aquatic:
         label: "AQUATIC"
         text: "&6=== AQUATIC Blocks ===\n&ePrismarine, sea lantern, coral, sponge, kelp, clay give AQUATIC points."
+      crop:
+        label: "CROP"
+        text: "&6=== CROP Blocks ===\n&eWheat, carrots, potatoes, beetroots, cocoa, melon stems, pumpkin stems, nether wart give CROP points."
   skills:
     children:
       tiers:
@@ -152,6 +157,16 @@ skill:
     description: "Permanent Fire Resistance"
   void_walk:
     description: "No fall damage, jump boost"
+  green_thumb:
+    description: "Bonus CROP points per block"
+  harvest_aura:
+    description: "Chance to preserve seeds"
+  compost_master:
+    description: "Auto-bonemeal nearby crops"
+  seed_satchel:
+    description: "Auto-replant harvested crops"
+  farmers_fortune:
+    description: "Bonus CROP points multiplier"
 
 category:
   terra:
@@ -164,3 +179,5 @@ category:
     description: "Ocean and water"
   void:
     description: "Nether, End, and deep dark"
+  crop:
+    description: "Cultivation and harvest"

@@ -26,6 +26,7 @@ public class SqliteDatabase {
                     organic_points INTEGER NOT NULL DEFAULT 0,
                     aquatic_points INTEGER NOT NULL DEFAULT 0,
                     void_points INTEGER NOT NULL DEFAULT 0,
+                    crop_points INTEGER NOT NULL DEFAULT 0,
                     total_points INTEGER NOT NULL DEFAULT 0,
                     blocks_broken INTEGER NOT NULL DEFAULT 0
                 )

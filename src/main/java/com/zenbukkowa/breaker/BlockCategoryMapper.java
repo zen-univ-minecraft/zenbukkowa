@@ -40,10 +40,26 @@ public class BlockCategoryMapper {
                 Material.JUNGLE_LOG, Material.ACACIA_LOG, Material.DARK_OAK_LOG,
                 Material.MANGROVE_LOG, Material.CHERRY_LOG, Material.PALE_OAK_LOG,
                 Material.STRIPPED_OAK_LOG, Material.STRIPPED_SPRUCE_LOG,
+                Material.STRIPPED_BIRCH_LOG, Material.STRIPPED_JUNGLE_LOG,
+                Material.STRIPPED_ACACIA_LOG, Material.STRIPPED_DARK_OAK_LOG,
+                Material.STRIPPED_MANGROVE_LOG, Material.STRIPPED_CHERRY_LOG,
+                Material.STRIPPED_PALE_OAK_LOG,
                 Material.OAK_WOOD, Material.SPRUCE_WOOD, Material.BIRCH_WOOD,
+                Material.JUNGLE_WOOD, Material.ACACIA_WOOD, Material.DARK_OAK_WOOD,
+                Material.MANGROVE_WOOD, Material.CHERRY_WOOD, Material.PALE_OAK_WOOD,
+                Material.STRIPPED_OAK_WOOD, Material.STRIPPED_SPRUCE_WOOD,
+                Material.STRIPPED_BIRCH_WOOD, Material.STRIPPED_JUNGLE_WOOD,
+                Material.STRIPPED_ACACIA_WOOD, Material.STRIPPED_DARK_OAK_WOOD,
+                Material.STRIPPED_MANGROVE_WOOD, Material.STRIPPED_CHERRY_WOOD,
+                Material.STRIPPED_PALE_OAK_WOOD,
                 Material.OAK_PLANKS, Material.SPRUCE_PLANKS, Material.BIRCH_PLANKS,
-                Material.ACACIA_PLANKS, Material.DARK_OAK_PLANKS,
+                Material.JUNGLE_PLANKS, Material.ACACIA_PLANKS, Material.DARK_OAK_PLANKS,
+                Material.MANGROVE_PLANKS, Material.CHERRY_PLANKS, Material.PALE_OAK_PLANKS,
+                Material.BAMBOO_PLANKS, Material.BAMBOO_MOSAIC,
                 Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES,
+                Material.JUNGLE_LEAVES, Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES,
+                Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES, Material.PALE_OAK_LEAVES,
+                Material.AZALEA_LEAVES, Material.FLOWERING_AZALEA_LEAVES,
                 Material.GRASS_BLOCK, Material.MOSS_BLOCK, Material.MOSS_CARPET,
                 Material.CRIMSON_NYLIUM, Material.WARPED_NYLIUM,
                 Material.NETHER_WART_BLOCK, Material.WARPED_WART_BLOCK, Material.SHROOMLIGHT,
@@ -66,6 +82,13 @@ public class BlockCategoryMapper {
                 Material.SCULK, Material.SCULK_VEIN, Material.SCULK_SENSOR,
                 Material.SCULK_SHRIEKER, Material.SCULK_CATALYST,
                 Material.MAGMA_BLOCK, Material.GLOWSTONE);
+
+        putCrop(Material.WHEAT, Material.CARROTS, Material.POTATOES, Material.BEETROOTS,
+                Material.MELON_STEM, Material.PUMPKIN_STEM, Material.ATTACHED_MELON_STEM,
+                Material.ATTACHED_PUMPKIN_STEM, Material.COCOA, Material.NETHER_WART,
+                Material.SWEET_BERRY_BUSH, Material.CAVE_VINES, Material.CAVE_VINES_PLANT,
+                Material.TORCHFLOWER, Material.TORCHFLOWER_CROP,
+                Material.PITCHER_CROP, Material.PITCHER_PLANT);
 
         for (Material m : Material.values()) {
             if (m.name().startsWith("POTTED_")) {
@@ -96,6 +119,10 @@ public class BlockCategoryMapper {
 
     private static void putVoid(Material... mats) {
         for (Material m : mats) put(m, PointCategory.VOID, 1);
+    }
+
+    private static void putCrop(Material... mats) {
+        for (Material m : mats) put(m, PointCategory.CROP, 1);
     }
 
     private static void put(Material m, PointCategory c, int v) {

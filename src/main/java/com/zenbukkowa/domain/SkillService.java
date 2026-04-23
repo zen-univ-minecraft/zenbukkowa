@@ -31,10 +31,9 @@ public class SkillService {
     }
 
     private boolean checkPrerequisites(PlayerSkills skills, SkillType skill, int targetTier) {
-        // Cross-category root gate: all non-TERRA base skills require AREA_RADIUS tier 1
         boolean hasAreaRadius = skills.tier(SkillType.AREA_RADIUS) >= 1;
         switch (skill) {
-            case HASTE_AURA, LEAF_CONSUME, TIDE_BREAKER, SALVAGE, VOID_SIPHON, STRUCTURE_SENSE -> {
+            case HASTE_AURA, LEAF_CONSUME, TIDE_BREAKER, SALVAGE, VOID_SIPHON, STRUCTURE_SENSE, GREEN_THUMB -> {
                 if (!hasAreaRadius) return false;
             }
         }
@@ -59,6 +58,10 @@ public class SkillService {
             case NIGHT_VISION -> skills.hasSkill(SkillType.STRUCTURE_SENSE);
             case FIRE_RESISTANCE -> skills.hasSkill(SkillType.NIGHT_VISION);
             case VOID_WALK -> skills.tier(SkillType.VOID_SIPHON) >= 2;
+            case HARVEST_AURA -> skills.hasSkill(SkillType.GREEN_THUMB);
+            case COMPOST_MASTER -> skills.hasSkill(SkillType.HARVEST_AURA);
+            case SEED_SATCHEL -> skills.hasSkill(SkillType.COMPOST_MASTER);
+            case FARMERS_FORTUNE -> skills.hasSkill(SkillType.SEED_SATCHEL);
             default -> true;
         };
     }

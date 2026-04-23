@@ -12,8 +12,9 @@ public class SkillsMenu {
                             SkillService skillService, PointService pointService,
                             LocaleService locale) {
         Inventory inv = Bukkit.createInventory(null, 54, ChatColor.BLACK + locale.get(player.getUniqueId(), "menu.skills_title"));
-        int offset = menuService.getScrollOffset(player);
-        SkillTreeViewport.render(inv, player, offset, skillService, pointService, locale);
+        int offsetV = menuService.getScrollOffsetV(player);
+        int offsetH = menuService.getScrollOffsetH(player);
+        SkillTreeViewport.render(inv, player, offsetV, offsetH, skillService, pointService, locale);
         player.openInventory(inv);
         menuService.setOpen(player, "skills");
     }

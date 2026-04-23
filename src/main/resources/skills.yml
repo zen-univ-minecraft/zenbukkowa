@@ -108,3 +108,24 @@ skills:
     category: VOID
     max-tier: 3
     tiers: [1, 2, 3]
+  # CROP
+  GREEN_THUMB:
+    category: CROP
+    max-tier: 5
+    tiers: [1, 2, 3, 4, 5]
+  HARVEST_AURA:
+    category: CROP
+    max-tier: 3
+    tiers: [1, 2, 3]
+  COMPOST_MASTER:
+    category: CROP
+    max-tier: 3
+    tiers: [1, 2, 3]
+  SEED_SATCHEL:
+    category: CROP
+    max-tier: 1
+    tiers: [1]
+  FARMERS_FORTUNE:
+    category: CROP
+    max-tier: 3
+    tiers: [1, 2, 3]

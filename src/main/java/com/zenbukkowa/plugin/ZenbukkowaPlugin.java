@@ -54,7 +54,10 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             SchedulerBridge scheduler = new PaperSchedulerBridge();
             EventService eventService = new EventService(pointService, this);
             ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
-            pointService.setScoreboardService(scoreboardService);
+            pointService.setOnChange(uuid -> {
+                org.bukkit.entity.Player p = org.bukkit.Bukkit.getPlayer(uuid);
+                if (p != null) scoreboardService.updatePlayer(p);
+            });
             LocaleService localeService = new LocaleService(this, settingsDao, config.getString("locale.default", "en"));
             MenuService menuService = new MenuService();
             HotbarMenuService hotbarMenuService = new HotbarMenuService(this, menuService, localeService);

@@ -100,17 +100,28 @@ public class MenuListener implements Listener {
     private void handleSkills(Player player, int slot) {
         if (slot == 49) { RootMenu.open(player, menuService, locale); return; }
         if (slot == 45) {
-            int off = menuService.getScrollOffset(player);
-            if (off > 0) { menuService.setScrollOffset(player, off - 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
+            int off = menuService.getScrollOffsetV(player);
+            if (off > 0) { menuService.setScrollOffsetV(player, off - 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
             return;
         }
         if (slot == 53) {
-            int off = menuService.getScrollOffset(player);
-            if (off < SkillTreeLayout.MAX_SCROLL) { menuService.setScrollOffset(player, off + 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
+            int off = menuService.getScrollOffsetV(player);
+            if (off < SkillTreeLayout.MAX_SCROLL_V) { menuService.setScrollOffsetV(player, off + 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
             return;
         }
-        int offset = menuService.getScrollOffset(player);
-        SkillType skill = SkillTreeViewport.skillAtSlot(slot, offset);
+        if (slot == 47) {
+            int off = menuService.getScrollOffsetH(player);
+            if (off > 0) { menuService.setScrollOffsetH(player, off - 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
+            return;
+        }
+        if (slot == 51) {
+            int off = menuService.getScrollOffsetH(player);
+            if (off < SkillTreeLayout.MAX_SCROLL_H) { menuService.setScrollOffsetH(player, off + 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
+            return;
+        }
+        int offsetV = menuService.getScrollOffsetV(player);
+        int offsetH = menuService.getScrollOffsetH(player);
+        SkillType skill = SkillTreeViewport.skillAtSlot(slot, offsetV, offsetH);
         if (skill == null) return;
         int current = skillService.getSkills(player.getUniqueId()).tier(skill);
         if (current >= skill.maxTier()) {
@@ -177,7 +188,7 @@ public class MenuListener implements Listener {
             case 14 -> HelpTopicMenu.open(player, menuService, locale, "breaking");
             case 15 -> HelpTopicMenu.open(player, menuService, locale, "structures");
             case 16 -> HelpTopicMenu.open(player, menuService, locale, "commands");
-            case 49 -> HelpMenu.open(player, menuService, locale);
+            case 49 -> RootMenu.open(player, menuService, locale);
         }
     }
 }

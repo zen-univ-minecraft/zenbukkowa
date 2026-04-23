@@ -21,7 +21,7 @@ public class PlayerDao {
 
     public PlayerProgress loadProgress(UUID uuid) throws SQLException {
         PlayerProgress progress = new PlayerProgress(uuid);
-        String sql = "SELECT terra_points, mineral_points, organic_points, aquatic_points, void_points, blocks_broken FROM player_progress WHERE uuid = ?";
+        String sql = "SELECT terra_points, mineral_points, organic_points, aquatic_points, void_points, crop_points, blocks_broken FROM player_progress WHERE uuid = ?";
         try (PreparedStatement ps = db.connection().prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
             try (ResultSet rs = ps.executeQuery()) {
@@ -31,6 +31,7 @@ public class PlayerDao {
                     progress.setPoints(PointCategory.ORGANIC, rs.getLong("organic_points"));
                     progress.setPoints(PointCategory.AQUATIC, rs.getLong("aquatic_points"));
                     progress.setPoints(PointCategory.VOID, rs.getLong("void_points"));
+                    progress.setPoints(PointCategory.CROP, rs.getLong("crop_points"));
                     progress.setBlocksBroken(rs.getLong("blocks_broken"));
                 }
             }
@@ -40,14 +41,15 @@ public class PlayerDao {
 
     public void saveProgress(PlayerProgress progress) throws SQLException {
         String sql = """
-            INSERT INTO player_progress (uuid, terra_points, mineral_points, organic_points, aquatic_points, void_points, total_points, blocks_broken)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO player_progress (uuid, terra_points, mineral_points, organic_points, aquatic_points, void_points, crop_points, total_points, blocks_broken)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(uuid) DO UPDATE SET
                 terra_points=excluded.terra_points,
                 mineral_points=excluded.mineral_points,
                 organic_points=excluded.organic_points,
                 aquatic_points=excluded.aquatic_points,
                 void_points=excluded.void_points,
+                crop_points=excluded.crop_points,
                 total_points=excluded.total_points,
                 blocks_broken=excluded.blocks_broken
             """;
@@ -58,8 +60,9 @@ public class PlayerDao {
             ps.setLong(4, progress.points(PointCategory.ORGANIC));
             ps.setLong(5, progress.points(PointCategory.AQUATIC));
             ps.setLong(6, progress.points(PointCategory.VOID));
-            ps.setLong(7, progress.totalPoints());
-            ps.setLong(8, progress.blocksBroken());
+            ps.setLong(7, progress.points(PointCategory.CROP));
+            ps.setLong(8, progress.totalPoints());
+            ps.setLong(9, progress.blocksBroken());
             ps.executeUpdate();
         }
     }
