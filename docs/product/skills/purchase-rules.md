@@ -141,3 +141,18 @@ Each branch root unlocks independently with its own category points. No `AREA_RA
 - Reset clears points, skills, break logs, placed blocks, and discovery logs for the target player(s).
 - Reset does not clear structure claims or server settings.
 - There is no player-initiated self-reset.
+
+---
+
+## Implementation Status
+
+| Feature | Status |
+|---|---|
+| `50 * N` linear cost formula | ✅ Live |
+| Cross-category `tierCost()` map | ✅ Live |
+| Mythic `250 * N` per category | ✅ Live |
+| Independent branch roots (no AREA_RADIUS gate) | ✅ Live |
+| Branch-internal prerequisite chains | ✅ Live |
+| Immediate purchase, no confirm screen | ✅ Live |
+| Point spend flushes DB first | ✅ Live |
+| Operator `/zenbukkowa reset` | ✅ Live |

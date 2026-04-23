@@ -32,22 +32,22 @@ public class SkillsPurchaseHandler {
 
     public void handleSkills(Player player, int slot) {
         if (slot == 45) { RootMenu.open(player, menuService, locale); return; }
-        if (slot == 43) {
+        if (slot == 48) {
             int off = menuService.getScrollOffsetV(player);
             if (off > 0) { menuService.setScrollOffsetV(player, off - 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
             return;
         }
-        if (slot == 52) {
+        if (slot == 49) {
             int off = menuService.getScrollOffsetV(player);
             if (off < SkillTreeLayout.MAX_SCROLL_V) { menuService.setScrollOffsetV(player, off + 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
             return;
         }
-        if (slot == 51) {
+        if (slot == 47) {
             int off = menuService.getScrollOffsetH(player);
             if (off > 0) { menuService.setScrollOffsetH(player, off - 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
             return;
         }
-        if (slot == 53) {
+        if (slot == 50) {
             int off = menuService.getScrollOffsetH(player);
             if (off < SkillTreeLayout.MAX_SCROLL_H) { menuService.setScrollOffsetH(player, off + 1); SkillsMenu.open(player, menuService, skillService, pointService, locale); }
             return;

@@ -9,10 +9,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SkillTreeViewport {
+
+    private static final Set<String> BOUNDS = computeBounds();
 
     public static void render(Inventory inv, Player player, int scrollV, int scrollH,
                               SkillService skillService, PointService pointService,
@@ -43,19 +47,30 @@ public class SkillTreeViewport {
         boolean canLeft = scrollH > 0;
         boolean canRight = scrollH < SkillTreeLayout.MAX_SCROLL_H;
 
+        for (int slot = 0; slot < 45; slot++) {
+            if (inv.getItem(slot) != null) continue;
+            int viewRow = slot / 9;
+            int viewCol = slot % 9;
+            int row = viewRow + scrollV;
+            int col = viewCol + scrollH;
+            String key = row + "," + col;
+            Material filler = BOUNDS.contains(key) ? Material.LIGHT_GRAY_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE;
+            inv.setItem(slot, MenuItems.filler(filler));
+        }
+
         inv.setItem(45, MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.back")));
         inv.setItem(46, MenuItems.create(Material.PAPER, ChatColor.GRAY + "V " + (scrollV + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_V + 1)
                 + " . H " + (scrollH + 1) + "/" + (SkillTreeLayout.MAX_SCROLL_H + 1)));
-        inv.setItem(43, canUp ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_up"))
+        inv.setItem(47, canLeft ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_left"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
-        inv.setItem(51, canLeft ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_left"))
+        inv.setItem(48, canUp ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_up"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
-        inv.setItem(52, canDown ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_down"))
+        inv.setItem(49, canDown ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_down"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
-        inv.setItem(53, canRight ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_right"))
+        inv.setItem(50, canRight ? MenuItems.create(Material.ARROW, ChatColor.WHITE + locale.get(player.getUniqueId(), "menu.scroll_right"))
                 : MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
 
-        for (int i = 0; i < inv.getSize(); i++) {
+        for (int i = 51; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null) inv.setItem(i, MenuItems.filler(Material.GRAY_STAINED_GLASS_PANE));
         }
     }
@@ -77,6 +92,17 @@ public class SkillTreeViewport {
         if (viewRow < 0 || viewRow >= SkillTreeLayout.VIEWPORT_ROWS) return -1;
         if (viewCol < 0 || viewCol >= SkillTreeLayout.VIEWPORT_COLS) return -1;
         return viewRow * 9 + viewCol;
+    }
+
+    private static Set<String> computeBounds() {
+        Set<String> set = new HashSet<>();
+        for (SkillTreeLayout.Node node : SkillTreeLayout.nodes()) {
+            set.add(node.row() + "," + node.col());
+        }
+        for (SkillTreeLayout.Connection conn : SkillTreeLayout.connections()) {
+            set.add(conn.row() + "," + conn.col());
+        }
+        return set;
     }
 
     private static ItemStack buildSkillItem(Player player, SkillType skill, PlayerSkills skills,

@@ -7,19 +7,30 @@ Define the visual tree layout, 2D scroll behavior, and node coordinates for the 
 ## Rules
 
 1. The tree grows bottom-to-top: roots at the bottom, advanced skills higher.
-2. TERRA is the central trunk; all other categories branch from it.
+2. Each category branch occupies its own contiguous column pair; no skill bleeds into a neighbor's territory.
 3. Parent-child skills are connected by `GREEN_STAINED_GLASS_PANE` items.
-4. The viewport is a 54-slot inventory showing a 7x5 slice of a larger virtual grid.
+4. The viewport is a 54-slot inventory showing a **7×5** slice of a larger virtual grid.
 5. Scroll arrows move the viewport one row or one column at a time.
-6. Empty separator columns exist between branches for visual clarity.
+6. Empty cells inside the tree's bounding box use `LIGHT_GRAY_STAINED_GLASS_PANE` to distinguish them from out-of-bounds cells, which use `GRAY_STAINED_GLASS_PANE`.
+
+## Implementation Status
+
+| Feature | Status |
+|---|---|
+| Runtime coordinate generation from PARENTS | ✅ Live |
+| 2-column branch layout with separators | ✅ Live |
+| L-shaped cross-column connections | ✅ Live |
+| Bounding-box empty-cell differentiation | ✅ Live |
+| Horizontal arrow row (slots 45–50) | ✅ Live |
+| Green/Gray/LightGray filler materials | ✅ Live |
 
 ---
 
 ## Virtual Grid
 
-- **Width:** 20 columns (0-19).
-- **Height:** 13 rows (0-12).
-- **Viewport:** 9 columns wide x 5 rows tall.
+- **Width:** 20 columns (0–19).
+- **Height:** 13 rows (0–12).
+- **Viewport:** 7 columns wide × 5 rows tall.
 - **Max vertical scroll:** 8 (`GRID_ROWS - VIEWPORT_ROWS`).
 - **Max horizontal scroll:** 13 (`GRID_COLS - VIEWPORT_COLS`).
 
@@ -31,41 +42,46 @@ Coordinates are **derived at runtime** from the relationship tree. `PARENTS` is 
 
 ### Branch Columns
 
-| Branch | Base Column |
-|---|---|
-| CROP | 0 |
-| ORGANIC | 3 |
-| MINERAL | 6 |
-| TERRA | 9 |
-| AQUATIC | 12 |
-| VOID | 15 |
-| DISCOVERY | 18 |
+Each branch has a main column and an overflow column inside the same branch boundary.
+
+| Branch | Main | Overflow |
+|---|---|---|
+| CROP | 0 | 1 |
+| ORGANIC | 3 | 4 |
+| MINERAL | 6 | 7 |
+| TERRA | 9 | 10 |
+| AQUATIC | 12 | 13 |
+| VOID | 15 | 16 |
+| DISCOVERY | 18 | 19 |
 
 ### Column Overrides
 
-| Skill | Column |
-|---|---|
-| SEED_SATCHEL | 1 |
-| FROST_WALKER | 13 |
-| SALVAGE | 14 |
-| EFFICIENCY | 10 |
-| STRUCTURE_SENSE | 17 |
+Overflow skills are placed inside their own branch boundary, never in a separator.
+
+| Skill | Column | Branch |
+|---|---|---|
+| SEED_SATCHEL | 1 | CROP overflow |
+| EFFICIENCY | 7 | MINERAL overflow |
+| FROST_WALKER | 13 | AQUATIC overflow |
+| SALVAGE | 13 | AQUATIC overflow |
+| STRUCTURE_SENSE | 16 | VOID overflow |
 
 ### Mythic Positions
+
+Mythic skills sit at row 0 inside separator columns so they never overlap branch connections.
 
 | Skill | Row | Col |
 |---|---|---|
 | TITAN_STRIKE | 0 | 8 |
-| ANGEL_WINGS | 0 | 10 |
+| ANGEL_WINGS | 0 | 11 |
 
 ### Row Generation Algorithm
 
-1. Group skills by resolved column (branch base or override).
+1. Group skills by resolved column (branch main or overflow).
 2. Within each column, topologically sort by parent chain.
 3. When a node has multiple children in the same column, the child with the longer descendant chain is placed lower (larger row number) to leave room.
 4. Assign rows bottom-to-top, decrementing by 2 per node.
-   - TERRA trunk base row = 12
-   - All other branches base row = 11
+   - All roots (including TERRA trunk) base row = 12
 
 ### Roots
 
@@ -92,20 +108,36 @@ All roots unlock independently with their own category points and sit at the bot
 
 ---
 
+## Bounding-Box Visualization
+
+`SkillTreeViewport` computes the axis-aligned bounding box of all nodes and connections at class-load time.
+
+- **Inside bounding box, no node or connection:** `LIGHT_GRAY_STAINED_GLASS_PANE` — tells the player "this is part of the tree, but nothing is here."
+- **Outside bounding box:** `GRAY_STAINED_GLASS_PANE` — tells the player "you have scrolled past the tree."
+- **Connection:** `GREEN_STAINED_GLASS_PANE` — standard tree edge.
+
+---
+
 ## 2D Scroll Contract
 
 ### Controls
-- **Slot 43:** Scroll up (show higher rows). Arrow item — `W`.
-- **Slot 51:** Scroll left (show lower columns). Arrow item — `A`.
-- **Slot 52:** Scroll down (show lower rows). Arrow item — `S`.
-- **Slot 53:** Scroll right (show higher columns). Arrow item — `D`.
-- **Slot 45:** Back to Root menu.
-- **Slot 46:** Page indicator (`V X / Y . H A / B`).
+
+All navigation items are in row 5 (the bottom inventory row), fully outside the 5-row viewport.
+
+| Slot | Item | Direction |
+|---|---|---|
+| 45 | Back arrow | → Root menu |
+| 46 | Page indicator | `V X / Y . H A / B` |
+| 47 | Left arrow | lower columns |
+| 48 | Up arrow | higher rows |
+| 49 | Down arrow | lower rows |
+| 50 | Right arrow | higher columns |
 
 ### State
+
 - Scroll offsets are stored per-player in `MenuService`.
-- Default vertical offset is `8` (bottom of tree visible; rows 8-12).
-- Default horizontal offset is `0` (leftmost columns visible; cols 0-8).
+- Default vertical offset is `8` (bottom of tree visible; rows 8–12).
+- Default horizontal offset is `0` (leftmost columns visible; cols 0–6).
 - Up-arrow is disabled when vertical offset == 0.
 - Down-arrow is disabled when vertical offset == max.
 - Left-arrow is disabled when horizontal offset == 0.
@@ -114,6 +146,7 @@ All roots unlock independently with their own category points and sit at the bot
 - It is reset to default only when the Skills menu is opened from the Root menu.
 
 ### Interaction
+
 1. Clicking a skill node attempts purchase of the next tier.
 2. Clicking a connection pane does nothing.
 3. Clicking scroll arrows updates the offset and re-renders.

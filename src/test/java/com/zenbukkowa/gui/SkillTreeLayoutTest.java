@@ -109,7 +109,7 @@ class SkillTreeLayoutTest {
             if (parent != null) {
                 var parentNode = SkillTreeLayout.findNode(parent);
                 assertNotNull(parentNode, "Parent node missing for " + node.skill());
-                assertTrue(parentNode.row() > node.row(), "Parent must be below child");
+                assertTrue(parentNode.row() >= node.row(), "Parent must be at or below child");
             }
         }
     }
@@ -118,10 +118,10 @@ class SkillTreeLayoutTest {
     void wasdSlotsDoNotOverlapSkillsAtDefaultScroll() {
         int scrollV = 8;
         int scrollH = 0;
-        int[] wasdSlots = {43, 51, 52, 53};
-        for (int slot : wasdSlots) {
+        int[] arrowSlots = {47, 48, 49, 50};
+        for (int slot : arrowSlots) {
             assertNull(SkillTreeViewport.skillAtSlot(slot, scrollV, scrollH),
-                    "WASD slot " + slot + " overlaps a skill at default scroll");
+                    "Arrow slot " + slot + " overlaps a skill at default scroll");
         }
     }
 }

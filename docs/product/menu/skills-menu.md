@@ -4,17 +4,31 @@
 
 Purchase and upgrade skills using category points inside a 2D scrollable tree-shaped inventory.
 
+## Implementation Status
+
+| Feature | Status |
+|---|---|
+| 54-slot inventory viewport | ✅ Live |
+| 7×5 virtual grid slice | ✅ Live |
+| Horizontal arrow row (slots 47–50) | ✅ Live |
+| Green/Gray/Emerald wool node items | ✅ Live |
+| Green stained glass connections | ✅ Live |
+| Light gray / gray bounding-box fillers | ✅ Live |
+| Immediate purchase on click | ✅ Live |
+| Sound + localized feedback | ✅ Live |
+| Drag cancellation | ✅ Live |
+
 ## Layout
 
 - 54 slots (6 rows).
 - Rows 0–4: viewport into the virtual skill tree grid.
 - Row 5 (bottom row of inventory):
-  - Slot 45: `Scroll Up` (arrow) — moves viewport toward higher rows.
-  - Slot 47: `Scroll Left` (arrow) — moves viewport toward lower columns.
+  - Slot 45: `Back` (arrow) → Root menu.
   - Slot 46: `Page Indicator` (paper) — shows current vertical and horizontal page.
-  - Slot 49: `Back` (arrow) — Root menu.
-  - Slot 51: `Scroll Right` (arrow) — moves viewport toward higher columns.
-  - Slot 53: `Scroll Down` (arrow) — moves viewport toward lower rows.
+  - Slot 47: `Scroll Left` (arrow) — moves viewport toward lower columns.
+  - Slot 48: `Scroll Up` (arrow) — moves viewport toward higher rows.
+  - Slot 49: `Scroll Down` (arrow) — moves viewport toward lower rows.
+  - Slot 50: `Scroll Right` (arrow) — moves viewport toward higher columns.
 
 ## Skill Node Item
 
@@ -23,8 +37,7 @@ Purchase and upgrade skills using category points inside a 2D scrollable tree-sh
   - Description from locale.
   - Current effect.
   - Next tier effect (if applicable).
-  - Cost: `{Cost} {Category} Points`.
-  - Player balance.
+  - Cost: category breakdown with player balance per category.
   - Immediate prerequisite skill names.
   - Prerequisite status.
 - Green wool block: purchasable / unlocked.
@@ -36,13 +49,18 @@ Purchase and upgrade skills using category points inside a 2D scrollable tree-sh
 - `GREEN_STAINED_GLASS_PANE` fills grid cells between parent and child nodes.
 - Connections have blank names and no lore; they are not interactive.
 
+## Empty-Cell Differentiation
+
+- `LIGHT_GRAY_STAINED_GLASS_PANE`: inside the tree bounding box but no skill or connection here.
+- `GRAY_STAINED_GLASS_PANE`: outside the tree bounding box (scrolled past the tree).
+
 ## Navigation
 
-- Slot 49: `Back` (arrow) → Root menu.
-- Slot 45: `Scroll Up` → show higher rows (toward tree top).
-- Slot 53: `Scroll Down` → show lower rows (toward tree roots).
+- Slot 45: `Back` (arrow) → Root menu.
 - Slot 47: `Scroll Left` → show lower columns (toward left branches).
-- Slot 51: `Scroll Right` → show higher columns (toward right branches).
+- Slot 48: `Scroll Up` → show higher rows (toward tree top).
+- Slot 49: `Scroll Down` → show lower rows (toward tree roots).
+- Slot 50: `Scroll Right` → show higher columns (toward right branches).
 
 ## Interaction
 

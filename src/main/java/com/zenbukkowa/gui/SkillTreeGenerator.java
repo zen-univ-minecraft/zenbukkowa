@@ -16,24 +16,24 @@ public class SkillTreeGenerator {
         Map<SkillType, Integer> columns = resolveColumns();
 
         Map<SkillType, Integer> maxRow = new EnumMap<>(SkillType.class);
-        maxRow.put(SkillType.AREA_RADIUS, 12);
-
         Queue<SkillType> queue = new ArrayDeque<>();
-        queue.add(SkillType.AREA_RADIUS);
+
+        int rootRow = SkillTreeLayout.GRID_ROWS - 1;
+        for (SkillType skill : SkillType.values()) {
+            if (!parents.containsKey(skill)) {
+                maxRow.put(skill, rootRow);
+                queue.add(skill);
+            }
+        }
+
         while (!queue.isEmpty()) {
             SkillType parent = queue.poll();
-            for (SkillType child : getAllChildren(parent, parents)) {
+            for (SkillType child : getChildren(parent, parents)) {
                 int candidate = maxRow.get(parent) - 2;
                 if (!maxRow.containsKey(child) || candidate < maxRow.get(child)) {
                     maxRow.put(child, candidate);
                     queue.add(child);
                 }
-            }
-        }
-
-        for (SkillType skill : SkillType.values()) {
-            if (!maxRow.containsKey(skill)) {
-                maxRow.put(skill, 11);
             }
         }
 
@@ -58,7 +58,7 @@ public class SkillTreeGenerator {
 
         List<SkillTreeLayout.Node> nodes = new ArrayList<>();
         nodes.add(new SkillTreeLayout.Node(SkillType.TITAN_STRIKE, 0, 8));
-        nodes.add(new SkillTreeLayout.Node(SkillType.ANGEL_WINGS, 0, 10));
+        nodes.add(new SkillTreeLayout.Node(SkillType.ANGEL_WINGS, 0, 11));
         for (SkillType skill : SkillType.values()) {
             if (skill == SkillType.ANGEL_WINGS || skill == SkillType.TITAN_STRIKE) continue;
             nodes.add(new SkillTreeLayout.Node(skill, actualRow.get(skill), columns.get(skill)));
@@ -81,31 +81,18 @@ public class SkillTreeGenerator {
             map.put(skill, branchBase.getOrDefault(skill.category(), 9));
         }
         map.put(SkillType.SEED_SATCHEL, 1);
+        map.put(SkillType.EFFICIENCY, 7);
         map.put(SkillType.FROST_WALKER, 13);
-        map.put(SkillType.SALVAGE, 14);
-        map.put(SkillType.EFFICIENCY, 10);
-        map.put(SkillType.STRUCTURE_SENSE, 17);
+        map.put(SkillType.SALVAGE, 13);
+        map.put(SkillType.STRUCTURE_SENSE, 16);
         return map;
     }
 
-    private static final List<SkillType> ROOTS = List.of(
-            SkillType.HASTE_AURA, SkillType.LEAF_CONSUME, SkillType.TIDE_BREAKER,
-            SkillType.SALVAGE, SkillType.VOID_SIPHON, SkillType.STRUCTURE_SENSE,
-            SkillType.GREEN_THUMB, SkillType.CURIOUS_MINER
-    );
-
-    private static List<SkillType> getAllChildren(SkillType parent, Map<SkillType, SkillType> parents) {
+    private static List<SkillType> getChildren(SkillType parent, Map<SkillType, SkillType> parents) {
         List<SkillType> result = new ArrayList<>();
         for (Map.Entry<SkillType, SkillType> e : parents.entrySet()) {
             if (e.getValue() == parent) {
                 result.add(e.getKey());
-            }
-        }
-        if (parent == SkillType.AREA_RADIUS) {
-            for (SkillType root : ROOTS) {
-                if (!result.contains(root)) {
-                    result.add(root);
-                }
             }
         }
         return result;
