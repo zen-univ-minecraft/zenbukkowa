@@ -2,7 +2,7 @@
 
 ## Goal
 
-Divide block-breaking rewards into six categories that must be earned in balance to maximize destruction.
+Divide block-breaking rewards into seven categories that must be earned in balance to maximize destruction.
 
 ## Categories
 
@@ -62,14 +62,22 @@ Divide block-breaking rewards into six categories that must be earned in balance
 - Torchflower, pitcher crop
 - Sugar cane (also ORGANIC), cactus (also ORGANIC)
 
+### DISCOVERY
+
+- Awarded the first time a player breaks any naturally occurring block type.
+- Each unique `Material` that can generate naturally in the world grants a one-time bonus.
+- Bonus amount scales with block rarity: common blocks = 10 points, ores = 50 points, ancient debris = 200 points.
+- The DISCOVERY branch in the skill tree expands the list of blocks that grant bonuses and increases bonus amounts.
+
 ## Point Values
 
 - Default: `1 point` per block broken.
 - Ores in MINERAL: `5 points` per block.
 - Ancient debris: `20 points` per block.
 - Structure bonus blocks (prismarine, sea lantern, dark oak in mansions): `2 points` per block.
+- Discovery first-break bonuses: `10-200 points` depending on block rarity.
 
 ## Balance Rule
 
-- Max area skills require spending `TERRA` + `MINERAL` + `ORGANIC` + `AQUATIC` + `VOID` + `CROP` points in roughly equal proportion.
+- Max area skills require spending points in roughly equal proportion across all seven categories.
 - A player who only mines stone cannot afford `AREA_DEPTH` past tier 2.

@@ -11,6 +11,7 @@ Expose all point features through a deterministic right-end hotbar control that 
 3. Lock applies to click, drag, number-key swap, offhand swap, inventory transfer, and item pickup.
 4. Player join/respawn restores the menu item in slot `8`.
 5. If slot `8` is missing or tampered, it is reinstalled immediately via periodic scan.
+6. On player death, the token is removed from drops and restored on respawn.
 
 ## Opening Contract
 
@@ -25,8 +26,8 @@ Expose all point features through a deterministic right-end hotbar control that 
 
 ## Raw Slot Mapping
 
-- In a player inventory view: slot `8` is raw slot `8`.
-- In a custom inventory view: player hotbar slot `8` is raw slot `44`.
+- In a player inventory view: raw slot `44` is hotbar slot `8`.
+- In a custom inventory view: raw slot `topSize + 35` is hotbar slot `8` (bottom inventory has 36 slots; hotbar is the last 9).
 - Both raw slots must be treated as the menu trigger.
 
 ## Item Identification

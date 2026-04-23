@@ -11,6 +11,7 @@ Define how players buy skills with points, including costs, prerequisites, and r
 3. Mythic skill purchases consume points from multiple categories at once.
 4. Cross-category bundles do not exist for normal skills.
 5. Purchases are final; no refunds.
+6. Prerequisites must be checked **before** points are consumed.
 
 ---
 
@@ -40,6 +41,7 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 - `VOID_SIPHON` requires `AREA_RADIUS`.
 - `STRUCTURE_SENSE` requires `AREA_RADIUS`.
 - `GREEN_THUMB` requires `AREA_RADIUS`.
+- `CURIOUS_MINER` requires `AREA_RADIUS`.
 
 ### TERRA
 - `AREA_DEPTH` tier 3+ requires `AREA_RADIUS` tier 3+.
@@ -82,6 +84,13 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 - `FARMERS_FORTUNE` requires `SEED_SATCHEL`.
 - `HARVEST_WAVE` requires `FARMERS_FORTUNE`.
 
+### DISCOVERY
+- `GEOLOGIST` requires `CURIOUS_MINER`.
+- `SURVEYOR` requires `GEOLOGIST`.
+- `CARTOGRAPHER` requires `SURVEYOR`.
+- `PATHFINDER` requires `CARTOGRAPHER`.
+- `WORLD_WALKER` requires `PATHFINDER`.
+
 ---
 
 ## Mythic Skills
@@ -119,12 +128,13 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 - On success: menu updates immediately, player hears level-up sound.
 - On insufficient points: red "Insufficient {Category} Points" message.
 - On unmet prerequisite: red "Missing prerequisite" message.
+- **Points must never be consumed if the prerequisite is unmet.**
 
 ---
 
 ## Reset Policy
 
 - Operators can reset individual player data or all player data.
-- Reset clears points, skills, and break logs for the target player(s).
+- Reset clears points, skills, break logs, placed blocks, and discovery logs for the target player(s).
 - Reset does not clear structure claims or server settings.
 - There is no player-initiated self-reset.
