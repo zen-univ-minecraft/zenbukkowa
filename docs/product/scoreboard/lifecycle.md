@@ -2,12 +2,29 @@
 
 ## Goal
 
-Define when the scoreboard is visible.
+Define when the scoreboard is created, updated, hidden, and destroyed.
 
-## Rules
+## Creation
 
-1. Scoreboard is visible to all online players from plugin enable.
-2. New players receive the scoreboard on join.
-3. Players can toggle visibility in the Settings menu.
-4. Toggle state is per-player and persists until disconnect.
-5. Event end does not hide the scoreboard; it shows final standings.
+- On player join: `ScoreboardService.addPlayer()` creates a new sidebar scoreboard.
+- If the player has disabled the scoreboard in settings, the main scoreboard is shown instead.
+
+## Update Triggers
+
+1. **Tick update:** every second for the time line.
+2. **Page rotation:** every 10 seconds (200 ticks) the global page index increments.
+3. **Point mutation:** `PointService` callback triggers `updatePlayer()` for the affected player.
+4. **Skill purchase:** `MenuListener` calls `updateAll()` after a successful skill buy.
+5. **Event start/end:** `EventService` broadcasts changes.
+
+## Page Rotation
+
+- `ScoreboardService` owns a `currentPage` field (0, 1, or 2).
+- `tick()` increments the page every 10 seconds and calls `updateAll()`.
+- Players do NOT control page rotation; it is global and automatic.
+
+## Removal
+
+- On player quit: scoreboard reference is dropped.
+- On plugin disable: `clearAll()` restores the main scoreboard for all online players.
+- On scoreboard toggle OFF: main scoreboard is restored immediately.

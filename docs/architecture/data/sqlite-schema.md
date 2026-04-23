@@ -49,6 +49,10 @@ Document all tables, indexes, and reset behavior.
 - `uuid TEXT PRIMARY KEY`
 - `locale TEXT NOT NULL DEFAULT 'en'`
 
+### server_settings
+- `key TEXT PRIMARY KEY`
+- `value TEXT NOT NULL`
+
 ## Indexes
 
 - `idx_break_log_uuid` on `break_log(uuid)`
@@ -63,4 +67,4 @@ Document all tables, indexes, and reset behavior.
 - `DELETE FROM player_progress` (all-players reset)
 - `DELETE FROM player_skills` (all-players reset)
 - `DELETE FROM break_log` (all-players reset)
-- Structure claims are **never** deleted by reset.
+- Structure claims and server settings are **never** deleted by reset.

@@ -7,15 +7,16 @@ Define how players buy skills with points, including costs, prerequisites, and r
 ## Rules
 
 1. Each category has its own point balance.
-2. Skill purchases consume points from the skill's own category.
-3. Cross-category bundles do not exist.
-4. Purchases are final; no refunds.
+2. Normal skill purchases consume points from the skill's own category.
+3. Mythic skill purchases consume points from multiple categories at once.
+4. Cross-category bundles do not exist for normal skills.
+5. Purchases are final; no refunds.
 
 ---
 
 ## Cost Formula
 
-- Base cost for tier N of a skill: `50 * N * N` points of that category.
+- Base cost for tier N of a normal skill: `50 * N * N` points of that category.
 - Example: `AREA_RADIUS` tier 1 costs `50 TERRA` points.
 - Example: `AREA_RADIUS` tier 3 costs `450 TERRA` points.
 - Example: `HASTE_AURA` tier V costs `1250 MINERAL` points.
@@ -52,29 +53,56 @@ All base skills in non-TERRA categories require `AREA_RADIUS` tier 1 or higher:
 - `VEIN_MINER` requires `FORTUNE_TOUCH` tier 2.
 - `MAGNET` requires `VEIN_MINER`.
 - `CRYSTAL_VISION` requires `MAGNET`.
+- `BLAST_MINING` requires `CRYSTAL_VISION`.
 
 ### ORGANIC
 - `ROOT_RAZE` requires `LEAF_CONSUME`.
 - `SAPLING_REPLANT` requires `ROOT_RAZE`.
 - `BONEMEAL_AURA` requires `SAPLING_REPLANT`.
 - `NATURE_TOUCH` requires `BONEMEAL_AURA` tier 2.
+- `WILD_GROWTH` requires `NATURE_TOUCH`.
 
 ### AQUATIC
 - `FROST_WALKER` requires `TIDE_BREAKER`.
 - `CONDUIT_AURA` requires `TIDE_BREAKER`.
 - `DEEP_DIVE` requires `CONDUIT_AURA` tier 2.
+- `TSUNAMI` requires `DEEP_DIVE`.
 
 ### VOID
 - `VOID_SIPHON` tier 2+ requires `STRUCTURE_SENSE`.
 - `NIGHT_VISION` requires `STRUCTURE_SENSE`.
 - `FIRE_RESISTANCE` requires `NIGHT_VISION`.
 - `VOID_WALK` requires `VOID_SIPHON` tier 2.
+- `VOID_RIFT` requires `VOID_WALK`.
 
 ### CROP
 - `HARVEST_AURA` requires `GREEN_THUMB`.
 - `COMPOST_MASTER` requires `HARVEST_AURA`.
 - `SEED_SATCHEL` requires `COMPOST_MASTER`.
 - `FARMERS_FORTUNE` requires `SEED_SATCHEL`.
+- `HARVEST_WAVE` requires `FARMERS_FORTUNE`.
+
+---
+
+## Mythic Skills
+
+### Cost Structure
+
+- Mythic skills consume points from **multiple categories simultaneously**.
+- The cost is fixed per tier and is NOT computed by `50 * N * N`.
+- Example: `ANGEL_WINGS` tier 1 costs `500 TERRA + 500 MINERAL + 500 VOID`.
+
+### Prerequisites
+
+- Mythic skills require high-tier normal skills across multiple domains.
+- `ANGEL_WINGS` requires `AREA_RADIUS` tier 3, `HASTE_AURA` tier 3, and `VOID_SIPHON` tier 2.
+- `TITAN_STRIKE` requires `AREA_RADIUS` tier 3, `NATURE_TOUCH` tier 2, and `FARMERS_FORTUNE` tier 2.
+
+### Display
+
+- Mythic skill lore lists every required category and cost.
+- Example: `Cost: 500 TERRA + 500 MINERAL + 500 VOID`.
+- Prerequisite skills are listed by name.
 
 ---
 

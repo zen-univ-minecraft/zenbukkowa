@@ -11,86 +11,94 @@ Define the visual tree layout, 2D scroll behavior, and node coordinates for the 
 3. Parent-child skills are connected by `GREEN_STAINED_GLASS_PANE` items.
 4. The viewport is a 54-slot inventory showing a 9x5 slice of a larger virtual grid.
 5. Scroll arrows move the viewport one row or one column at a time.
+6. Empty separator columns exist between branches for visual clarity.
 
 ---
 
 ## Virtual Grid
 
-- **Width:** 15 columns (0–14).
-- **Height:** 12 rows (0–11).
+- **Width:** 18 columns (0–17).
+- **Height:** 13 rows (0–12).
 - **Viewport:** 9 columns wide x 5 rows tall.
-- **Max vertical scroll:** 7 (`GRID_ROWS - VIEWPORT_ROWS`).
-- **Max horizontal scroll:** 6 (`GRID_COLS - VIEWPORT_COLS`).
+- **Max vertical scroll:** 8 (`GRID_ROWS - VIEWPORT_ROWS`).
+- **Max horizontal scroll:** 9 (`GRID_COLS - VIEWPORT_COLS`).
 
 ---
 
 ## Node Coordinates (bottom-to-top)
 
-### TERRA Trunk (column 7)
-
-| Skill | Row | Col | Parent |
-|---|---|---|---|
-| AREA_RADIUS | 11 | 7 | — |
-| AREA_DEPTH | 9 | 7 | AREA_RADIUS |
-| PILLAR_BREAK | 7 | 7 | AREA_DEPTH |
-| GRAVITY_WELL | 5 | 7 | AREA_DEPTH |
-| TERRA_BLESSING | 3 | 7 | PILLAR_BREAK |
-
-### MINERAL Branch (column 4)
-
-| Skill | Row | Col | Parent |
-|---|---|---|---|
-| HASTE_AURA | 10 | 4 | — (requires AREA_RADIUS) |
-| FORTUNE_TOUCH | 8 | 4 | HASTE_AURA |
-| VEIN_MINER | 6 | 4 | FORTUNE_TOUCH |
-| MAGNET | 4 | 4 | VEIN_MINER |
-| CRYSTAL_VISION | 2 | 4 | MAGNET |
-
-### ORGANIC Branch (column 2)
-
-| Skill | Row | Col | Parent |
-|---|---|---|---|
-| LEAF_CONSUME | 8 | 2 | — (requires AREA_RADIUS) |
-| ROOT_RAZE | 6 | 2 | LEAF_CONSUME |
-| SAPLING_REPLANT | 4 | 2 | ROOT_RAZE |
-| BONEMEAL_AURA | 2 | 2 | SAPLING_REPLANT |
-| NATURE_TOUCH | 0 | 2 | BONEMEAL_AURA |
-
-### AQUATIC Branch (columns 10–11)
-
-| Skill | Row | Col | Parent |
-|---|---|---|---|
-| TIDE_BREAKER | 10 | 10 | — (requires AREA_RADIUS) |
-| SALVAGE | 10 | 12 | — (requires AREA_RADIUS) |
-| CONDUIT_AURA | 6 | 10 | TIDE_BREAKER |
-| FROST_WALKER | 8 | 11 | TIDE_BREAKER |
-| DEEP_DIVE | 2 | 10 | CONDUIT_AURA |
-
-### VOID Branch (columns 12–14)
-
-| Skill | Row | Col | Parent |
-|---|---|---|---|
-| VOID_SIPHON | 8 | 12 | — (requires AREA_RADIUS) |
-| STRUCTURE_SENSE | 8 | 14 | — (requires AREA_RADIUS) |
-| NIGHT_VISION | 4 | 14 | STRUCTURE_SENSE |
-| FIRE_RESISTANCE | 2 | 14 | NIGHT_VISION |
-| VOID_WALK | 4 | 12 | VOID_SIPHON |
-
 ### CROP Branch (columns 0–1)
 
 | Skill | Row | Col | Parent |
 |---|---|---|---|
-| GREEN_THUMB | 10 | 0 | — (requires AREA_RADIUS) |
-| HARVEST_AURA | 8 | 0 | GREEN_THUMB |
-| COMPOST_MASTER | 6 | 0 | HARVEST_AURA |
-| SEED_SATCHEL | 4 | 1 | COMPOST_MASTER |
-| FARMERS_FORTUNE | 2 | 0 | SEED_SATCHEL |
+| GREEN_THUMB | 11 | 0 | — (requires AREA_RADIUS) |
+| HARVEST_AURA | 9 | 0 | GREEN_THUMB |
+| COMPOST_MASTER | 7 | 0 | HARVEST_AURA |
+| SEED_SATCHEL | 5 | 1 | COMPOST_MASTER |
+| FARMERS_FORTUNE | 3 | 0 | SEED_SATCHEL |
+| HARVEST_WAVE | 1 | 0 | FARMERS_FORTUNE |
 
-### Cross-Branch
+### ORGANIC Branch (columns 3–4)
 
 | Skill | Row | Col | Parent |
 |---|---|---|---|
-| EFFICIENCY | 9 | 5 | HASTE_AURA |
+| LEAF_CONSUME | 11 | 3 | — (requires AREA_RADIUS) |
+| ROOT_RAZE | 9 | 3 | LEAF_CONSUME |
+| SAPLING_REPLANT | 7 | 3 | ROOT_RAZE |
+| BONEMEAL_AURA | 5 | 3 | SAPLING_REPLANT |
+| NATURE_TOUCH | 3 | 3 | BONEMEAL_AURA |
+| WILD_GROWTH | 1 | 3 | NATURE_TOUCH |
+
+### MINERAL Branch (columns 6–7)
+
+| Skill | Row | Col | Parent |
+|---|---|---|---|
+| HASTE_AURA | 11 | 6 | — (requires AREA_RADIUS) |
+| FORTUNE_TOUCH | 9 | 6 | HASTE_AURA |
+| VEIN_MINER | 7 | 6 | FORTUNE_TOUCH |
+| MAGNET | 5 | 6 | VEIN_MINER |
+| CRYSTAL_VISION | 3 | 6 | MAGNET |
+| BLAST_MINING | 1 | 6 | CRYSTAL_VISION |
+
+### TERRA Trunk (columns 9–10)
+
+| Skill | Row | Col | Parent |
+|---|---|---|---|
+| AREA_RADIUS | 12 | 9 | — |
+| AREA_DEPTH | 10 | 9 | AREA_RADIUS |
+| PILLAR_BREAK | 8 | 9 | AREA_DEPTH |
+| GRAVITY_WELL | 6 | 9 | AREA_DEPTH |
+| TERRA_BLESSING | 4 | 9 | PILLAR_BREAK |
+| EFFICIENCY | 10 | 10 | HASTE_AURA |
+
+### AQUATIC Branch (columns 12–13)
+
+| Skill | Row | Col | Parent |
+|---|---|---|---|
+| TIDE_BREAKER | 11 | 12 | — (requires AREA_RADIUS) |
+| SALVAGE | 11 | 14 | — (requires AREA_RADIUS) |
+| CONDUIT_AURA | 7 | 12 | TIDE_BREAKER |
+| FROST_WALKER | 9 | 13 | TIDE_BREAKER |
+| DEEP_DIVE | 3 | 12 | CONDUIT_AURA |
+| TSUNAMI | 1 | 12 | DEEP_DIVE |
+
+### VOID Branch (columns 15–16)
+
+| Skill | Row | Col | Parent |
+|---|---|---|---|
+| VOID_SIPHON | 9 | 15 | — (requires AREA_RADIUS) |
+| STRUCTURE_SENSE | 9 | 17 | — (requires AREA_RADIUS) |
+| NIGHT_VISION | 5 | 17 | STRUCTURE_SENSE |
+| FIRE_RESISTANCE | 3 | 17 | NIGHT_VISION |
+| VOID_WALK | 5 | 15 | VOID_SIPHON |
+| VOID_RIFT | 1 | 15 | VOID_WALK |
+
+### Mythic Apex (columns 8–10, row 0)
+
+| Skill | Row | Col | Prerequisites |
+|---|---|---|---|
+| TITAN_STRIKE | 0 | 8 | AREA_RADIUS tier 3, NATURE_TOUCH tier 2, FARMERS_FORTUNE tier 2 |
+| ANGEL_WINGS | 0 | 10 | AREA_RADIUS tier 3, HASTE_AURA tier 3, VOID_SIPHON tier 2 |
 
 ---
 
@@ -116,7 +124,7 @@ Define the visual tree layout, 2D scroll behavior, and node coordinates for the 
 
 ### State
 - Scroll offsets are stored per-player in `MenuService`.
-- Default vertical offset is `7` (bottom of tree visible; rows 7–11).
+- Default vertical offset is `8` (bottom of tree visible; rows 8–12).
 - Default horizontal offset is `0` (leftmost columns visible; cols 0–8).
 - Up-arrow is disabled when vertical offset == 0.
 - Down-arrow is disabled when vertical offset == max.

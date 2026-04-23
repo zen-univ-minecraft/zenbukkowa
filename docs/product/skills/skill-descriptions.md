@@ -91,6 +91,13 @@ Provide a player-readable description for every skill, grouped by category.
 - **Tier 3:** 15 blocks.
 - **Prerequisite:** MAGNET.
 
+### BLAST_MINING
+- **Mechanic:** When breaking ore blocks, expands the break radius by bonus tiers.
+- **Tier 1:** +1 bonus radius.
+- **Tier 2:** +2 bonus radius.
+- **Tier 3:** +3 bonus radius.
+- **Prerequisite:** CRYSTAL_VISION.
+
 ---
 
 ## ORGANIC Skills
@@ -119,6 +126,13 @@ Provide a player-readable description for every skill, grouped by category.
 - **Tier 2:** +20%.
 - **Tier 3:** +30%.
 - **Prerequisite:** BONEMEAL_AURA tier 2.
+
+### WILD_GROWTH
+- **Mechanic:** When breaking organic blocks, expands the break radius by bonus tiers.
+- **Tier 1:** +1 bonus radius.
+- **Tier 2:** +2 bonus radius.
+- **Tier 3:** +3 bonus radius.
+- **Prerequisite:** NATURE_TOUCH.
 
 ---
 
@@ -151,6 +165,13 @@ Provide a player-readable description for every skill, grouped by category.
 - **Tier 3:** +30%.
 - **Prerequisite:** CONDUIT_AURA tier 2.
 
+### TSUNAMI
+- **Mechanic:** When breaking aquatic blocks underwater, expands the break radius by bonus tiers.
+- **Tier 1:** +1 bonus radius.
+- **Tier 2:** +2 bonus radius.
+- **Tier 3:** +3 bonus radius.
+- **Prerequisite:** DEEP_DIVE.
+
 ---
 
 ## VOID Skills
@@ -179,6 +200,13 @@ Provide a player-readable description for every skill, grouped by category.
 - **Tier 2:** Jump Boost II.
 - **Tier 3:** Void death immunity + Jump Boost III.
 - **Prerequisite:** VOID_SIPHON tier 2.
+
+### VOID_RIFT
+- **Mechanic:** When breaking void blocks in dimensions or deep caves, expands the break radius by bonus tiers.
+- **Tier 1:** +1 bonus radius.
+- **Tier 2:** +2 bonus radius.
+- **Tier 3:** +3 bonus radius.
+- **Prerequisite:** VOID_WALK.
 
 ---
 
@@ -217,3 +245,30 @@ Provide a player-readable description for every skill, grouped by category.
 - **Tier 2:** +20%.
 - **Tier 3:** +30%.
 - **Prerequisite:** SEED_SATCHEL.
+
+### HARVEST_WAVE
+- **Mechanic:** When breaking crop blocks, expands the break radius by bonus tiers.
+- **Tier 1:** +1 bonus radius.
+- **Tier 2:** +2 bonus radius.
+- **Tier 3:** +3 bonus radius.
+- **Prerequisite:** FARMERS_FORTUNE.
+
+---
+
+## Mythic Skills
+
+### ANGEL_WINGS
+- **Mechanic:** Grants creative flight while the event is running.
+- **Cost:** Consumes TERRA, MINERAL, and VOID points simultaneously.
+- **Tier 1:** 500 TERRA + 500 MINERAL + 500 VOID.
+- **Tier 2:** 1000 TERRA + 1000 MINERAL + 1000 VOID.
+- **Tier 3:** 2000 TERRA + 2000 MINERAL + 2000 VOID.
+- **Prerequisites:** AREA_RADIUS tier 3, HASTE_AURA tier 3, VOID_SIPHON tier 2.
+
+### TITAN_STRIKE
+- **Mechanic:** Expands base break radius and depth for ALL block categories.
+- **Cost:** Consumes TERRA, ORGANIC, and CROP points simultaneously.
+- **Tier 1:** +1 base radius and depth. Costs 500 TERRA + 500 ORGANIC + 500 CROP.
+- **Tier 2:** +2 base radius and depth. Costs 1000 each.
+- **Tier 3:** +3 base radius and depth. Costs 2000 each.
+- **Prerequisites:** AREA_RADIUS tier 3, NATURE_TOUCH tier 2, FARMERS_FORTUNE tier 2.

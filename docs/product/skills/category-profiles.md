@@ -43,9 +43,10 @@ Coal, iron, copper, gold, redstone, lapis, diamond, emerald, ancient debris, ame
 - **Luck:** FORTUNE_TOUCH doubles points by chance.
 - **Precision:** VEIN_MINER and CRYSTAL_VISION reward ore-focused paths.
 - **Quality of life:** MAGNET collects drops automatically.
+- **Chain reaction:** BLAST_MINING expands break radius when mining ores.
 
 ### Strategy Note
-Ancient debris gives 20 points per block. Combining VEIN_MINER with FORTUNE_TOUCH turns Nether mining into a point fountain.
+Ancient debris gives 20 points per block. Combining VEIN_MINER with FORTUNE_TOUCH turns Nether mining into a point fountain. BLAST_MINING makes ore veins collapse in larger bursts.
 
 ---
 
@@ -61,9 +62,10 @@ All logs, planks, leaves, grass, moss, nylium, wart blocks, crops, bamboo.
 - **Inclusion:** LEAF_CONSUME lets area breaks destroy leaves.
 - **Automation:** ROOT_RAZE, SAPLING_REPLANT, and BONEMEAL_AURA reduce manual labour.
 - **Multiplier:** NATURE_TOUCH scales ORGANIC income.
+- **Area expansion:** WILD_GROWTH expands break radius when clearing organic blocks.
 
 ### Strategy Note
-ORGANIC is strongest in forest biomes and warped/crimson forests. The auto-replant chain makes tree farms self-sustaining.
+ORGANIC is strongest in forest biomes and warped/crimson forests. The auto-replant chain makes tree farms self-sustaining. WILD_GROWTH turns single log breaks into forest-clearing waves.
 
 ---
 
@@ -80,9 +82,10 @@ Prismarine, sea lantern, coral, sponge, kelp, clay.
 - **Mobility:** FROST_WALKER creates water-walking paths.
 - **Durability:** SALVAGE preserves tools.
 - **Multiplier:** DEEP_DIVE scales AQUATIC income while submerged.
+- **Area expansion:** TSUNAMI expands break radius when breaking aquatic blocks underwater.
 
 ### Strategy Note
-Ocean Monuments are the highest-density AQUATIC source. TIDE_BREAKER + CONDUIT_AURA makes monument clearing viable without air pockets.
+Ocean Monuments are the highest-density AQUATIC source. TIDE_BREAKER + CONDUIT_AURA makes monument clearing viable without air pockets. TSUNAMI turns underwater mining into demolition.
 
 ---
 
@@ -98,9 +101,10 @@ Obsidian, netherrack, blackstone, basalt, end stone, sculk, magma, glowstone.
 - **Exploration:** STRUCTURE_SENSE finds rare architecture.
 - **Resilience:** NIGHT_VISION, FIRE_RESISTANCE, and VOID_WALK remove environmental threats.
 - **Multiplier:** VOID_SIPHON scales VOID income in dimensions and deep caves.
+- **Area expansion:** VOID_RIFT expands break radius when breaking void blocks in dimensions or deep caves.
 
 ### Strategy Note
-VOID is the slowest category to build because the blocks are scarcer or harder to reach, but VOID_SIPHON turns Nether/End clearing into massive point gains.
+VOID is the slowest category to build because the blocks are scarcer or harder to reach, but VOID_SIPHON turns Nether/End clearing into massive point gains. VOID_RIFT makes deep-slate strip mining devastating.
 
 ---
 
@@ -117,6 +121,7 @@ Wheat, carrots, potatoes, beetroots, melon stems, pumpkin stems, cocoa, nether w
 - **Preservation:** HARVEST_AURA reduces seed loss.
 - **Automation:** COMPOST_MASTER and SEED_SATCHEL reduce replanting labour.
 - **Multiplier:** FARMERS_FORTUNE scales all CROP income.
+- **Area expansion:** HARVEST_WAVE expands break radius when breaking crop blocks.
 
 ### Strategy Note
-CROP builds slowly but becomes self-sustaining once SEED_SATCHEL and COMPOST_MASTER are unlocked. Large farms near water generate steady income.
+CROP builds slowly but becomes self-sustaining once SEED_SATCHEL and COMPOST_MASTER are unlocked. Large farms near water generate steady income. HARVEST_WAVE turns a single wheat break into a field harvest.
