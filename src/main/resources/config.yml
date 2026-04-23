@@ -1,9 +1,9 @@
 database:
   file: plugins/zenbukkowa/zenbukkowa.db
 points:
-  base-per-block: 1
-  ore-multiplier: 5
-  ancient-debris-multiplier: 20
+  base-per-block: 5
+  ore-multiplier: 25
+  ancient-debris-multiplier: 100
 area:
   max-radius: 4
   max-depth: 4

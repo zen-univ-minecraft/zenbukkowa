@@ -2,6 +2,7 @@ package com.zenbukkowa.domain;
 
 import com.zenbukkowa.persistence.BlockDiscoveryDao;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -14,15 +15,22 @@ public class BlockDiscoveryService {
         this.pointService = pointService;
     }
 
-    public int checkDiscovery(UUID uuid, Material material, PlayerSkills skills) {
+    public int checkDiscovery(Player player, Material material, PlayerSkills skills) {
         if (material == null || !material.isBlock()) return 0;
+        UUID uuid = player.getUniqueId();
         if (blockDiscoveryDao.isDiscovered(uuid, material)) return 0;
         int bonus = discoveryBonus(material, skills);
         if (bonus > 0) {
             blockDiscoveryDao.recordDiscovery(uuid, material);
             pointService.addPoints(uuid, PointCategory.DISCOVERY, bonus, 0);
+            player.sendMessage("§bDiscovered " + formatName(material) + "! §a+" + bonus + " DISCOVERY points");
         }
         return bonus;
+    }
+
+    private String formatName(Material material) {
+        String name = material.name().toLowerCase().replace('_', ' ');
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     private int discoveryBonus(Material material, PlayerSkills skills) {
@@ -34,10 +42,10 @@ public class BlockDiscoveryService {
         int worldWalker = skills.tier(SkillType.WORLD_WALKER);
 
         switch (rarity(material)) {
-            case COMMON -> base += geologist * 5;
-            case UNCOMMON -> base += surveyor * 10;
-            case RARE -> base += cartographer * 15;
-            case EPIC -> base += pathfinder * 50;
+            case COMMON -> base += geologist * 25;
+            case UNCOMMON -> base += surveyor * 50;
+            case RARE -> base += cartographer * 75;
+            case EPIC -> base += pathfinder * 250;
         }
 
         if (worldWalker > 0) {
@@ -48,10 +56,10 @@ public class BlockDiscoveryService {
 
     private int baseBonus(Material material) {
         return switch (rarity(material)) {
-            case COMMON -> 10;
-            case UNCOMMON -> 25;
-            case RARE -> 50;
-            case EPIC -> 200;
+            case COMMON -> 50;
+            case UNCOMMON -> 125;
+            case RARE -> 250;
+            case EPIC -> 1000;
         };
     }
 

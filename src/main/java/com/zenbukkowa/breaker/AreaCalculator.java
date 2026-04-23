@@ -13,8 +13,8 @@ public class AreaCalculator {
     }
 
     public List<Block> calculate(Block center, int radiusTier, int depthTier, int bonusRadius, int bonusDepth) {
-        int radius = (radiusTier - 1) / 2 + bonusRadius;
-        int depth = (depthTier - 1) / 2 + bonusDepth;
+        int radius = radiusTier + bonusRadius;
+        int depth = depthTier + bonusDepth;
         List<Block> result = new ArrayList<>();
         World world = center.getWorld();
         int cx = center.getX();

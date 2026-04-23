@@ -17,8 +17,7 @@ class AreaCalculatorTest {
         AreaCalculator calc = new AreaCalculator();
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 1, 1);
-        assertEquals(1, result.size());
-        assertEquals(center, result.get(0));
+        assertEquals(27, result.size());
     }
 
     @Test
@@ -26,7 +25,7 @@ class AreaCalculatorTest {
         AreaCalculator calc = new AreaCalculator();
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 3, 1);
-        assertEquals(9, result.size());
+        assertEquals(147, result.size());
     }
 
     @Test
@@ -34,7 +33,7 @@ class AreaCalculatorTest {
         AreaCalculator calc = new AreaCalculator();
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 5, 1);
-        assertEquals(25, result.size());
+        assertEquals(363, result.size());
     }
 
     @Test
@@ -42,7 +41,7 @@ class AreaCalculatorTest {
         AreaCalculator calc = new AreaCalculator();
         Block center = mockBlock(0, 64, 0);
         List<Block> result = calc.calculate(center, 9, 9);
-        assertEquals(729, result.size());
+        assertEquals(6859, result.size());
     }
 
     private Block mockBlock(int x, int y, int z) {
@@ -54,9 +53,9 @@ class AreaCalculatorTest {
         when(block.getX()).thenReturn(x);
         when(block.getY()).thenReturn(y);
         when(block.getZ()).thenReturn(z);
-        for (int dx = -4; dx <= 4; dx++) {
-            for (int dy = -4; dy <= 4; dy++) {
-                for (int dz = -4; dz <= 4; dz++) {
+        for (int dx = -10; dx <= 10; dx++) {
+            for (int dy = -10; dy <= 10; dy++) {
+                for (int dz = -10; dz <= 10; dz++) {
                     Block b = mock(Block.class);
                     when(world.getBlockAt(x + dx, y + dy, z + dz)).thenReturn(b);
                 }

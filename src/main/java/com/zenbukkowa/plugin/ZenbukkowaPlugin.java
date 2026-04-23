@@ -3,6 +3,7 @@ package com.zenbukkowa.plugin;
 import com.zenbukkowa.breaker.AreaBreakListener;
 import com.zenbukkowa.breaker.AreaCalculator;
 import com.zenbukkowa.breaker.BlockPlaceListener;
+import com.zenbukkowa.breaker.PistonListener;
 import com.zenbukkowa.breaker.BonemealTask;
 import com.zenbukkowa.breaker.BreakPointCalculator;
 import com.zenbukkowa.command.ZenbukkowaCommand;
@@ -60,7 +61,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
             BlockDiscoveryService blockDiscoveryService = new BlockDiscoveryService(blockDiscoveryDao, pointService);
             BreakService breakService = new BreakService(
                     pointService, skillService, areaCalculator, pointCalculator,
-                    playerPlacedBlockDao, blockDiscoveryService);
+                    playerPlacedBlockDao, blockDiscoveryService, this);
             SchedulerBridge scheduler = new PaperSchedulerBridge();
             EventService eventService = new EventService(pointService, this);
             ScoreboardService scoreboardService = new ScoreboardService(pointService, skillService, eventService, scheduler, this);
@@ -75,6 +76,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
 
             AreaBreakListener areaBreakListener = new AreaBreakListener(breakService);
             BlockPlaceListener blockPlaceListener = new BlockPlaceListener(playerPlacedBlockDao);
+            PistonListener pistonListener = new PistonListener(playerPlacedBlockDao);
             BonemealTask bonemealTask = new BonemealTask(skillService, this);
             bonemealTask.start();
             ScoreboardListener scoreboardListener = new ScoreboardListener(scoreboardService);
@@ -95,7 +97,7 @@ public final class ZenbukkowaPlugin extends JavaPlugin {
                     playerDao, structureDao, database, scheduler);
 
             VoidWalkListener voidWalkListener = new VoidWalkListener(skillService);
-            registerListeners(areaBreakListener, blockPlaceListener, scoreboardListener, structureBonusListener,
+            registerListeners(areaBreakListener, blockPlaceListener, pistonListener, scoreboardListener, structureBonusListener,
                     menuListener, hotbarMenuListener, effectListener, voidWalkListener);
             registerCommand("zenbukkowa", new ZenbukkowaCommand(eventService, pointService, skillService));
 

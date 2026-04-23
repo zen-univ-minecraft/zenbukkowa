@@ -18,13 +18,14 @@
 
 ### COMPOST_MASTER
 - **Mechanic:** Auto-bonemeals nearby crop blocks.
-- **Tier 1:** 2 block radius.
-- **Tier 2:** 4 block radius.
-- **Tier 3:** 6 block radius.
+- **Tier 1:** 1 block radius.
+- **Tier 2:** 2 block radius.
+- **Tier 3:** 3 block radius.
 - **Prerequisite:** HARVEST_AURA.
 
 ### SEED_SATCHEL
 - **Mechanic:** Automatically replants wheat, carrots, potatoes, or beetroot when the mature crop is broken.
+- **Contract:** The original crop material is captured before the block is broken and restored immediately after break.
 - **Prerequisite:** COMPOST_MASTER.
 
 ### FARMERS_FORTUNE

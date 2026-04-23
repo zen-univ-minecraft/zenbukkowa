@@ -11,16 +11,13 @@ Automatically apply bonemeal to growable blocks near players who own BONEMEAL_AU
 ## Effect
 
 - For each player with `BONEMEAL_AURA` or `COMPOST_MASTER`, scan a cubic radius around the player.
-- Radius = `tier * 2` blocks horizontally, ±2 vertically.
-- Every growable block (crops, saplings, bamboo, sugar cane, mushrooms) inside the radius receives one bonemeal application.
+- Radius = `tier` blocks horizontally, ±2 vertically.
+- Every crop block inside the radius receives one bonemeal application.
 
-## Growable Blocks
+## Crop Blocks
 
 - Wheat, carrots, potatoes, beetroots, cocoa, melon stems, pumpkin stems
-- Nether wart, torchflower, pitcher crop
-- Bamboo, sugar cane, cactus
-- Oak, spruce, birch, jungle, acacia, dark oak, mangrove, cherry, pale oak saplings
-- Azalea, flowering azalea, brown/red mushrooms
+- Nether wart, torchflower crop, pitcher crop
 
 ## Rules
 

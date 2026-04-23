@@ -33,6 +33,19 @@ public class BreakHelper {
         return Math.min(target, maxDurability - d.getDamage());
     }
 
+    public static boolean isProtectedBlock(Material mat) {
+        return mat == Material.CHEST || mat == Material.TRAPPED_CHEST
+                || mat == Material.BARREL || mat == Material.SHULKER_BOX
+                || mat.name().endsWith("_SHULKER_BOX")
+                || mat == Material.HOPPER || mat == Material.DISPENSER
+                || mat == Material.DROPPER || mat == Material.ENDER_CHEST
+                || mat == Material.BEDROCK || mat == Material.BARRIER
+                || mat == Material.COMMAND_BLOCK || mat == Material.REPEATING_COMMAND_BLOCK
+                || mat == Material.CHAIN_COMMAND_BLOCK || mat == Material.STRUCTURE_BLOCK
+                || mat == Material.JIGSAW || mat == Material.SPAWNER
+                || mat == Material.TRIAL_SPAWNER || mat == Material.VAULT;
+    }
+
     public static void damageTool(ItemStack tool) {
         if (tool == null || tool.getType().isAir()) {
             return;

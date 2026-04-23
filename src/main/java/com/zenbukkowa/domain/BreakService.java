@@ -5,6 +5,7 @@ import com.zenbukkowa.breaker.BlockCategoryMapper;
 import com.zenbukkowa.breaker.BreakHelper;
 import com.zenbukkowa.breaker.BreakPointCalculator;
 import com.zenbukkowa.persistence.PlayerPlacedBlockDao;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,18 +27,23 @@ public class BreakService {
     private final BreakPointCalculator pointCalculator;
     private final PlayerPlacedBlockDao playerPlacedBlockDao;
     private final BlockDiscoveryService blockDiscoveryService;
+    private final ReplantService replantService;
+    private final JavaPlugin plugin;
     private final Random random = new Random();
 
     public BreakService(PointService pointService, SkillService skillService,
                         AreaCalculator areaCalculator, BreakPointCalculator pointCalculator,
                         PlayerPlacedBlockDao playerPlacedBlockDao,
-                        BlockDiscoveryService blockDiscoveryService) {
+                        BlockDiscoveryService blockDiscoveryService,
+                        JavaPlugin plugin) {
         this.pointService = pointService;
         this.skillService = skillService;
         this.areaCalculator = areaCalculator;
         this.pointCalculator = pointCalculator;
         this.playerPlacedBlockDao = playerPlacedBlockDao;
         this.blockDiscoveryService = blockDiscoveryService;
+        this.replantService = new ReplantService(plugin);
+        this.plugin = plugin;
     }
 
     public void onPlayerBreak(Player player, Block centerBlock) {
@@ -60,22 +67,19 @@ public class BreakService {
         int maxBreaks = BreakHelper.remainingBreaks(tool, blocks.size());
 
         boolean leafConsume = skills.hasSkill(SkillType.LEAF_CONSUME);
-        int salvageTier = skills.tier(SkillType.SALVAGE);
-        double salvageChance = salvageTier * 0.15;
+        double salvageChance = skills.tier(SkillType.SALVAGE) * 0.15;
         boolean gravityWell = skills.hasSkill(SkillType.GRAVITY_WELL);
         boolean seedSatchel = skills.hasSkill(SkillType.SEED_SATCHEL);
         boolean magnet = skills.hasSkill(SkillType.MAGNET);
 
         int broken = 0;
-        Location dropLoc = centerBlock.getLocation().add(0.5, 0.5, 0.5);
-
         for (int i = 0; i < Math.min(blocks.size(), maxBreaks); i++) {
             Block block = blocks.get(i);
             Material mat = block.getType();
             PointCategory category = BlockCategoryMapper.categorize(mat);
             if (category == null) continue;
             if (!leafConsume && mat.name().endsWith("_LEAVES")) continue;
-            if (isProtected(mat)) continue;
+            if (BreakHelper.isProtectedBlock(mat)) continue;
 
             boolean isCenter = block.getX() == centerBlock.getX()
                     && block.getY() == centerBlock.getY()
@@ -101,7 +105,7 @@ public class BreakService {
                     pointService.addPoints(player.getUniqueId(), category, points, 1);
                 }
                 if (isCenter) {
-                    blockDiscoveryService.checkDiscovery(player.getUniqueId(), mat, skills);
+                    blockDiscoveryService.checkDiscovery(player, mat, skills);
                 }
             }
             if (playerPlaced && isCenter) {
@@ -109,8 +113,12 @@ public class BreakService {
             }
             broken++;
 
-            if (seedSatchel && category == PointCategory.CROP && !isCenter) {
-                tryReplant(block);
+            if (seedSatchel && category == PointCategory.CROP) {
+                if (isCenter) {
+                    replantService.scheduleReplant(centerBlock, mat);
+                } else {
+                    replantService.tryReplant(block, mat);
+                }
             }
             if (magnet && !isCenter) {
                 collectDrops(player, block.getLocation());
@@ -149,35 +157,6 @@ public class BreakService {
             }
         }
         return extra;
-    }
-
-    private boolean isProtected(Material mat) {
-        return mat == Material.CHEST || mat == Material.TRAPPED_CHEST
-                || mat == Material.BARREL || mat == Material.SHULKER_BOX
-                || mat.name().endsWith("_SHULKER_BOX")
-                || mat == Material.HOPPER || mat == Material.DISPENSER
-                || mat == Material.DROPPER || mat == Material.ENDER_CHEST
-                || mat == Material.BEDROCK || mat == Material.BARRIER
-                || mat == Material.COMMAND_BLOCK || mat == Material.REPEATING_COMMAND_BLOCK
-                || mat == Material.CHAIN_COMMAND_BLOCK || mat == Material.STRUCTURE_BLOCK
-                || mat == Material.JIGSAW || mat == Material.SPAWNER
-                || mat == Material.TRIAL_SPAWNER || mat == Material.VAULT;
-    }
-
-    private void tryReplant(Block block) {
-        Material below = block.getRelative(0, -1, 0).getType();
-        if (below != Material.FARMLAND && below != Material.SOUL_SAND) return;
-        Material seed = switch (block.getType()) {
-            case WHEAT -> Material.WHEAT;
-            case CARROTS -> Material.CARROTS;
-            case POTATOES -> Material.POTATOES;
-            case BEETROOTS -> Material.BEETROOTS;
-            case NETHER_WART -> Material.NETHER_WART;
-            default -> null;
-        };
-        if (seed != null) {
-            block.setType(seed);
-        }
     }
 
     private void collectDrops(Player player, Location loc) {

@@ -29,13 +29,13 @@ public class BonemealTask implements Runnable {
             int organicRadius = skills.tier(SkillType.BONEMEAL_AURA);
             int cropRadius = skills.tier(SkillType.COMPOST_MASTER);
             if (organicRadius <= 0 && cropRadius <= 0) continue;
-            int radius = Math.max(organicRadius * 2, cropRadius * 2);
+            int radius = Math.max(organicRadius, cropRadius);
             Block center = player.getLocation().getBlock();
             for (int dx = -radius; dx <= radius; dx++) {
                 for (int dy = -2; dy <= 2; dy++) {
                     for (int dz = -radius; dz <= radius; dz++) {
                         Block b = center.getRelative(dx, dy, dz);
-                        if (isGrowable(b.getType())) {
+                        if (isCrop(b.getType())) {
                             b.applyBoneMeal(BlockFace.UP);
                         }
                     }
@@ -44,18 +44,10 @@ public class BonemealTask implements Runnable {
         }
     }
 
-    private boolean isGrowable(Material mat) {
+    private boolean isCrop(Material mat) {
         return mat == Material.WHEAT || mat == Material.CARROTS || mat == Material.POTATOES
                 || mat == Material.BEETROOTS || mat == Material.NETHER_WART
                 || mat == Material.COCOA || mat == Material.MELON_STEM || mat == Material.PUMPKIN_STEM
-                || mat == Material.TORCHFLOWER_CROP || mat == Material.PITCHER_CROP
-                || mat == Material.BAMBOO || mat == Material.SUGAR_CANE || mat == Material.CACTUS
-                || mat == Material.OAK_SAPLING || mat == Material.SPRUCE_SAPLING
-                || mat == Material.BIRCH_SAPLING || mat == Material.JUNGLE_SAPLING
-                || mat == Material.ACACIA_SAPLING || mat == Material.DARK_OAK_SAPLING
-                || mat == Material.MANGROVE_PROPAGULE || mat == Material.CHERRY_SAPLING
-                || mat == Material.PALE_OAK_SAPLING || mat == Material.AZALEA
-                || mat == Material.FLOWERING_AZALEA || mat == Material.BROWN_MUSHROOM
-                || mat == Material.RED_MUSHROOM || mat == Material.GRASS_BLOCK;
+                || mat == Material.TORCHFLOWER_CROP || mat == Material.PITCHER_CROP;
     }
 }
