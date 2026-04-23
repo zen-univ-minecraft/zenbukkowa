@@ -21,7 +21,8 @@ public class HelpTopicMenu {
             "points", new TopicDef(List.of(
                     new ChildDef(Material.DIAMOND_ORE, "help.points.children.ores"),
                     new ChildDef(Material.GRASS_BLOCK, "help.points.children.terra"),
-                    new ChildDef(Material.PRISMARINE, "help.points.children.aquatic")
+                    new ChildDef(Material.PRISMARINE, "help.points.children.aquatic"),
+                    new ChildDef(Material.COMPASS, "help.points.children.discovery")
             )),
             "skills", new TopicDef(List.of(
                     new ChildDef(Material.EXPERIENCE_BOTTLE, "help.skills.children.tiers"),
